@@ -1,5 +1,5 @@
 const STORAGE_KEY = "minha-garagem-v1";
-const photoUrls = new Map();
+
 const garageColors = ["#4388ff", "#795cff", "#35bde8", "#ef7c5c", "#db67bd", "#f1a94b"];
 const carColors = ["#397ce5", "#d84856", "#8b62da", "#e38643", "#4b9b91", "#bfc6d3"];
 
@@ -110,19 +110,6 @@ function garageIcon(garage, className = "garage-icon") {
   return `<img class="${className}" src="assets/blips/${garageTypes[type].icon || type}.png" alt="${garageTypes[type].label}" title="${garageTypes[type].label}">`;
 }
 
-// Imagens da RAGE Multiplayer Wiki, disponíveis localmente para uso offline.
-const vehicleImages = {
-  zentorno: "zentorno",
-  elegy: "elegy",
-  elegyretrocustom: "elegy",
-  turismor: "turismor",
-  kuruma2: "kuruma2",
-  kurumablindado: "kuruma2",
-  kurumaarmored: "kuruma2",
-  sultanrs: "sultanrs",
-  dominator: "dominator"
-};
-
 const vehicleModels = VEHICLE_CATALOG.vehicles;
 let selectedCatalogModelId = "";
 
@@ -156,8 +143,7 @@ function updateVehiclePreview() {
     if (preview.getAttribute("src") !== image) preview.src = image;
     else if (preview.complete && preview.naturalWidth > 0) preview.hidden = false;
   } else preview.removeAttribute("src");
-  const hasSessionPhoto = savedVehicle && [...photoUrls.keys()].some(key => key.startsWith(`${savedVehicle.id}:`));
-  $("#vehicleImageStatus").textContent = image ? (hasSessionPhoto ? "Foto do seu ensaio" : "Imagem automática") : name ? "Sem imagem disponível" : "Prévia do veículo";
+  $("#vehicleImageStatus").textContent = image ? "Imagem automática" : name ? "Sem imagem disponível" : "Prévia do veículo";
 }
 
 function renderVehicleGaragePicker() {
@@ -175,19 +161,9 @@ function renderVehicleGaragePicker() {
 }
 
 function getVehicleImage(vehicle) {
-  const cover = photoUrls.get(`${vehicle.id}:${vehicle.coverSlot || "cinematicFront"}`);
-  if (cover) return cover;
-  const firstPhoto = [...photoUrls].find(([key]) => key.startsWith(`${vehicle.id}:`));
-  if (firstPhoto) return firstPhoto[1];
-  if (vehicle.image) return vehicle.image;
-  const catalogModel = findCatalogVehicle(vehicle.name, vehicle.catalogId);
-  const automatic = VEHICLE_CUSTOMIZATION[catalogModel?.id];
-  if (automatic?.localImage || automatic?.image) return automatic.localImage || automatic.image;
-  const name = vehicle.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-  const model = vehicleImages[name];
-  return model ? `assets/vehicles/${model}.png` : "";
+  const model = findCatalogVehicle(vehicle.name, vehicle.catalogId);
+  return model ? VEHICLE_IMAGES[model.id]?.image || "" : "";
 }
-
 const initialData = {
   garages: [
     { id: "g1", name: "Eclipse Towers", capacity: 10 },
@@ -525,7 +501,6 @@ $("#confirmDeleteVehicle").addEventListener("click", () => {
   $("#deleteVehicleDialog").close();
   $("#vehicleDialog").close();
   saveData("Veículo excluído");
-  deleteVehiclePhotos(id).catch(() => showToast("Veículo excluído; não foi possível limpar as fotos locais.", "warning"));
 });
 
 $("#garageForm").addEventListener("submit", event => {
@@ -575,7 +550,7 @@ $("#deleteGarageButton").addEventListener("click", () => {
   const garage = getGarage($("#garageId").value); if (!garage) return;
   pendingDeleteGarageId = garage.id;
   const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
-  $("#deleteGarageDescription").textContent = `Remover ${garageLabel(garage)}? ${used ? `Os ${used} veículos serão mantidos na coleção, como “Sem garagem”, junto com suas fotos e configurações.` : "Esta garagem está vazia."}`;
+  $("#deleteGarageDescription").textContent = `Remover ${garageLabel(garage)}? ${used ? `Os ${used} veículos serão mantidos na coleção, como “Sem garagem”, com seus dados de cadastro.` : "Esta garagem está vazia."}`;
   $("#deleteGarageDialog").showModal(); $("#cancelDeleteGarage").focus();
 });
 $("#confirmDeleteGarage").addEventListener("click", () => {

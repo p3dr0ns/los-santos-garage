@@ -46,14 +46,14 @@ dos arquivos do jogo é outro indicador e não deve ocupar o mesmo campo.
 - Guardar URL da ficha e data da consulta por registro. Campos não conferidos permanecem desconhecidos.
 - Manter condições de teste junto dos números; separar configurações normais, HSW e Drift quando aplicáveis.
 - Tratar preço como referência consultada, pois promoções e disponibilidade podem mudar.
-- Separar especificações do modelo das personalizações, fotos e valores registrados pelo usuário.
+- Separar especificações do modelo das personalizações textuais e valores registrados pelo usuário.
 - Usar dados locais para preservar o funcionamento offline. A consulta realizada não estabelece uma API pública ou integração automática.
 
 ## Dados incorporados ao portfólio
 
 `assets/vehicle-reference.js` guarda referências associadas por código interno
 exato. Os veículos já cadastrados também recebem os dados do catálogo, sem
-alterar fotos ou personalizações do usuário. Os campos disponíveis são:
+alterar os dados de cadastro do usuário. Os campos disponíveis são:
 
 - preço normal do GTA Online e preço de negociação em GTA$;
 - velocidade máxima testada em km/h, com melhorias completas e sem HSW;

@@ -1,48 +1,47 @@
 # Minha Garagem
 
-Organizador local de garagens e veículos para GTA Online.
+Organizador de garagens e veículos para GTA Online.
 
-Hospedagem no GitHub Pages: [Minha Garagem](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
-O endereço online tem armazenamento separado do arquivo local; os dados não são transferidos automaticamente entre os dois.
+Site: [Minha Garagem](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
 
-## Como usar
+Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
+`localStorage` do navegador. O arquivo local e o site possuem armazenamento separado.
 
-Abra o arquivo `index.html` no navegador. Não é necessário instalar nada.
+## Recursos
 
-Os cadastros ficam no `localStorage` e as fotos no `IndexedDB` do navegador usado. Para manter os dados, não limpe os dados do site/navegador. Exporte os ensaios para guardar uma cópia das fotos.
+- Cadastro e edição de veículos, favoritos e busca por modelo, marca e categoria.
+- Catálogo de 617 modelos/variantes e 54 marcas; veja [CATALOGO.md](CATALOGO.md).
+- Imagem automática do GTA Base nos cartões, cadastro e ficha. As imagens ficam
+  locais para uso offline. Fotos pessoais e URLs antigas não são utilizadas.
+- Ficha com preços, desempenho, inspiração real e especificações técnicas;
+  veja [GTABASE.md](GTABASE.md).
+- Registro textual de pintura, rodas, placa e observações. Não há editor visual,
+  upload de fotos, captura de prints ou galeria pessoal.
+- Catálogo de rodas por tipo e modelo; veja [RODAS.md](RODAS.md).
+- Cadastro, edição e remoção de garagens, tags de tema e identificação por apartamento.
+  Cada unidade do Eclipse Towers tem 10 vagas e exige número do apartamento.
+- Ao abrir uma garagem, aparecem apenas os veículos guardados nela.
+- Remover uma garagem mantém seus veículos como **Sem garagem**, para realocação posterior.
+- Layout responsivo para computador e celular.
 
-## Recursos atuais
+## Imagens
 
-- cadastro de veículo com foto automática, sem campo de URL; marca e categoria agrupadas, com ações de salvar acessíveis durante a rolagem;
-- cada garagem abre uma visão exclusiva de seus veículos, com retorno à lista de garagens;
-- edição e remoção de garagens, tags de tema separadas por vírgula e identificação por apartamento (obrigatória em Eclipse Towers, com 10 vagas por unidade);
-- remover uma garagem mantém os veículos, fotos e configurações na coleção como **Sem garagem**, permitindo realocá-los depois.
+As imagens são obtidas das páginas individuais do
+[catálogo do GTA Base](https://www.gtabase.com/grand-theft-auto-v/vehicles/).
+`assets/vehicle-images.js` registra a origem e o caminho de cada imagem.
+Variantes Drift sem ficha específica compartilham a imagem do modelo base, com
+essa identificação na ficha. Modelos personalizados sem correspondência no
+catálogo exibem uma ilustração padrão, sem solicitar imagem ao usuário.
 
-- configurador 2D no portfólio, pelo botão **Personalizar em 2D**: pintura por área delimitada na foto, rodas ilustrativas posicionáveis, comparação com o original e salvamento por veículo;
-- listas de peças específicas do GTA Base nos modelos já coletados. A coleta inicial cobre 33 modelos; modelos sem dados exibem um aviso. Peças são registradas na ficha, sem montagem visual de para-choques ou aerofólios. As imagens coletadas do GTA Base ficam locais para uso offline; as fotos originais são preservadas;
-- atualização da coleta por `scripts/update-customization.ps1 -ModelIds zentorno`, com intervalo entre requisições e interrupção ao encontrar limite da fonte.
+`scripts/update-vehicle-images.ps1` extrai as URLs dos metadados das páginas
+armazenadas em `.cache/gtabase`, baixa as imagens com concorrência limitada e
+interrompe novas solicitações caso a fonte retorne 403 ou 429.
 
-- cadastro e edição de veículos;
-- exclusão e marcação de favoritos;
-- cadastro de garagens e controle de vagas;
-- movimentação do veículo ao alterar sua garagem;
-- pesquisa e filtro por categoria;
-- layout responsivo para computador e celular.
-- portfólio de cada veículo ao clicar no cartão, com página própria, foto em destaque, galeria, marca, modelo e personalizações; botão para voltar à coleção e endereço `#carro/ID` para reabrir no mesmo navegador;
-- referências offline do GTA Base no portfólio: preços normal e de negociação, velocidade testada, inspiração real, assentos, peso, tração, marchas e estatísticas com Overall; cobertura e coleta em [GTABASE.md](GTABASE.md);
-- galeria de seis fotos próprias, escolha de capa, envio e Ctrl+V;
-- exportação e importação de ensaios;
-- print manual por F8 no GTA, com envio e salvamento automático no carro escolhido, sem macro nem calibração;
-- melhoria fotográfica local com prévia, intensidade e restauração do original.
-- catálogo offline com 617 modelos/variantes e 54 marcas de carros e motos, busca por nome e preenchimento automático de marca e categoria; detalhes em [CATALOGO.md](CATALOGO.md).
-- catálogo offline de rodas por tipo e modelo, com rodas dianteira/traseira para motos; detalhes em [RODAS.md](RODAS.md).
+## Validação e publicação
 
-Para os prints, abra `Iniciar captura.cmd` e clique em **Abrir site e conectar**. Escolha o carro, ative **Receber prints** e use **F8** no GTA em janela sem bordas; **F9** pausa. Uma foto já basta para a capa. Veja [CAPTURA.md](CAPTURA.md) para o fluxo, a melhoria de imagem e os limites.
+Execute `tests/run-checks.ps1` para validar o catálogo, navegação, cadastros e garagens
+no Chrome para computador e celular. `scripts/prepare-deploy.ps1` prepara os arquivos
+em `dist/`, removendo artefatos antigos.
 
-## Publicação
-
-`scripts/prepare-deploy.ps1` copia apenas HTML, CSS, JavaScript e os recursos usados pelo navegador para `dist/`. O workflow `.github/workflows/pages.yml` publica esse diretório usando GitHub Actions. Pages está configurado com origem GitHub Actions e a variável `ENABLE_GITHUB_PAGES=true`. Os próximos pushes para `main` serão publicados automaticamente; também é possível executar o workflow manualmente.
-
-O repositório é público, conforme autorizado pelo proprietário, para permitir GitHub Pages no plano atual. O assistente Windows continua sendo executado no computador do usuário; não é um processo executado pelo servidor.
-
-As imagens dos seis modelos iniciais vêm da [RAGE Multiplayer Wiki](https://wiki.rage.mp/wiki/Vehicles) e ficam em `assets/vehicles`, funcionando também offline. São aplicadas pelo nome, inclusive nos veículos já salvos. Uma URL personalizada tem prioridade sobre a imagem automática.
+Cada alteração deve ser publicada. O push em `main` aciona
+`.github/workflows/pages.yml`, que publica `dist/` no GitHub Pages.

@@ -1,5 +1,6 @@
 $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'reference-check.ps1')
+& (Join-Path $PSScriptRoot 'image-check.ps1')
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $browserPath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 if (!(Test-Path -LiteralPath $browserPath)) { throw 'Google Chrome not found at its default path.' }
@@ -47,7 +48,7 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         }
         if (!$page.webSocketDebuggerUrl) { throw 'Browser debugging endpoint did not start.' }
         $socket.ConnectAsync([Uri]$page.webSocketDebuggerUrl, [Threading.CancellationToken]::None).GetAwaiter().GetResult() | Out-Null
-        $expression = "new Promise(resolve => { const check = () => { const result = document.querySelector('#gallery-check-result'); if(result) { clearInterval(timer); resolve(result.textContent); } }; const timer = setInterval(check, 50); check(); setTimeout(() => { clearInterval(timer); resolve('TIMEOUT: ' + document.querySelector('#studioStatus')?.textContent); }, 25000); })"
+        $expression = "new Promise(resolve => { const check = () => { const result = document.querySelector('#gallery-check-result'); if(result) { clearInterval(timer); resolve(result.textContent); } }; const timer = setInterval(check, 50); check(); setTimeout(() => { clearInterval(timer); resolve('TIMEOUT'); }, 25000); })"
         $result = Send-Cdp $socket 'Runtime.evaluate' @{ expression = $expression; awaitPromise = $true; returnByValue = $true }
         $value = $result.result.value
         Write-Output "$tag $value"
@@ -59,14 +60,6 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-sentinel',catalogId:'sentinel5',name:'Sentinel GTS',category:'Esportivo',garageId:'g1'}); openVehicleDetails('preview-sentinel'); document.querySelector('#detailsMechanical').scrollIntoView({block:'start'});" } | Out-Null
         $performanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "performance-$tag.png"), [Convert]::FromBase64String($performanceScreenshot.data))
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-config',catalogId:'zentorno',name:'Zentorno',category:'Super',garageId:'g1'}); openVehicleDetails('preview-config'); openConfigurator();" } | Out-Null
-        $configScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
-        [IO.File]::WriteAllBytes((Join-Path $runDirectory "configurator-$tag.png"), [Convert]::FromBase64String($configScreenshot.data))
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#configDialog').close(); data.vehicles.pop(); openVehicleDetails('preview-sentinel');" } | Out-Null
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "(async () => { await openPhotoStudio(); await uploadPhoto(window.galleryTestPhoto, 'cinematicFront'); openPhotoEnhancer('cinematicFront'); for(let i=0;document.querySelector('#applyEnhance').disabled && i<60;i++) await new Promise(resolve=>setTimeout(resolve,30)); })()"; awaitPromise = $true } | Out-Null
-        $enhanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
-        [IO.File]::WriteAllBytes((Join-Path $runDirectory "enhance-$tag.png"), [Convert]::FromBase64String($enhanceScreenshot.data))
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closePhotoEnhancer(); closePhotoStudio();" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.pop();" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closeVehiclePortfolio(); openVehicleDialog(); document.querySelector('#vehicleName').value='sentinel'; document.querySelector('#vehicleName').dispatchEvent(new Event('input')); document.querySelector('#vehicleName').focus();" } | Out-Null
         $catalogScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }

@@ -191,7 +191,7 @@
         <div><span class="delete-confirmation-icon" aria-hidden="true">×</span><h2 id="deleteVehicleTitle">Excluir veículo?</h2></div>
         <button type="button" class="icon-button" data-close="deleteVehicleDialog" aria-label="Fechar confirmação">×</button>
       </div>
-      <p id="deleteVehicleDescription">Você vai remover <strong id="deleteVehicleName"></strong> da sua coleção. As fotos salvas deste veículo também serão apagadas.</p>
+      <p id="deleteVehicleDescription">Você vai remover <strong id="deleteVehicleName"></strong> da sua coleção.</p>
       <p class="delete-confirmation-note">Esta ação não pode ser desfeita.</p>
       <div class="delete-confirmation-actions">
         <button type="button" class="secondary-button" id="cancelDeleteVehicle" data-close="deleteVehicleDialog" autofocus>Manter veículo</button>
@@ -206,53 +206,17 @@
   </div>
   <section id="vehicleDetailsDialog" class="vehicle-portfolio" aria-labelledby="detailsName" hidden>
     <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>MINHA GARAGEM / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
-    <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span><button type="button" id="detailsPrevious" class="photo-nav previous" aria-label="Foto anterior">‹</button><button type="button" id="detailsNext" class="photo-nav next" aria-label="Próxima foto">›</button></div>
-    <div id="detailsThumbnails" class="detail-thumbnails" aria-label="Fotos do veículo"></div>
-    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" onclick="openConfigurator()">Personalizar em 2D</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
+    <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span></div>
+    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
   </section>
-  <dialog id="photoStudioDialog" class="collection-dialog" aria-labelledby="studioTitle">
-    <div class="detail-heading"><div><p class="eyebrow">SEU CARRO. SEU PROJETO.</p><h2 id="studioTitle">Ensaio do veículo</h2><p class="dialog-intro">Um print já basta. Adicione outros ângulos quando quiser.</p></div><button type="button" class="icon-button" id="closeStudio" aria-label="Fechar ensaio">×</button></div>
-    <div class="studio-body"><div class="print-dropzone" id="printDropzone"><strong>Um print já vira a capa do seu carro</strong><p>Arraste uma imagem aqui, cole com Ctrl+V ou escolha o arquivo. As outras fotos são opcionais.</p><button type="button" class="primary-button" id="uploadQuickPrint">Enviar print</button></div>
-      <details class="capture-help"><summary>Enviar direto do GTA com F8</summary><p>Abra <strong>Iniciar captura.cmd</strong> e clique em <strong>Abrir site e conectar</strong>. Escolha este carro, ative <strong>Receber prints</strong> e volte ao GTA em janela sem bordas. Cada F8 captura a imagem e salva automaticamente neste navegador. F9 pausa. Mantenha esta aba aberta.</p><p><a href="assets/downloads/prints-windows.zip" download>Baixar assistente para Windows</a> · Extraia o ZIP e abra Iniciar captura.cmd.</p></details>
-      <div class="capture-connect"><div><strong>Prints direto para este carro</strong><p id="captureStatus" role="status">Conecte o assistente ou envie um print acima.</p></div><button type="button" class="secondary-button" id="connectCapture">Conectar assistente</button></div>
-      <div class="studio-toolbar"><span id="studioCount">0 de 6 fotos · opcionais</span><button type="button" class="primary-button" id="captureSession" disabled>Receber prints · salvar automaticamente</button><button type="button" class="danger-button" id="cancelCapture" hidden>Pausar recebimento</button></div>
-      <p class="studio-status" id="studioStatus" role="status">Uma foto já basta. Você também pode colar com Ctrl+V.</p>
-      <div class="studio-grid" id="studioGrid"></div>
-      <input type="file" id="studioFile" accept="image/jpeg,image/png,image/webp" hidden>
-      <input type="file" id="studioImport" accept="application/json,.json" hidden>
-      <p class="studio-storage-note">Fotos salvas neste navegador. Exporte o ensaio para manter uma cópia.</p>
-      <div class="garage-dialog-footer"><div class="studio-backup-actions"><button type="button" class="secondary-button" id="exportPhotos">Exportar</button><button type="button" class="secondary-button" id="importPhotos">Importar</button></div><div class="garage-dialog-actions"><button type="button" class="secondary-button" id="discardPhotos">Cancelar</button><button type="button" class="primary-button" id="savePhotos">Salvar fotos</button></div></div>
-    </div>
-  </dialog>
-  <dialog id="enhanceDialog" class="collection-dialog" aria-labelledby="enhanceTitle">
-    <div class="detail-heading"><div><p class="eyebrow">ACABAMENTO FOTOGRÁFICO</p><h2 id="enhanceTitle">Melhorar foto</h2><p class="dialog-intro">Luz, contraste, cor e nitidez. O original fica preservado.</p></div><button type="button" class="icon-button" id="closeEnhance" aria-label="Fechar ajustes">×</button></div>
-    <div class="studio-body"><div class="enhance-comparison"><figure><img id="enhanceBefore" alt="Foto original"><figcaption>Original</figcaption></figure><figure><img id="enhanceAfter" alt="Prévia da foto com ajustes"><figcaption>Com acabamento</figcaption></figure></div><label class="enhance-strength" for="enhanceStrength">Intensidade <output id="enhanceStrengthValue">60%</output><input id="enhanceStrength" type="range" min="0" max="100" value="60"></label><p id="enhanceStatus" class="studio-status" role="status">Os ajustes preservam o carro e o enquadramento do print.</p><div class="enhance-actions"><button type="button" class="secondary-button" id="restoreOriginal">Restaurar original</button><button type="button" class="primary-button" id="applyEnhance">Aplicar melhoria</button></div></div>
-  </dialog>
-  <dialog id="configDialog" class="config-dialog" aria-labelledby="configTitle">
-    <header class="detail-heading"><div><p class="eyebrow">OFICINA / CONFIGURADOR 2D</p><h2 id="configTitle">Configure seu carro</h2><p>Experimente a pintura sobre a foto e monte sua lista de modificações.</p></div><button type="button" class="icon-button" id="configClose" aria-label="Fechar configurador">×</button></header>
-    <div class="config-layout"><div class="config-preview">
-      <svg id="configStage" viewBox="0 0 100 56.25" role="img" aria-label="Prévia ilustrativa do carro. Use as ferramentas para marcar pintura e rodas.">
-        <image id="configImage" width="100" height="56.25" preserveAspectRatio="xMidYMid meet"/>
-        <polygon id="configPaint" style="mix-blend-mode:color"/>
-        <g id="configWheels"></g><polyline id="configOutline" fill="none" stroke="white" stroke-width=".15" stroke-dasharray="1 1"/><g id="configPoints"></g>
-      </svg>
-      <p id="configImageStatus" role="status"></p><p id="configHint"></p>
-      <div class="config-toolbar"><label>Ferramenta<select id="configTool"><option value="paint">Delimitar lataria</option><option value="wheels">Posicionar rodas</option></select></label><button type="button" id="configUndo">Desfazer ponto</button><button type="button" id="configClear">Limpar marcações</button><label><input type="checkbox" id="configCompare"> Ver original</label></div>
-      <p class="config-disclaimer">Prévia aproximada. A pintura usa a área marcada por você. Rodas são desenhos ilustrativos ajustados à foto. Para-choques, capôs e demais peças ficam registrados na lista; ainda não há imagens individuais para montá-los na foto.</p>
-    </div><aside class="config-controls">
-      <h3>Pintura</h3><label>Cor da lataria<input type="color" id="configColor" value="#d92d36"></label>
-      <h3>Prévia de rodas</h3><label>Desenho ilustrativo<select id="configWheelStyle"><option value="original">Manter a foto original</option><option value="sport">Cinco raios</option><option value="classic">Oito raios</option><option value="mesh">Multirraios</option></select></label><label>Cor das rodas<input type="color" id="configWheelColor" value="#c5c8cc"></label><label>Tamanho na foto<input type="range" id="configRadius" min="1" max="12" step=".1" value="5"></label>
-      <h3>Peças deste modelo</h3><p id="configCoverage"></p><a id="configSource" target="_blank" rel="noopener noreferrer">Ver imagem e modificações no GTA Base ↗</a><div id="configParts"></div>
-    </aside></div><footer class="config-footer"><span id="configSaveStatus" role="status"></span><button type="button" class="primary-button" id="configSave">Salvar configuração</button></footer>
-  </dialog>
   <script src="assets/vehicle-catalog.js"></script>
   <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>
-  <script src="assets/vehicle-customization.js"></script>
+  <script src="assets/vehicle-images.js"></script>
   <script src="app.js"></script>
   <script src="catalog-ui.js"></script>
   <script src="wheels-ui.js"></script>
-  <script src="vehicle-details.js"></script><script src="configurator.js"></script>
-  <script src="photo-enhancer.js"></script>
+  <script src="vehicle-details.js"></script>
+
 </body>
 </html>

@@ -15,7 +15,7 @@ O campo de marca inclui os fabricantes de carros e motos do catálogo, inclusive
 - Modelos com nomes diferentes, conversões Benny's, blindados e variantes Drift aparecem separadamente. O Sentinel inclui Sentinel, XS, XS4, Classic, Classic Widebody, GTS e as versões Drift presentes na fonte.
 - Códigos internos com o mesmo nome, fabricante e categoria são agrupados. Todos os códigos continuam como aliases de pesquisa. Assim, versões de cenário não aparecem repetidas com nomes idênticos.
 - Os nomes principais seguem os nomes em inglês do jogo, com a correção de Sentinel Classic e a forma já utilizada no aplicativo, Kuruma Blindado. Os nomes em português da fonte também são pesquisáveis.
-- Você pode cadastrar um modelo que ainda não esteja no catálogo preenchendo o nome e a categoria manualmente. O catálogo de nomes não adiciona fotos: imagens próprias continuam disponíveis no ensaio.
+- Você pode cadastrar um modelo que ainda não esteja no catálogo preenchendo o nome e a categoria manualmente. A imagem é obtida automaticamente do GTA Base para modelos reconhecidos. Não há envio de fotos pessoais.
 
 ## Fonte e versão
 

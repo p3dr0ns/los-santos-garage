@@ -100,17 +100,16 @@
     const vehicleSnapshot = JSON.parse(JSON.stringify(data.vehicles));
     openGarageDialog();
     $('[data-property-name="Eclipse Towers"]').click();
-    check('Eclipse exige apartamento e mantém dez vagas', !$('#garageApartmentField').hidden && $('#garageApartment').required && !$('#garageApartment').checkValidity() && $('#garageCapacity').value === '10');
-    $('#garageApartment').value = '31'; $('#garageTags').value = 'JDM, Drift, JDM';
+    check('Eclipse sem campo obrigatório de apartamento mantém dez vagas', !$('#garageApartment') && $('#garageForm').checkValidity() && $('#garageCapacity').value === '10');
+    $('#garageTags').value = 'JDM, Drift, JDM';
     $('#garageForm').requestSubmit();
     const apartment31 = data.garages.at(-1);
-    check('cria apartamento com tags sem duplicatas', !$('#garageDialog').open && apartment31.apartment === '31' && apartment31.tags.join(',') === 'JDM,Drift');
-    openGarageDialog(); $('[data-property-name="Eclipse Towers"]').click(); $('#garageApartment').value = '32'; $('#garageForm').requestSubmit();
+    check('cria Eclipse sem número e com tags sem duplicatas', !$('#garageDialog').open && !apartment31.apartment && apartment31.tags.join(',') === 'JDM,Drift');
+    openGarageDialog(); $('[data-property-name="Eclipse Towers"]').click(); $('#garageName').value = 'Eclipse Towers · Ap. 32'; $('#garageForm').requestSubmit();
     const apartment32 = data.garages.at(-1);
-    check('apartamentos do mesmo prédio têm identidades distintas', apartment31.id !== apartment32.id && apartment32.apartment === '32' && garageLabel(apartment31) !== garageLabel(apartment32));
-    openGarageDialog(); $('[data-property-name="Eclipse Towers"]').click(); $('#garageApartment').value = '31'; $('#garageForm').requestSubmit();
-    check('impede duplicar o mesmo apartamento', $('#garageDialog').open && data.garages.length === garageSnapshot.length + 2);
-    $('#garageDialog').close();
+    check('garagens do mesmo prédio têm identidades distintas', apartment31.id !== apartment32.id && apartment32.name.includes('Ap. 32') && garageLabel(apartment31) !== garageLabel(apartment32));
+    // Registros anteriores mantêm o número salvo ao editar outros campos.
+    apartment31.apartment = '31';
     openGarageDialog(apartment31.id); $('#garageTags').value = 'Supercarros, Coleção azul'; $('#garageForm').requestSubmit();
     check('editar mantém ID e atualiza tags', getGarage(apartment31.id).tags[0] === 'Supercarros' && getGarage(apartment31.id).apartment === '31');
     data.vehicles[0].garageId = apartment31.id;
@@ -136,7 +135,7 @@
     $('#backToGarages').click();
     check('voltar restaura lista de garagens', !selectedGarage && !$('#garageSection').hidden && $('#vehicleSection').hidden);
     openGarageDialog(apartment32.id); $('#garageType').value = 'agency'; $('#garageType').dispatchEvent(new Event('change'));
-    check('trocar tipo oculta apartamento e remove obrigatoriedade', $('#garageApartmentField').hidden && !$('#garageApartment').required);
+    check('trocar tipo funciona sem campo de apartamento', !$('#garageApartment') && $('#garageForm').checkValidity());
     $('#garageDialog').close();
     data.garages = garageSnapshot; data.vehicles = vehicleSnapshot; $('[data-filter="all"]').click(); saveData();
   } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }

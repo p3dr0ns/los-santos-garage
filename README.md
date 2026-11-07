@@ -18,8 +18,9 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 - Registro textual de pintura, rodas, placa e observações. Não há editor visual,
   upload de fotos, captura de prints ou galeria pessoal.
 - Catálogo de rodas por tipo e modelo; veja [RODAS.md](RODAS.md).
-- Cadastro, edição e remoção de garagens, tags de tema e identificação por apartamento.
-  Cada unidade do Eclipse Towers tem 10 vagas e exige número do apartamento.
+- Cadastro, edição e remoção de garagens e tags de tema. Cada unidade do Eclipse
+  Towers tem 10 vagas, sem exigir número do apartamento. Use o nome da garagem
+  para diferenciar as unidades, se quiser.
 - Ao abrir uma garagem, aparecem apenas os veículos guardados nela.
 - Remover uma garagem mantém seus veículos como **Sem garagem**, para realocação posterior.
 - Layout responsivo para computador e celular.

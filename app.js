@@ -71,11 +71,7 @@ function renderGaragePreview() {
   const profile = getGarageProfile(garage);
   const capacity = Number($("#garageCapacity").value);
   $("#garagePreviewIcon").innerHTML = garageIcon(garage);
-  garage.apartment = $("#garageApartment").value.trim();
   $("#garagePreviewName").textContent = garageLabel({ ...garage, name: garage.name || garageTypes[type].label });
-  const apartmentVisible = type === "safehouse";
-  $("#garageApartmentField").hidden = !apartmentVisible;
-  $("#garageApartment").required = apartmentVisible && /eclipse/i.test(garage.name);
   $("#garageCapacityTotal").textContent = capacity;
   $("#garageCapacityUnit").textContent = type === "hangar" ? "aeronaves" : capacity === 1 ? "vaga" : "vagas";
   $("#garageCapacityConfig").hidden = profile.capacities.length === 1;
@@ -440,7 +436,6 @@ $("#garageCapacityOptions").addEventListener("click", event => {
   renderGaragePreview();
 });
 $("#garageName").addEventListener("input", updateGarageCapacity);
-$("#garageApartment").addEventListener("input", renderGaragePreview);
 $("#garageType").addEventListener("change", updateGarageCapacity);
 $("#searchInput").addEventListener("input", renderVehicles);
 $("#clearGarageFilter").addEventListener("click", returnToGarages);
@@ -507,11 +502,9 @@ $("#garageForm").addEventListener("submit", event => {
   event.preventDefault();
   const type = getGarageType({ name: $("#garageName").value.trim(), type: $("#garageType").value });
   const id = $("#garageId").value;
-  const garage = { id: id || crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value), apartment: type === "safehouse" ? $("#garageApartment").value.trim() : "", tags: [...new Set($("#garageTags").value.split(",").map(tag => tag.trim()).filter(Boolean))].slice(0, 10) };
+  const garage = { ...(getGarage(id) || {}), id: id || crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value), tags: [...new Set($("#garageTags").value.split(",").map(tag => tag.trim()).filter(Boolean))].slice(0, 10) };
   const profile = getGarageProfile(garage);
   if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade.", "warning");
-  if (type === "safehouse" && /eclipse/i.test(garage.name) && !garage.apartment) { $("#garageApartment").focus(); return showToast("Informe o número do apartamento no Eclipse Towers.", "warning"); }
-  if (garage.apartment && data.garages.some(item => item.id !== id && normalizeVehicleText(item.name) === normalizeVehicleText(garage.name) && normalizeVehicleText(item.apartment) === normalizeVehicleText(garage.apartment))) return showToast("Este apartamento já tem uma garagem cadastrada.", "warning");
   const used = data.vehicles.filter(vehicle => vehicle.garageId === id).length;
   if (id && garage.capacity < used) return showToast(`Esta garagem tem ${used} veículos. Mova os carros antes de reduzir as vagas.`, "warning");
   const previous = data.garages;
@@ -534,7 +527,6 @@ function openGarageDialog(id = null) {
   $("#garageId").value = garage?.id || "";
   $("#garageName").value = garage?.name || "";
   $("#garageType").value = garage ? getGarageType(garage) : "garage";
-  $("#garageApartment").value = garage?.apartment || "";
   $("#garageTags").value = (garage?.tags || []).join(", ");
   $("#garageDialogTitle").textContent = garage ? "Editar garagem" : "Adicionar garagem";
   $("#saveGarageButton").textContent = garage ? "Salvar alterações" : "＋ Criar garagem";

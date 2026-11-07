@@ -70,7 +70,7 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleCustomizationDetails').open=false; document.querySelector('#vehicleName').value='Sentinel GTS'; selectedCatalogModelId='sentinel5'; document.querySelector('#vehicleCategory').value='Esportivo'; document.querySelector('#vehicleBrand').value='Übermacht'; updateVehiclePreview(); document.querySelector('#vehicleDialog').scrollTop=0;" } | Out-Null
         $vehicleScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "vehicle-form-$tag.png"), [Convert]::FromBase64String($vehicleScreenshot.data))
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleDialog').close(); openGarageDialog('g1'); document.querySelector('#garageApartment').value='31'; document.querySelector('#garageTags').value='JDM, Drift'; document.querySelector('#garageApartment').dispatchEvent(new Event('input')); document.querySelector('#garageApartment').scrollIntoView({block:'center'});" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleDialog').close(); openGarageDialog('g1'); document.querySelector('#garageTags').value='JDM, Drift'; document.querySelector('#garageTags').scrollIntoView({block:'center'});" } | Out-Null
         $garageScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "garage-form-$tag.png"), [Convert]::FromBase64String($garageScreenshot.data))
     } finally {

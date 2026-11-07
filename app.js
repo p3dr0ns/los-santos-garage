@@ -171,7 +171,8 @@ function getVehicleImage(vehicle) {
 }
 const initialData = {
   garages: [],
-  vehicles: []
+  vehicles: [],
+  wishlist: []
 };
 
 let data = loadData();
@@ -256,10 +257,13 @@ function render() {
   renderCategories();
   renderVehicles();
   if (currentFilter === "map" && typeof renderPropertyMap === "function") renderPropertyMap();
+  if (typeof renderCollectionTools === "function") renderCollectionTools();
 }
 
 function renderGarages() {
-  $("#garageList").innerHTML = data.garages.map(garage => {
+  const garages = typeof getThemeFilteredGarages === "function" ? getThemeFilteredGarages() : data.garages;
+  $("#garageThemeEmpty").hidden = garages.length > 0 || !data.garages.length;
+  $("#garageList").innerHTML = garages.map(garage => {
     const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
     const percent = garage.capacity > 0 ? Math.min(100, used / garage.capacity * 100) : 0;
     const free = Math.max(0, garage.capacity - used);

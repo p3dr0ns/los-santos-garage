@@ -23,7 +23,11 @@ Consulta: 6 de novembro de 2026. O aplicativo contabiliza armazenamento permanen
 | Complexo | 7 comuns | Exclui vagas exclusivas de Avenger, Thruster, Khanjali, Chernobog e RCV |
 | Kosatka | 1 carro submersível | Apenas Toreador/Stromberg; Sparrow e Avisa têm vagas exclusivas separadas; sem localização fixa no mapa |
 
-Os tipos com restrições exibem essa informação no aplicativo. A aplicação não verifica a compatibilidade de cada modelo com vagas de motos, aeronaves ou veículos especiais.
+Os tipos com restrições exibem essa informação no aplicativo. A transferência em
+lote confere os destinos de motos, aeronaves, Kosatka e veículos especiais antes
+de mover. O cadastro individual mantém as notas de capacidade do imóvel.
+As vagas do depósito aceitam os modelos especiais de Import/Export, conforme as
+[referências de armazenamento do GTA Base](https://www.gtabase.com/grand-theft-auto-v/guides/list-of-vehicles-in-gta-5-gta-online-by-feature?feature=special).
 
 ## Fontes
 

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="los-santos.css">
   <link rel="stylesheet" href="property-explorer.css">
+  <link rel="stylesheet" href="collection-tools.css">
 </head>
 <body>
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -65,6 +66,11 @@
           <button class="primary-button" id="addVehicleButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Novo veículo</button>
         </div>
       </header>
+      <div class="collection-toolbar" role="group" aria-label="Ferramentas da coleção">
+        <button type="button" class="secondary-button" id="openWishlist">Lista de desejos <span id="wishlistCount">0</span></button>
+        <button type="button" class="secondary-button" id="openCompare">Comparar carros</button>
+        <button type="button" class="secondary-button" id="openBackup">Backup e restauração</button>
+      </div>
 
       <section id="lsgBrandBanner" class="lsg-brand-banner" aria-label="Los Santos Garage"><div class="lsg-wordmark"><img class="lsg-banner-logo" src="assets/logo-los-santos-customs.png" alt="Los Santos Customs Garage" width="1536" height="1024"></div><div class="lsg-brand-caption"><span>LOS SANTOS · SAN ANDREAS</span><h2>Sua coleção.<br>Cada carro no seu lugar.</h2><small>Garagens, projetos e cultura automotiva.</small></div><span class="lsg-banner-stripe" aria-hidden="true"></span></section>
       <section class="stats" aria-label="Resumo">
@@ -88,7 +94,9 @@
           <div><p class="eyebrow">CADA CARRO NO SEU LUGAR</p><h2>Suas garagens <span class="section-count" id="garageSectionCount">0</span></h2></div>
           <button class="text-button" id="addGarageButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Adicionar garagem</button>
         </div>
+        <label class="theme-filter">Filtrar por tema<select id="garageThemeFilter"><option value="all">Todos os temas</option></select></label>
         <div class="garage-list" id="garageList"></div>
+        <p id="garageThemeEmpty" class="tool-hint" hidden>Nenhuma garagem com este tema. Escolha outro filtro.</p>
         <p id="unassignedValue" class="unassigned-value" hidden></p>
         <p class="valuation-source-note">Valores de catálogo do GTA Base. Não incluem modificações, promoções ou descontos de negociação.</p>
       </section>
@@ -106,6 +114,7 @@
           </select></div>
         </div>
         <div id="activeGarageFilter" class="active-garage-filter" hidden><span id="activeGarageName"></span><button type="button" id="clearGarageFilter">Limpar filtro <span aria-hidden="true">×</span></button></div>
+        <div class="batch-launch"><button type="button" class="secondary-button" id="openBatchMove">Selecionar e mover veículos</button><span class="tool-hint">Transfira vários carros para outra garagem.</span></div>
         <section id="garageRoom" class="garage-room" aria-label="Mapa de vagas da garagem" hidden></section>
         <div class="vehicle-grid" id="vehicleGrid"></div>
         <div class="empty-state" id="emptyState" hidden>
@@ -224,6 +233,38 @@
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span></div>
     <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
   </section>
+  <datalist id="toolCatalogOptions"></datalist>
+  <dialog id="wishlistDialog" class="collection-dialog" aria-labelledby="wishlistTitle">
+    <div class="dialog-form"><div class="dialog-heading"><div><p class="eyebrow">PRÓXIMAS AQUISIÇÕES</p><h2 id="wishlistTitle">Lista de desejos</h2></div><button type="button" class="icon-button" data-close="wishlistDialog" aria-label="Fechar lista de desejos">×</button></div>
+      <p class="tool-hint">Planeje uma unidade de cada modelo. Os carros que já estão na coleção não entram no valor que falta comprar.</p>
+      <form id="wishlistForm" class="tool-model-picker"><label>Modelo<input id="wishlistModel" list="toolCatalogOptions" placeholder="Busque pelo modelo ou pela marca" autocomplete="off" required></label><button class="primary-button" type="submit">Adicionar à lista</button></form>
+      <div class="tool-summary" aria-live="polite"><span>Falta comprar<strong id="wishlistBudget">GTA$ 0</strong></span><p id="wishlistBudgetNote"></p></div>
+      <div id="wishlistItems" class="wishlist-items"></div>
+    </div>
+  </dialog>
+  <dialog id="compareDialog" class="collection-dialog" aria-labelledby="compareTitle">
+    <div class="dialog-form"><div class="dialog-heading"><div><p class="eyebrow">ESCOLHA SEU PRÓXIMO CARRO</p><h2 id="compareTitle">Comparar modelos</h2></div><button type="button" class="icon-button" data-close="compareDialog" aria-label="Fechar comparação">×</button></div>
+      <div class="comparison-pickers"><label>Primeiro modelo<input id="compareModelA" list="toolCatalogOptions" placeholder="Modelo ou marca" autocomplete="off"></label><label>Segundo modelo<input id="compareModelB" list="toolCatalogOptions" placeholder="Modelo ou marca" autocomplete="off"></label></div>
+      <p id="compareHint" class="tool-hint" role="status">Selecione dois modelos diferentes do catálogo.</p><div id="comparisonContent"></div>
+      <p class="tool-hint">Preços normais do GTA Base, sem promoções ou modificações. Velocidade testada com melhorias completas, sem HSW. Pontuações de desempenho vão de 0 a 100.</p>
+    </div>
+  </dialog>
+  <dialog id="batchMoveDialog" class="collection-dialog" aria-labelledby="batchMoveTitle">
+    <form id="batchMoveForm" class="dialog-form"><div class="dialog-heading"><div><p class="eyebrow">REORGANIZE SUA COLEÇÃO</p><h2 id="batchMoveTitle">Mover veículos</h2></div><button type="button" class="icon-button" data-close="batchMoveDialog" aria-label="Fechar transferência">×</button></div>
+      <div class="comparison-pickers"><label>Origem<select id="batchSource"></select></label><label>Buscar veículo<input id="batchSearch" type="search" placeholder="Nome, marca ou placa"></label></div>
+      <div class="batch-selection-heading"><label><input id="batchSelectAll" type="checkbox"> Selecionar resultados</label><span id="batchSelectedCount" role="status">0 selecionados</span><button type="button" class="text-button" id="clearBatchSelection">Limpar seleção</button></div>
+      <p class="tool-hint">A seleção é mantida ao mudar a busca ou a origem. Use “Limpar seleção” para recomeçar.</p>
+      <div id="batchVehicles" class="batch-vehicles"></div>
+      <label>Destino<select id="batchDestination" required><option value="">Escolha a garagem</option></select></label><p id="batchMoveNote" class="tool-hint" role="status">Selecione os veículos e a garagem de destino.</p>
+      <button type="submit" id="confirmBatchMove" class="primary-button" disabled>Confirmar transferência</button>
+    </form>
+  </dialog>
+  <dialog id="backupDialog" class="collection-dialog" aria-labelledby="backupTitle">
+    <div class="dialog-form"><div class="dialog-heading"><div><p class="eyebrow">SUA COLEÇÃO COM VOCÊ</p><h2 id="backupTitle">Backup e restauração</h2></div><button type="button" class="icon-button" data-close="backupDialog" aria-label="Fechar backup">×</button></div>
+      <section class="backup-panel"><h3>Salvar uma cópia</h3><p class="tool-hint">Baixe garagens, tags, veículos, posições, favoritos, personalizações e lista de desejos em um arquivo JSON.</p><button type="button" class="primary-button" id="exportBackup">Baixar backup</button></section>
+      <section class="backup-panel"><h3>Restaurar uma cópia</h3><p class="tool-hint">A restauração substitui a coleção deste navegador. Baixe um backup atual antes de continuar. Escolha um JSON de até 10 MB; o arquivo é lido apenas no seu dispositivo.</p><label>Arquivo de backup<input id="backupFile" type="file" accept=".json,application/json"></label><p id="backupPreview" class="tool-hint" role="status">Escolha um arquivo para conferir os dados antes de restaurar.</p><label class="backup-confirm"><input id="confirmBackupReplace" type="checkbox" disabled> Entendo que os dados atuais serão substituídos.</label><button type="button" id="restoreBackup" class="primary-button" disabled>Restaurar coleção</button></section>
+    </div>
+  </dialog>
   <script src="assets/vehicle-catalog.js"></script>
   <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>
@@ -239,6 +280,7 @@
   <script src="garage-view.js"></script>
   <script src="vehicle-details.js"></script>
   <script src="property-explorer.js"></script>
+  <script src="collection-tools.js"></script>
 
 </body>
 </html>

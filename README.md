@@ -32,6 +32,20 @@ Cadastros já salvos são preservados nas atualizações.
 
 ## Recursos
 
+- **Transferência em lote:** selecione carros de uma ou várias garagens e confirme
+  o destino. Vagas e restrições de propriedades são conferidas antes de salvar;
+  cada carro mantém favoritos, rodas, pintura e observações.
+- **Lista de desejos:** escolha modelos do catálogo e acompanhe quanto falta
+  comprar. Modelos já presentes na coleção não entram no orçamento. Use
+  **Cadastrar compra** para preencher o cadastro de uma nova aquisição.
+- **Filtros por tema:** encontre garagens pelas tags JDM, drift, clássicos ou
+  qualquer tema criado por você. O filtro também oferece **Sem tema**.
+- **Comparar carros:** escolha dois modelos para ver preço, velocidade testada,
+  aceleração, frenagem e dirigibilidade lado a lado. Dados ausentes são indicados.
+- **Backup e restauração:** baixe sua coleção em JSON e restaure em outro
+  navegador. Inclui garagens, temas, veículos, posições, favoritos, personalizações
+  e desejos. A importação valida o arquivo e exige confirmação antes de substituir
+  a coleção atual; tudo é processado localmente, sem envio de dados.
 - Cadastro e edição de veículos, favoritos e busca por modelo, marca e categoria.
 - Catálogo de 618 modelos/variantes e 54 marcas; veja [CATALOGO.md](CATALOGO.md).
 - Imagem automática do GTA Base nos cartões, cadastro e ficha. As imagens ficam
@@ -88,6 +102,21 @@ Cadastre garagens pelos sites inspirados no jogo. Cada endereço tem sua própri
 fachada; ao escolher um imóvel, o formulário já recebe o local e a capacidade.
 
 ![Eyefind com o catálogo de oficinas do Maze Bank Foreclosures](docs/images/eyefind.jpg)
+
+### Planeje a coleção e compare antes de comprar
+
+A barra de ferramentas abre a lista de desejos e a comparação dos modelos.
+Veja também as telas de [lista de desejos](docs/images/desejos.jpg) e
+[transferência em lote](docs/images/transferencia.jpg).
+
+![Comparação de preço e desempenho de dois carros do catálogo](docs/images/comparacao.jpg)
+
+### Leve sua coleção para outro navegador
+
+Em **Backup e restauração**, baixe o JSON da coleção ou escolha um arquivo
+para conferir o resumo. A restauração substitui os dados atuais após confirmação.
+
+![Backup com prévia da coleção antes de restaurar os dados](docs/images/backup.jpg)
 
 ## Fontes das imagens
 

@@ -12,7 +12,8 @@ $sitePath = (Resolve-Path -LiteralPath $SiteRoot).Path
 $baseUri = ([Uri]($sitePath + '\')).AbsoluteUri
 $html = [IO.File]::ReadAllText((Join-Path $sitePath 'index.html')).Replace('<head>', '<head><base href="' + $baseUri + '"><script>window.projectRuntimeErrors=[];addEventListener("error",event=>{if(event.message)projectRuntimeErrors.push(event.message)});addEventListener("unhandledrejection",event=>projectRuntimeErrors.push(String(event.reason)));</script>')
 $testScript = ([Uri](Join-Path $PSScriptRoot 'app-check.js')).AbsoluteUri
-$html = $html.Replace('</body>', '<script src="' + $testScript + '"></script></body>')
+$collectionScript = ([Uri](Join-Path $PSScriptRoot 'collection-check.js')).AbsoluteUri
+$html = $html.Replace('</body>', '<script src="' + $collectionScript + '"></script><script src="' + $testScript + '"></script></body>')
 $runDirectory = Join-Path $env:TEMP ('lsg-check-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $runDirectory | Out-Null
 $testPage = Join-Path $runDirectory 'check.html'
@@ -53,7 +54,7 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
     $port = 47841 + $viewportIndex
     $viewportIndex++
     $profilePath = Join-Path $runDirectory "profile-$tag"
-    $arguments = @('--headless=new', '--disable-gpu', '--no-first-run', "--user-data-dir=$profilePath", "--remote-debugging-port=$port", "--window-size=$viewport", ('"' + ([Uri]$testPage).AbsoluteUri + '"'))
+    $arguments = @('--headless=new', '--disable-gpu', '--no-first-run', "--user-data-dir=$profilePath", "--remote-debugging-port=$port", "--window-size=$viewport", 'about:blank')
     $process = Start-Process -FilePath $browserPath -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardError (Join-Path $runDirectory "$tag.log")
     $socket = New-Object Net.WebSockets.ClientWebSocket
     try {
@@ -64,9 +65,14 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         }
         if (!$page.webSocketDebuggerUrl) { throw 'Browser debugging endpoint did not start.' }
         $socket.ConnectAsync([Uri]$page.webSocketDebuggerUrl, [Threading.CancellationToken]::None).GetAwaiter().GetResult() | Out-Null
+        $dimensions = $viewport.Split(',')
+        Send-Cdp $socket 'Emulation.setDeviceMetricsOverride' @{ width = [int]$dimensions[0]; height = [int]$dimensions[1]; deviceScaleFactor = 1; mobile = $false } | Out-Null
+        Send-Cdp $socket 'Page.navigate' @{ url = ([Uri]$testPage).AbsoluteUri } | Out-Null
         $expression = "new Promise(resolve => { const check = () => { const result = document.querySelector('#app-check-result'); if(result) { clearInterval(timer); resolve(result.textContent); } }; const timer = setInterval(check, 50); check(); setTimeout(() => { clearInterval(timer); resolve('TIMEOUT'); }, 25000); })"
         $result = Send-Cdp $socket 'Runtime.evaluate' @{ expression = $expression; awaitPromise = $true; returnByValue = $true }
         $value = $result.result.value
+        $actualViewport = Send-Cdp $socket 'Runtime.evaluate' @{ expression = 'innerWidth'; returnByValue = $true }
+        if ($actualViewport.result.value -ne [int]$dimensions[0]) { throw "Unexpected viewport width: $($actualViewport.result.value)" }
         Write-Output "$tag $value"
         $screenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "$tag.png"), [Convert]::FromBase64String($screenshot.data))
@@ -120,6 +126,22 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         $dealerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-properties-$tag.png"), [Convert]::FromBase64String($dealerScreenshot.data))
         Save-DocumentationScreenshot 'eyefind'
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#eyefindDialog').close(); data.wishlist=['adder','sentinel5']; document.querySelector('#wishlistModel').value=''; document.querySelector('#openWishlist').click(); dismissToast();" } | Out-Null
+        Save-DocumentationScreenshot 'desejos'
+        $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "wishlist-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#wishlistDialog').close(); document.querySelector('#compareModelA').value='Zentorno'; document.querySelector('#compareModelB').value='Adder'; document.querySelector('#openCompare').click();" } | Out-Null
+        Save-DocumentationScreenshot 'comparacao'
+        $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "comparison-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#compareDialog').close(); openBatchMove(); filteredBatchVehicles().slice(0,2).forEach(vehicle=>batchSelection.add(vehicle.id)); renderBatchVehicles(); document.querySelector('#batchDestination').value='g2'; updateBatchSummary();" } | Out-Null
+        Save-DocumentationScreenshot 'transferencia'
+        $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "batch-move-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#batchMoveDialog').close(); document.querySelector('#openBackup').click(); const previewFile=new File([JSON.stringify(makeCollectionBackup())],'minha-colecao.json',{type:'application/json'}); const previewTransfer=new DataTransfer(); previewTransfer.items.add(previewFile); document.querySelector('#backupFile').files=previewTransfer.files; previewBackupFile(previewFile);"; awaitPromise = $true } | Out-Null
+        Save-DocumentationScreenshot 'backup'
+        $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "backup-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

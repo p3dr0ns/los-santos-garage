@@ -38,7 +38,7 @@
       VEHICLE_REFERENCE.zentorno.price = null;
       check('preço nulo não vira zero', getVehicleValuation([{catalogId:'zentorno'}]).missing===1);
     } finally { VEHICLE_REFERENCE.zentorno.price = originalPrice; }
-    check('fotos pessoais e editor visual removidos', !document.querySelector('input[type="file"]') && !$('#photoStudioDialog') && !$('#configDialog') && !$('#enhanceDialog') && !$('#detailsPhotos') && !$('#detailsThumbnails'));
+    check('fotos pessoais e editor visual removidos', !document.querySelector('#vehicleDialog input[type="file"]') && !$('#photoStudioDialog') && !$('#configDialog') && !$('#enhanceDialog') && !$('#detailsPhotos') && !$('#detailsThumbnails') && $$('input[type="file"]').every(input=>input.id==='backupFile'));
     const image = getVehicleImage(data.vehicles[0]);
     data.vehicles[0].image = 'https://example.invalid/legacy-photo.jpg';
     data.vehicles[0].configuration2d = { color: '#ff0000', parts: { Hood: 'Legacy part' } };
@@ -352,6 +352,7 @@
       const favorite=data.vehicles[0].favorite; $(`[data-favorite-id="${data.vehicles[0].id}"]`).click();
       check('falha ao favoritar restaura o estado anterior', data.vehicles[0].favorite===favorite);
     } finally { Storage.prototype.setItem=originalSetItem; }
+    await checkCollectionTools(check);
     check('não existem IDs duplicados', new Set($$('[id]').map(element=>element.id)).size===$$('[id]').length);
     check('referências internas de SVG existem', $$('use[href^="#"]').every(element=>document.getElementById(element.getAttribute('href').slice(1))));
     check('rótulos e controles acessíveis têm destinos válidos', $$('[aria-labelledby],[aria-describedby],[aria-controls]').every(element=>['aria-labelledby','aria-describedby','aria-controls'].every(attribute=>!(element.getAttribute(attribute)||'').split(/\s+/).filter(Boolean).some(id=>!document.getElementById(id)))));

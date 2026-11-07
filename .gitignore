@@ -1,0 +1,18 @@
+# Arquivos gerados pelo assistente de captura
+capture/*.exe
+capture/*.pdb
+capture/bin/
+capture/obj/
+
+# Configurações e credenciais locais
+.env
+.env.*
+!.env.example
+*.user
+*.suo
+
+# Saídas temporárias e logs
+*.log
+*.tmp
+Thumbs.db
+.DS_Store

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0d14">
+  <title>Minha Garagem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="ui-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="ui-car" viewBox="0 0 24 24"><path d="m5 8 2-4h10l2 4M3 13l1-4h16l1 4v6h-3v-2H6v2H3v-6Z"/><path d="M3 13h18M7 10h1m8 0h1"/></symbol>
+    <symbol id="ui-motorcycle" viewBox="0 0 24 24"><circle cx="5" cy="16" r="3.5"/><circle cx="19" cy="16" r="3.5"/><path d="m5 16 5-7 5 7H5m4-7H6m13 7-4-11h-3m3 0h3"/></symbol>
+    <symbol id="ui-garage" viewBox="0 0 24 24"><path d="m3 9 9-6 9 6v12H3V9Z"/><path d="M7 21V10h10v11M7 14h10M7 18h10"/></symbol>
+    <symbol id="ui-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></symbol>
+    <symbol id="ui-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="ui-parking" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></symbol>
+    <symbol id="ui-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="ui-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  </defs></svg>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Minha Garagem">
+        <span class="brand-mark">MG</span>
+        <span class="brand-name">Minha Garagem<small>GTA ONLINE</small></span>
+      </a>
+      <p class="nav-caption">SEU ESPAÇO</p>
+      <nav class="nav" aria-label="Navegação principal">
+        <button class="nav-item active" data-filter="all" aria-label="Visão geral"><svg class="ui-icon"><use href="#ui-dashboard"/></svg><span class="nav-label">Visão geral</span><span class="nav-active-dot"></span></button>
+        <button class="nav-item" data-filter="vehicles" aria-label="Todos os veículos"><svg class="ui-icon"><use href="#ui-car"/></svg><span class="nav-label">Veículos</span><span class="nav-count" id="navVehicleCount">0</span></button>
+        <button class="nav-item" data-filter="garages" aria-label="Garagens"><svg class="ui-icon"><use href="#ui-garage"/></svg><span class="nav-label">Garagens</span><span class="nav-count" id="navGarageCount">0</span></button>
+        <button class="nav-item" data-filter="favorites" aria-label="Favoritos"><svg class="ui-icon"><use href="#ui-star"/></svg><span class="nav-label">Favoritos</span><span class="nav-count" id="navFavoriteCount">0</span></button>
+      </nav>
+
+      <div class="sidebar-card">
+        <span class="eyebrow">COLEÇÃO</span>
+        <strong id="sideVehicleCount">0 veículos</strong>
+        <span id="sideGarageCount">0 garagens</span>
+        <span id="sideFreeCount">0 vagas livres</span>
+        <div class="sidebar-storage-track"><span id="sidebarStorageFill"></span></div>
+      </div>
+      <p class="sidebar-footnote"><span></span> Salvo neste navegador</p>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow page-breadcrumb">MINHA GARAGEM <span>/</span> GTA ONLINE</p>
+          <h1 id="pageTitle">Visão geral</h1>
+          <p class="page-description" id="pageDescription">Sua coleção, organizada do seu jeito.</p>
+        </div>
+        <div class="top-actions">
+          <label class="search">
+            <svg class="ui-icon"><use href="#ui-search"/></svg>
+            <input id="searchInput" type="search" placeholder="Buscar na coleção..." aria-label="Buscar veículos na coleção">
+          </label>
+          <button class="primary-button" id="addVehicleButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Novo veículo</button>
+        </div>
+      </header>
+
+      <section class="stats" aria-label="Resumo">
+        <article class="stat-card">
+          <span class="stat-icon blue"><svg class="ui-icon"><use href="#ui-car"/></svg></span>
+          <div><span class="stat-label">Sua coleção</span><strong id="vehicleCount">0</strong><span>veículos cadastrados</span></div>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon violet"><svg class="ui-icon"><use href="#ui-garage"/></svg></span>
+          <div><span class="stat-label">Suas propriedades</span><strong id="garageCount">0</strong><span>garagens na coleção</span></div>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon cyan"><svg class="ui-icon"><use href="#ui-parking"/></svg></span>
+          <div><span class="stat-label">Espaço disponível</span><strong id="freeCount">0</strong><span>vagas para os próximos</span></div>
+        </article>
+      </section>
+
+      <section class="garage-section" id="garageSection">
+        <div class="section-heading">
+          <div><p class="eyebrow">CADA CARRO NO SEU LUGAR</p><h2>Suas garagens <span class="section-count" id="garageSectionCount">0</span></h2></div>
+          <button class="text-button" id="addGarageButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Adicionar garagem</button>
+        </div>
+        <div class="garage-list" id="garageList"></div>
+      </section>
+
+      <section class="vehicle-section" id="vehicleSection">
+        <div class="section-heading vehicle-heading">
+          <div>
+            <p class="eyebrow" id="vehicleEyebrow">VEÍCULOS</p>
+            <h2><span id="vehicleTitle">Todos os veículos</span> <span class="section-count" id="vehicleResultCount">0</span></h2>
+          </div>
+          <select id="categoryFilter" aria-label="Filtrar por categoria">
+            <option value="all">Todas as categorias</option>
+          </select>
+        </div>
+        <div id="activeGarageFilter" class="active-garage-filter" hidden><span id="activeGarageName"></span><button type="button" id="clearGarageFilter">Limpar filtro <span aria-hidden="true">×</span></button></div>
+        <div class="vehicle-grid" id="vehicleGrid"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <svg class="ui-icon"><use href="#ui-car"/></svg>
+          <h3 id="emptyTitle">Nenhum veículo encontrado</h3>
+          <p id="emptyDescription">Cadastre um carro ou altere os filtros da busca.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="vehicleDialog" aria-labelledby="vehicleDialogTitle">
+    <form method="dialog" id="vehicleForm" class="dialog-form vehicle-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">MAIS UM PARA A COLEÇÃO</p><h2 id="vehicleDialogTitle">Adicionar veículo</h2><p class="dialog-intro">Escolha o carro e encontre um lugar para ele.</p></div>
+        <button type="button" class="icon-button" data-close="vehicleDialog" aria-label="Fechar">×</button>
+      </div>
+      <input type="hidden" id="vehicleId">
+      <div class="vehicle-draft-preview">
+        <div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div>
+        <img id="vehiclePreviewImage" alt="" hidden>
+        <div class="vehicle-draft-caption"><span id="vehiclePreviewCategory">SUA PRÓXIMA AQUISIÇÃO</span><strong id="vehiclePreviewName">Qual é o próximo carro?</strong></div>
+        <span class="vehicle-image-status" id="vehicleImageStatus">Prévia do veículo</span>
+      </div>
+      <div class="form-row vehicle-model-fields">
+        <div class="model-search-field"><label for="vehicleName">Modelo do veículo</label><input id="vehicleName" required maxlength="100" placeholder="Busque: Sentinel, Sultan, Bati…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vehicleModelSuggestions" aria-describedby="vehicleModelHint"><div id="vehicleModelSuggestions" class="model-suggestions" role="listbox" aria-label="Modelos do catálogo" hidden></div><small id="vehicleModelHint">Busque um carro ou uma moto para preencher os dados.</small></div>
+        <label>Categoria<input id="vehicleCategory" required maxlength="50" list="vehicleCategories" placeholder="Ex.: Super" autocomplete="off"><datalist id="vehicleCategories"></datalist></label>
+      </div>
+      <label>Marca<select id="vehicleBrand" aria-describedby="vehicleBrandHint"><option value="">Selecione uma marca</option></select><small class="catalog-field-hint" id="vehicleBrandHint">Preenchida ao escolher um modelo. Você também pode selecionar uma marca para filtrar a busca.</small></label>
+      <fieldset class="property-fieldset vehicle-garage-fieldset"><legend>Onde vai ficar? <span id="vehicleGarageSummary"></span></legend><div id="vehicleGaragePicker" class="vehicle-garage-picker"></div></fieldset>
+      <select id="vehicleGarage" hidden aria-label="Garagem" required></select>
+      <div class="vehicle-extras">
+        <details class="vehicle-image-details" id="vehicleCustomizationDetails"><summary>Personalizações e observações <span>opcional</span></summary>
+          <div class="form-row"><label>Cor / pintura<input id="vehiclePaint" maxlength="100" placeholder="Ex.: Azul metálico e preto"></label><label>Placa<input id="vehiclePlate" maxlength="16" placeholder="Sua placa"></label></div>
+          <fieldset class="wheel-fields"><legend>Rodas <span>Catálogo do GTA</span></legend>
+            <div class="form-row"><label>Tipo da roda<select id="vehicleWheelType" aria-describedby="vehicleWheelHint"></select></label><label><span id="vehicleWheelModelLabel">Modelo da roda</span><select id="vehicleWheels" aria-describedby="vehicleWheelHint" disabled><option value="">Escolha o tipo primeiro</option></select></label></div>
+            <label id="vehicleRearWheelField" hidden>Roda traseira<select id="vehicleRearWheel"><option value="">Não informada</option></select></label>
+            <p id="vehicleWheelHint" class="catalog-field-hint">Selecione o tipo para ver os modelos disponíveis.</p>
+          </fieldset>
+          <label>Observações<textarea id="vehicleNotes" rows="3" maxlength="2000" placeholder="Aerofólio, motor, cor das rodas, detalhes do projeto..."></textarea></label>
+        </details>
+        <details class="vehicle-image-details" id="vehicleImageDetails"><summary>Imagem de referência <span>opcional</span></summary><label for="vehicleImage">URL da imagem<input id="vehicleImage" type="url" placeholder="https://..." aria-describedby="vehicleImageHelp"></label><p id="vehicleImageHelp">Usada quando o carro ainda não tem um ensaio. Depois de salvar o veículo, adicione suas fotos e escolha a capa na ficha.</p></details>
+        <label class="favorite-toggle"><input id="vehicleFavorite" type="checkbox"><span class="favorite-toggle-star" aria-hidden="true">★</span><span>Marcar como favorito<small>Encontre rápido na sua coleção</small></span></label>
+      </div>
+      <div class="vehicle-dialog-footer">
+        <button type="button" class="danger-button" id="deleteVehicleButton" hidden>Excluir</button>
+        <div class="garage-dialog-actions">
+        <button type="button" class="secondary-button" data-close="vehicleDialog">Cancelar</button>
+        <button class="primary-button" id="saveVehicleButton" value="default">＋ Adicionar veículo</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="garageDialog" aria-labelledby="garageDialogTitle" aria-describedby="garageDialogIntro">
+    <form method="dialog" id="garageForm" class="dialog-form garage-form">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">SUA COLEÇÃO, NO LUGAR CERTO</p><h2 id="garageDialogTitle">Adicionar garagem</h2><p class="dialog-intro" id="garageDialogIntro">Escolha a propriedade. As vagas já vêm configuradas.</p></div>
+        <button type="button" class="icon-button" data-close="garageDialog" aria-label="Fechar">×</button>
+      </div>
+      <fieldset class="property-fieldset">
+        <legend>Tipo de propriedade <span>Ícones do mapa do GTA</span></legend>
+        <div class="property-picker" id="propertyPicker"></div>
+      </fieldset>
+      <select id="garageType" hidden aria-label="Tipo de propriedade"><option value="auto">Automático pelo nome</option></select>
+      <section class="property-preview" aria-label="Resumo da garagem">
+        <div class="property-preview-top">
+          <span class="property-preview-icon" id="garagePreviewIcon"></span>
+          <div class="property-preview-name"><span class="eyebrow">SUA NOVA GARAGEM</span><strong id="garagePreviewName">Garagem</strong></div>
+          <div class="capacity-total"><strong id="garageCapacityTotal">10</strong><span id="garageCapacityUnit">vagas</span></div>
+        </div>
+        <div class="capacity-config" id="garageCapacityConfig" hidden><span>Configuração da garagem</span><div id="garageCapacityOptions" class="capacity-options" role="group" aria-label="Capacidade da garagem"></div></div>
+        <select id="garageCapacity" hidden aria-label="Vagas da propriedade"><option value="10">10 vagas</option></select>
+        <p id="garageCapacityNote" class="capacity-note"></p>
+      </section>
+      <label class="garage-name-label" for="garageName">Nome da garagem <span>opcional</span><input id="garageName" maxlength="80" placeholder="Ex.: Minha agência de Rockford Hills" autocomplete="off"><small>Deixe em branco para usar o nome da propriedade.</small></label>
+      <div class="garage-dialog-footer">
+        <span>Adicione seus veículos depois.</span>
+        <div class="garage-dialog-actions">
+        <button type="button" class="secondary-button" data-close="garageDialog">Cancelar</button>
+        <button class="primary-button" value="default"><span aria-hidden="true">＋</span> Criar garagem</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="vehicleDetailsDialog" class="collection-dialog" aria-labelledby="detailsName">
+    <div class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h2 id="detailsName"></h2></div><button type="button" class="icon-button" data-close="vehicleDetailsDialog" aria-label="Fechar ficha">×</button></div>
+    <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span><button type="button" id="detailsPrevious" class="photo-nav previous" aria-label="Foto anterior">‹</button><button type="button" id="detailsNext" class="photo-nav next" aria-label="Próxima foto">›</button></div>
+    <div id="detailsThumbnails" class="detail-thumbnails" aria-label="Fotos do veículo"></div>
+    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><dl class="vehicle-specs" id="detailsSpecs"></dl><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
+  </dialog>
+  <dialog id="photoStudioDialog" class="collection-dialog" aria-labelledby="studioTitle">
+    <div class="detail-heading"><div><p class="eyebrow">SEU CARRO. SEU PROJETO.</p><h2 id="studioTitle">Ensaio do veículo</h2><p class="dialog-intro">Quatro vistas e duas cinematográficas. Escolha a capa da sua coleção.</p></div><button type="button" class="icon-button" id="closeStudio" aria-label="Fechar ensaio">×</button></div>
+    <div class="studio-body"><div class="capture-connect"><div><strong>Capturar no GTA</strong><p id="captureStatus" role="status">Conecte o assistente do Windows para usar a câmera calibrada.</p></div><button type="button" class="secondary-button" id="connectCapture">Conectar assistente</button></div>
+      <details class="capture-help"><summary>Configurar captura automática</summary><p>Execute <strong>Iniciar captura.cmd</strong> na pasta do projeto e clique em “Abrir organizador” no assistente. Calibre as seis posições uma vez, na mesma vaga e câmera inicial. O assistente repete os movimentos do perfil; o enquadramento precisa ser conferido no jogo.</p></details>
+      <div class="studio-toolbar"><span id="studioCount">0 de 6 fotos</span><button type="button" class="primary-button" id="captureSession">Capturar ensaio · 6 fotos</button><button type="button" class="danger-button" id="cancelCapture" hidden>Parar captura</button></div>
+      <p class="studio-status" id="studioStatus" role="status">Você também pode enviar fotos em cada posição.</p>
+      <div class="studio-grid" id="studioGrid"></div>
+      <input type="file" id="studioFile" accept="image/jpeg,image/png,image/webp" hidden>
+      <input type="file" id="studioImport" accept="application/json,.json" hidden>
+      <p class="studio-storage-note">Fotos salvas neste navegador. Exporte o ensaio para manter uma cópia.</p>
+      <div class="garage-dialog-footer"><div class="studio-backup-actions"><button type="button" class="secondary-button" id="exportPhotos">Exportar</button><button type="button" class="secondary-button" id="importPhotos">Importar</button></div><div class="garage-dialog-actions"><button type="button" class="secondary-button" id="discardPhotos">Cancelar</button><button type="button" class="primary-button" id="savePhotos">Salvar ensaio</button></div></div>
+    </div>
+  </dialog>
+  <script src="assets/vehicle-catalog.js"></script>
+  <script src="assets/wheel-catalog.js"></script>
+  <script src="app.js"></script>
+  <script src="catalog-ui.js"></script>
+  <script src="wheels-ui.js"></script>
+  <script src="vehicle-details.js"></script>
+</body>
+</html>

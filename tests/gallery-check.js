@@ -1,0 +1,108 @@
+// Executado somente pelo run-checks.ps1, em um perfil descartável do Chrome.
+(async () => {
+  const results = [];
+  const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
+  const originalFetch = window.fetch;
+  let mode = "complete", photoBase64 = "", requests = [];
+  window.fetch = async (url, options = {}) => {
+    if (!String(url).startsWith(CAPTURE_API)) return originalFetch(url, options);
+    const path = String(url).slice(CAPTURE_API.length); requests.push(path);
+    const content = path === "/health" ? { calibrated: true, version: 1 }
+      : path === "/status" ? { state: mode, progress: mode === "complete" ? 6 : 1 }
+      : path === "/photos" ? { photos: PHOTO_SHOTS.map(shot => ({ shot: shot.id, data: photoBase64 })) }
+      : { ok: true };
+    return new Response(JSON.stringify(content), { status: 200, headers: { "Content-Type": "application/json" } });
+  };
+  try {
+    await photoDatabase;
+    check("catálogo local completo para a versão", vehicleModels.length === 617 && VEHICLE_CATALOG.brands.length === 54);
+    check("catálogo sem aeronaves ou barcos", vehicleModels.every(model => ['car','motorcycle'].includes(model.type)) && !vehicleModels.some(model => ['hydra','lazer','luxor','dinghy','buzzard','bmx'].includes(model.id)));
+    const sentinelNames = searchVehicleCatalog('sentinel').map(model => model.name);
+    check("variantes Sentinel", ['Sentinel','Sentinel XS','Sentinel XS4','Sentinel Classic','Sentinel Classic Widebody','Sentinel GTS','Sentinel XS (Drift)'].every(name => sentinelNames.includes(name)));
+    check("busca sem acento e aliases", searchVehicleCatalog('ubermacht sentinel').some(model => model.id === 'sentinel5') && searchVehicleCatalog('sentinel5').some(model => model.name === 'Sentinel GTS'));
+    check("nomes do catálogo são únicos por marca e categoria", new Set(vehicleModels.map(model => `${model.name}|${model.brand}|${model.category}`)).size === vehicleModels.length);
+    check("catálogo de rodas local e categorias", WHEEL_CATALOG.groups.length===14 && ['sport','tuner','street','track','bennys-original','bennys-bespoke','bike','bike-rear'].every(id=>wheelGroup(id)?.wheels.length>0));
+    openVehicleDialog(); $('#vehicleName').value='sentinel'; $('#vehicleName').dispatchEvent(new Event('input'));
+    check("autocomplete mostra família", !$('#vehicleModelSuggestions').hidden && catalogMatches.some(model => model.name==='Sentinel GTS') && catalogMatches.some(model => model.name==='Sentinel XS'));
+    const gtsIndex=catalogMatches.findIndex(model=>model.id==='sentinel5'); $(`[data-catalog-index="${gtsIndex}"]`).click();
+    check("seleção preenche modelo marca e categoria", $('#vehicleName').value==='Sentinel GTS' && $('#vehicleBrand').value==='Übermacht' && $('#vehicleCategory').value==='Esportivo' && selectedCatalogModelId==='sentinel5');
+    $('#vehicleBrand').value='Nagasaki'; $('#vehicleBrand').dispatchEvent(new Event('change')); $('#vehicleName').value='shinobi'; $('#vehicleName').dispatchEvent(new Event('input'));
+    $('#vehicleName').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true})); $('#vehicleName').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+    check("moto selecionada pelo teclado", $('#vehicleName').value==='Shinobi' && $('#vehicleBrand').value==='Nagasaki' && $('#vehicleCategory').value==='Motocicleta' && $('#vehicleModelSuggestions').hidden);
+    $('#vehicleBrand').value='Pegassi'; $('#vehicleBrand').dispatchEvent(new Event('change')); $('#vehicleName').value=''; $('#vehicleName').dispatchEvent(new Event('input'));
+    check("marca filtra sugestões", catalogMatches.length>0 && catalogMatches.every(model=>model.brand==='Pegassi'));
+    $('#vehicleBrand').value=''; $('#vehicleBrand').dispatchEvent(new Event('change')); $('#vehicleName').value='sentinel'; $('#vehicleName').dispatchEvent(new Event('input'));
+    $('#vehicleName').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true})); check("Escape fecha só as sugestões", $('#vehicleModelSuggestions').hidden && $('#vehicleDialog').open);
+    $('#vehicleDialog').close();
+    const previousBrand=data.vehicles[0].brand; data.vehicles[0].brand='Minha marca antiga'; openVehicleDialog('v1'); check("marca antiga preservada na edição", $('#vehicleBrand').value==='Minha marca antiga'); data.vehicles[0].brand=previousBrand; $('#vehicleDialog').close();
+    openVehicleDialog(); check("roda aguarda escolha do tipo", $('#vehicleWheels').disabled && !$('#vehicleWheels').required);
+    $('#vehicleWheelType').value='sport'; $('#vehicleWheelType').dispatchEvent(new Event('change')); $('#vehicleWheels').value='Inferno';
+    check("tipo carrega modelos de roda", !$('#vehicleWheels').disabled && $('#vehicleWheels').required && $('#vehicleWheels').value==='Inferno' && readVehicleWheels().wheels==='Esportivas · Inferno');
+    $('#vehicleWheelType').value='track'; $('#vehicleWheelType').dispatchEvent(new Event('change'));
+    check("trocar tipo limpa modelo incompatível", $('#vehicleWheels').value==='' && [...$('#vehicleWheels').options].some(option=>option.value));
+    $('#vehicleWheelType').value='bike'; $('#vehicleWheelType').dispatchEvent(new Event('change')); $('#vehicleWheels').value=wheelGroup('bike').wheels[0].name; $('#vehicleRearWheel').value=wheelGroup('bike-rear').wheels[1].name;
+    check("motos têm rodas dianteira e traseira", !$('#vehicleRearWheelField').hidden && readVehicleWheels().wheelRearModel===wheelGroup('bike-rear').wheels[1].name && readVehicleWheels().wheels.includes('Dianteira:'));
+    $('#vehicleWheelType').value='stock'; $('#vehicleWheelType').dispatchEvent(new Event('change'));
+    check("rodas originais e limpeza da traseira", $('#vehicleRearWheelField').hidden && readVehicleWheels().wheelRearModel===null && readVehicleWheels().wheels==='Originais do veículo');
+    setVehicleWheels({wheels:'Esportivas pretas'}); check("descrição antiga preservada", $('#vehicleWheelType').value==='legacy' && readVehicleWheels().wheels==='Esportivas pretas');
+    setVehicleWheels({wheelType:'street',wheelModel:'Modelo salvo antigo',wheels:'Rua / Street · Modelo salvo antigo'}); check("modelo antigo preservado", $('#vehicleWheels').value==='Modelo salvo antigo');
+    $('#vehicleDialog').close();
+    check("cadastros anteriores preservados", data.vehicles.length === 6 && data.garages.length === 3);
+    $('[data-filter="vehicles"]').click();
+    check("aba veículos somente carros", $('#garageSection').hidden && $('.stats').hidden);
+    $('.vehicle-card[data-vehicle-id="v1"]').click();
+    check("cartão abre ficha, sem edição", $('#vehicleDetailsDialog').open && !$('#vehicleDialog').open && $('#detailsName').textContent === 'Zentorno');
+    check("marca do catálogo", $('#detailsBrand').textContent === 'Pegassi');
+    $('#detailsEdit').click();
+    $('#vehicleBrand').value = 'Pegassi'; $('#vehiclePaint').value = 'Azul metálico'; $('#vehicleWheelType').value='sport'; $('#vehicleWheelType').dispatchEvent(new Event('change')); $('#vehicleWheels').value='Inferno'; $('#vehiclePlate').value = 'GARAGEM'; $('#vehicleNotes').value = '<script>texto</script>\nMeu projeto';
+    $('#vehicleForm').requestSubmit();
+    check("personalizações salvas", data.vehicles[0].paint === 'Azul metálico' && data.vehicles[0].wheelType==='sport' && data.vehicles[0].wheelModel==='Inferno' && data.vehicles[0].wheels === 'Esportivas · Inferno' && data.vehicles[0].plate === 'GARAGEM');
+    $('#detailsEdit').click(); check("reabrir mantém roda selecionada", $('#vehicleWheelType').value==='sport' && $('#vehicleWheels').value==='Inferno'); $('#vehicleForm').requestSubmit();
+    check("observações exibidas como texto", $('#detailsNotes p').textContent.includes('<script>') && !$('#detailsNotes script'));
+    const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 338;
+    const context = canvas.getContext('2d'); context.fillStyle = '#243b60'; context.fillRect(0, 0, 600, 338); context.fillStyle = '#c7d9f7'; context.font = '28px sans-serif'; context.fillText('FOTO DE TESTE', 180, 175);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .8));
+    photoBase64 = await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result.split(',')[1]); reader.readAsDataURL(blob); });
+    await openPhotoStudio();
+    check("seis posições distintas", $$('.studio-shot').length === 6 && PHOTO_SHOTS.length === 6);
+    for (const shot of PHOTO_SHOTS) await uploadPhoto(blob, shot.id);
+    check("upload de seis fotos", studioDraft.size === 6);
+    studioCover = 'cinematicFront'; await saveStudio();
+    const records = await readAllPhotos();
+    check("fotos persistem no IndexedDB", records.filter(record => record.vehicleId === 'v1').length === 6 && records.every(record => record.blob instanceof Blob));
+    check("capa aplicada no cartão", getVehicleImage(data.vehicles[0]).startsWith('blob:') && data.vehicles[0].coverSlot === 'cinematicFront');
+    check("fotos não ocupam localStorage", !localStorage.getItem(STORAGE_KEY).includes('data:image'));
+    detailShot = 'front'; stepDetailPhoto(1); check("navegação da galeria", detailShot === 'rear');
+    $('#detailsEdit').click(); $('#vehicleNotes').value = 'Projeto atualizado'; $('#vehicleForm').requestSubmit();
+    check("editar preserva ensaio e capa", data.vehicles[0].coverSlot === 'cinematicFront' && photoUrls.has('v1:front') && data.vehicles.length === 6);
+    await openPhotoStudio(); $('[data-remove-shot="front"]').click(); closePhotoStudio();
+    check("cancelar não apaga fotos", (await readAllPhotos()).filter(record => record.vehicleId === 'v1').length === 6);
+    await openPhotoStudio(); $('[data-remove-shot="front"]').click(); await saveStudio();
+    check("remover e salvar persiste", (await readAllPhotos()).filter(record => record.vehicleId === 'v1').length === 5 && !photoUrls.has('v1:front'));
+    await openPhotoStudio();
+    const before = studioDraft.size; await uploadPhoto(new Blob(['not-image'], { type: 'image/jpeg' }), 'front');
+    check("imagem inválida não altera ensaio", studioDraft.size === before);
+    const backup = new Blob([JSON.stringify({version:1,cover:'rear',photos:[{shot:'rear',image:'data:image/jpeg;base64,'+photoBase64}]})],{type:'application/json'});
+    await importPhotoBackup(backup); check("restaura backup no rascunho", studioDraft.size===1 && studioCover==='rear');
+    await importPhotoBackup(new Blob(['{"version":1,"photos":[{"shot":"unknown"}]}'])); check("backup inválido preserva rascunho", studioDraft.size===1);
+    await startCaptureSession();
+    // Aguarda a conversão assíncrona das seis imagens recebidas pelo protocolo.
+    for(let count=0;captureRunning && count<80;count++) await new Promise(resolve=>setTimeout(resolve,50));
+    check("ponte recebe ensaio completo", !captureRunning && studioDraft.size===6 && requests.includes('/capture') && requests.includes('/photos'));
+    check("captura aguarda confirmação para persistir", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===5);
+    await saveStudio();
+    check("salva ensaio da captura", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===6);
+    await openPhotoStudio(); mode='running'; await startCaptureSession(); await cancelCaptureSession();
+    check("cancelamento mantém fotos", !captureRunning && studioDraft.size===6 && requests.includes('/cancel'));
+    closePhotoStudio();
+    await deleteVehiclePhotos('v1');
+    check("limpeza remove apenas fotos do veículo", !(await readAllPhotos()).some(record=>record.vehicleId==='v1') && data.vehicles.length===6);
+    openVehicleDetails('v1');
+    check("sem fotos volta à imagem de referência", !getVehicleImage(data.vehicles[0]).startsWith('blob:'));
+    check("sem overflow horizontal", document.documentElement.scrollWidth<=innerWidth && $('#vehicleDetailsDialog').scrollWidth<=$('#vehicleDetailsDialog').clientWidth);
+  } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }
+  window.fetch=originalFetch;
+  const output=document.createElement('pre'); output.id='gallery-check-result'; output.hidden=true;
+  output.textContent=results.every(result=>result.pass)?'PASS: '+results.length+' verificações':JSON.stringify(results);
+  document.body.append(output);
+})();

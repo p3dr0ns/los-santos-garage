@@ -14,6 +14,8 @@ Site: [Los Santos Garage](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
 
 Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 `localStorage` do navegador. O arquivo local e o site possuem armazenamento separado.
+O primeiro acesso começa vazio, sem garagens ou veículos de demonstração.
+Cadastros já salvos são preservados nas atualizações.
 
 ## Recursos
 

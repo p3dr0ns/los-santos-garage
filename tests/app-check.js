@@ -3,6 +3,30 @@
   const results = [];
   const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
   try {
+    check('primeiro acesso inicia sem garagens ou veículos', localStorage.getItem(STORAGE_KEY)===null && data.garages.length===0 && data.vehicles.length===0 && !$('.garage-card') && !$('.vehicle-card'));
+    check('primeiro acesso mostra coleção vazia e valor zero', !$('#emptyState').hidden && $('#collectionValue').textContent==='GTA$ 0');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({garages:[],vehicles:[]}));
+    const emptyReload=loadData();
+    check('coleção vazia permanece vazia ao reabrir', emptyReload.garages.length===0 && emptyReload.vehicles.length===0);
+    // Samples belong only to this disposable test profile, never to the published app.
+    data = {
+      garages: [
+        {id:'g1',name:'Eclipse Towers',capacity:10},
+        {id:'g2',name:'Agência',capacity:20},
+        {id:'g3',name:'Garagem da Arena',capacity:27}
+      ],
+      vehicles: [
+        {id:'v1',name:'Zentorno',category:'Super',garageId:'g1',favorite:true,color:'#397ce5',image:''},
+        {id:'v2',name:'Elegy Retro Custom',category:'Esportivo',garageId:'g1',favorite:true,color:'#d84856',image:''},
+        {id:'v3',name:'Turismo R',category:'Super',garageId:'g1',favorite:false,color:'#8b62da',image:''},
+        {id:'v4',name:'Kuruma Blindado',category:'Esportivo',garageId:'g2',favorite:true,color:'#bfc6d3',image:''},
+        {id:'v5',name:'Sultan RS',category:'Super',garageId:'g2',favorite:false,color:'#4b9b91',image:''},
+        {id:'v6',name:'Dominator',category:'Muscle',garageId:'g3',favorite:false,color:'#e38643',image:''}
+      ]
+    };
+    saveData();
+    const existingReload=loadData();
+    check('reabrir preserva garagens e carros já cadastrados', existingReload.garages.length===3 && existingReload.vehicles.length===6 && existingReload.vehicles[0].name==='Zentorno');
     const valuationFixture = [{name:'Zentorno',catalogId:'zentorno'}, {name:'Adder',catalogId:'adder'}, {name:'Zentorno',catalogId:'zentorno'}, {name:'Modelo personalizado sem preço'}];
     const assessed = getVehicleValuation(valuationFixture);
     check('valor soma cada carro incluindo repetidos e sinaliza preço ausente', assessed.total===2450000 && assessed.priced===3 && assessed.missing===1 && valuationCoverage(assessed).includes('total parcial'));

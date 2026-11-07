@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'reference-check.ps1')
 & (Join-Path $PSScriptRoot 'image-check.ps1')
 & (Join-Path $PSScriptRoot 'interior-check.ps1')
+& (Join-Path $PSScriptRoot 'property-map-check.ps1')
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $browserPath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 if (!(Test-Path -LiteralPath $browserPath)) { throw 'Google Chrome not found at its default path.' }
@@ -90,6 +91,16 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageInteriorPicker img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
         $pickerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "decoration-picker-$tag.png"), [Convert]::FromBase64String($pickerScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#garageDialog').close(); dismissToast(); Object.assign(propertyMapState,{query:'',type:'all',owned:false}); document.querySelector('[data-filter=map]').click(); selectMapProperty(PROPERTY_MAP.locations.find(location=>location.name==='Eclipse Towers').id,true); document.querySelector('#mapSection').scrollIntoView({block:'start'});" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))"; awaitPromise = $true } | Out-Null
+        $propertyScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "property-map-$tag.png"), [Convert]::FromBase64String($propertyScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "openEyefind();" } | Out-Null
+        $eyefindScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-$tag.png"), [Convert]::FromBase64String($eyefindScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('[data-eyefind-dealer=foreclosures]').click(); document.querySelector('[data-eyefind-type=auto_shop_property]').click();" } | Out-Null
+        $dealerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-properties-$tag.png"), [Convert]::FromBase64String($dealerScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

@@ -1,0 +1,109 @@
+#mapSection[hidden] { display: none; }
+.property-map-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+.property-map-search { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px; padding: 12px 15px; border: 1px solid #4b405c; background: #181b27; border-radius: 9px; color: #b8a3ce; }
+.property-map-search input { width: 100%; border: 0; outline: none; color: #f0eaf5; background: transparent; font-size: 12px; }
+#propertyMapType { max-width: 230px; padding: 12px; border: 1px solid #4b405c; border-radius: 9px; background: #181b27; color: #eee6f4; font-size: 12px; }
+.property-map-owned { display: flex; align-items: center; gap: 8px; color: #b7a6c8; font-size: 11px; }
+.property-map-owned input { accent-color: #b494e2; }
+.property-map-layout { display: grid; grid-template-columns: minmax(0,1fr) 310px; min-width: 0; overflow: hidden; border: 1px solid #52405e; border-radius: 16px; }
+.property-map-canvas { position: relative; min-width: 0; height: 650px; overflow: hidden; background: #c8dfe7; }
+#propertyMapSvg { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -3px; }
+#propertyMapSvg:active { cursor: grabbing; }
+.property-pin { cursor: pointer; }
+.property-pin .pin-frame { fill: #3c374c; stroke: #f5eef2; stroke-width: 1.5px; }
+.property-pin.owned .pin-frame { fill: #28785b; }
+.property-pin.selected .pin-frame, .property-pin:focus .pin-frame { fill: #825798; stroke: #f2cb71; stroke-width: 3px; }
+.property-map-zoom { position: absolute; top: 16px; left: 16px; display: grid; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 14px #0004; }
+.property-map-zoom button { width: 36px; height: 36px; border: 0; border-bottom: 1px solid #ddd; background: #fff; color: #2a3039; font-size: 22px; cursor: pointer; }
+.property-map-zoom button:hover { background: #eee8f4; }
+.property-map-credit { position: absolute; bottom: 0; right: 0; max-width: 100%; padding: 5px 8px; color: #3c4c54; background: #ffffffe6; font-size: 8px; }
+.property-map-credit a { color: #345f8a; }
+.property-map-sidebar { min-width: 0; max-height: 650px; overflow-y: auto; background: #151924; border-left: 1px solid #44364f; }
+.property-map-tip, .property-map-detail { padding: 20px; border-bottom: 1px solid #3d3448; }
+.property-map-tip strong { font-size: 15px; color: #e6d5c0; }
+.property-map-tip p { margin: 10px 0; color: #a199ac; font-size: 11px; line-height: 1.7; }
+.property-map-tip > span { font-size: 9px; color: #ad9dc0; }
+.property-map-tip i { color: #73bfa0; font-style: normal; }
+.property-map-detail { display: grid; gap: 12px; }
+.property-map-detail h3 { color: #efe5d2; font-size: 24px; }
+.property-map-detail p { color: #b9a8c8; font-size: 11px; }
+.property-map-detail a { font-size: 10px; color: #b6a2cd; }
+.property-map-detail button { font-size: 11px; justify-content: center; white-space: normal; }
+.property-map-results-heading { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 10px; }
+.property-map-results-heading h3 { font-size: 18px; }
+.property-map-results-heading > span { color: #bca0da; font-size: 11px; }
+.property-map-results { display: grid; gap: 5px; padding: 0 10px 16px; }
+.property-map-result { display: flex; gap: 10px; align-items: center; width: 100%; min-width: 0; padding: 12px 9px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #e3dce9; text-align: left; cursor: pointer; }
+.property-map-result:hover, .property-map-result.selected { border-color: #b494e255; background: #b494e21a; }
+.property-map-result > span { display: grid; gap: 5px; min-width: 0; }
+.property-map-result strong { font-size: 11px; font-weight: 600; overflow-wrap: anywhere; }
+.property-map-result small { color: #9d92ac; font-size: 9px; line-height: 1.5; }
+.property-map-result > i { margin-left: auto; color: #73bfa0; font-size: 8px; }
+.property-map-empty { padding: 15px 10px; color: #ad9fbe; font-size: 12px; line-height: 1.7; }
+.property-map-note { padding-top: 14px; color: #93869e; font-size: 10px; line-height: 1.7; }
+.eyefind-dialog { width: min(1100px, calc(100% - 28px)); max-height: calc(100dvh - 30px); padding: 0; color-scheme: light; color: #262d32; background: #f4f4f1; border: 1px solid #768087; border-radius: 10px; }
+.eyefind-browser-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 7px; padding: 9px 14px; background: linear-gradient(#eee,#c6c7cc); border-bottom: 1px solid #85919c; }
+.eyefind-browser-bar button { width: 29px; height: 25px; color: #555; background: linear-gradient(#f9f9fa,#b9bcc1); border: 1px solid #9a9da1; border-radius: 5px; cursor: pointer; }
+.eyefind-browser-bar button:disabled { opacity: .4; }
+.eyefind-browser-bar output { flex: 1; min-width: 0; padding: 3px 10px; border: 1px solid #a0a4ac; border-radius: 5px; background: #f9f9fb; color: #4c4c4e; font-family: Arial,sans-serif; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.eyefind-header { padding: 26px 36px 20px; background: #4d90be; color: #fff; border-bottom: 6px solid #f0c600; }
+.eyefind-header > div { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+#eyefindTitle { position: relative; display: inline-flex; align-items: baseline; padding: 0 12px 7px 0; font-family: "Mr Dafoe",cursive; font-size: 54px; line-height: 1; filter: drop-shadow(2px 3px #006c83); }
+#eyefindTitle > span:first-child { color: #fff; }
+#eyefindTitle > span:nth-child(2) { color: #ffdd19; }
+#eyefindTitle small { position: absolute; bottom: -3px; right: 10px; font-size: 27px; color: #fff; }
+.eyefind-header p { text-align: right; font: 11px Arial,sans-serif; opacity: .9; }
+.eyefind-header > label { display: flex; align-items: center; gap: 10px; max-width: 730px; margin-top: 24px; padding: 11px 14px; background: #fff; border-radius: 4px; color: #4d90be; }
+.eyefind-header input { width: 100%; min-width: 0; border: 0; outline: 0; color: #222; background: transparent; font: 14px Arial,sans-serif; }
+.eyefind-ribbon { display: flex; justify-content: space-between; gap: 15px; padding: 12px 36px; border-bottom: 1px solid #d1d3d1; color: #333; background: #eceeea; font: 11px Arial,sans-serif; }
+.eyefind-ribbon > span { color: #27728a; }
+.eyefind-content { padding: 26px 36px; font-family: Arial,sans-serif; }
+.eyefind-intro { color: #606967; font-size: 13px; margin-bottom: 20px; }
+.eyefind-site-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.eyefind-site { display: flex; flex-direction: column; align-items: stretch; gap: 9px; padding: 0 0 16px; overflow: hidden; border: 1px solid #c1c6be; border-top: 4px solid #f0cb11; background: #fff; color: #2a3336; cursor: pointer; text-align: left; border-radius: 0; }
+.eyefind-site > strong, .eyefind-site > span:last-child { margin-inline: 18px; }
+.eyefind-site > strong { margin-top: 6px; font-size: 15px; }
+.eyefind-site > span:last-child { font-size: 11px; line-height: 1.6; color: #69736f; }
+.eyefind-site:hover { box-shadow: 0 0 0 2px #238092; }
+.dealer-dynasty, .dealer-executive, .dealer-maze, .dealer-special { display: block; padding: 30px 15px 22px; min-height: 115px; text-align: center; font: 700 30px "Barlow Condensed",Arial,sans-serif; letter-spacing: 1px; }
+.dealer-dynasty { background: #197b42; color: #fff; border-bottom: 6px solid #e6c225; }
+.dealer-dynasty b { display: inline-block; padding: 0 6px; background: #edc722; color: #fff; font-size: 44px; line-height: 1; }
+.dealer-dynasty small { display: block; margin-top: 7px; color: #ffe88b; font: 10px Arial,sans-serif; letter-spacing: 4px; }
+.dealer-executive { background: #1a1c1b; color: #c3a764; border-bottom: 6px solid #a78d4e; }
+.dealer-executive b { font-size: 44px; line-height: 1; }
+.dealer-executive small { display: block; font: 11px Arial,sans-serif; letter-spacing: 6px; }
+.dealer-maze { background: #eceee9; color: #2c3033; border-bottom: 6px solid #bb3634; }
+.dealer-maze small { display: block; width: fit-content; margin: 6px auto 0; padding: 3px 7px; color: #bc2b29; border: 2px solid #bc2b29; transform: rotate(-5deg); font-size: 16px; letter-spacing: 2px; }
+.dealer-special { background: repeating-linear-gradient(130deg,#2a3234 0 8px,#273034 8px 16px); color: #dddcc4; border-bottom: 6px solid #a9ac89; letter-spacing: 4px; }
+.dealer-special small { display: block; margin-top: 8px; font: 10px Arial,sans-serif; letter-spacing: 2px; color: #c6d0c6; }
+.eyefind-dealer-heading { display: grid; grid-template-columns: minmax(180px,1fr) 2fr; align-items: center; background: #fff; border: 1px solid #c4c8c1; margin-bottom: 18px; }
+.eyefind-dealer-heading > div { padding: 20px; }
+.eyefind-dealer-heading h3 { font: 700 25px "Barlow Condensed",Arial,sans-serif; }
+.eyefind-dealer-heading p { margin-top: 8px; color: #65716c; font-size: 12px; line-height: 1.6; }
+.eyefind-type-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.eyefind-type-filters button { padding: 8px 12px; border: 1px solid #bbc5bb; background: #fff; color: #48564a; font: 11px Arial,sans-serif; cursor: pointer; }
+.eyefind-type-filters button[aria-pressed=true] { background: #276342; color: white; border-color: #276342; }
+.eyefind-results-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin: 24px 0 14px; }
+.eyefind-results-heading h3 { font: 700 20px "Barlow Condensed",Arial,sans-serif; }
+.eyefind-results-heading > span { font-size: 11px; color: #65716c; }
+.eyefind-property-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.eyefind-property { min-width: 0; background: #fff; border: 1px solid #ccd1c7; }
+.eyefind-property > img { display: block; width: 100%; aspect-ratio: 2/1; object-fit: cover; }
+.eyefind-property > div { display: grid; gap: 9px; padding: 14px; }
+.eyefind-property span { color: #66856a; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+.eyefind-property h4 { min-height: 32px; color: #2c3930; font: 600 14px Arial,sans-serif; line-height: 1.4; overflow-wrap: anywhere; }
+.eyefind-property p { font: 11px Arial,sans-serif; color: #6d7a6c; }
+.eyefind-property button { width: 100%; padding: 9px 6px; border: 0; background: #2b754b; color: #fff; font: 600 11px Arial,sans-serif; cursor: pointer; }
+.eyefind-property .eyefind-map-link { color: #39707d; background: transparent; padding: 3px; font-weight: 400; }
+.eyefind-empty { padding: 24px 0; color: #68726b; font-size: 13px; }
+.eyefind-more { display: block; padding: 10px 24px; margin: 22px auto; border: 1px solid #4d7352; background: #fff; color: #365a3b; font: 12px Arial,sans-serif; cursor: pointer; }
+.eyefind-manual { margin-top: 30px; padding: 18px; border: 1px solid #cdd2c5; background: #e8ece3; }
+.eyefind-manual h3 { font: 700 19px "Barlow Condensed",Arial,sans-serif; }
+.eyefind-manual p { margin: 8px 0 15px; color: #6a7468; font-size: 11px; line-height: 1.7; }
+.eyefind-manual > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.eyefind-manual button { padding: 8px 12px; background: #fff; border: 1px solid #b6c0b1; color: #3f5c42; font: 11px Arial,sans-serif; cursor: pointer; }
+.eyefind-manual small { display: block; margin-top: 4px; font-size: 9px; color: #77866f; }
+.eyefind-footer { padding: 16px 36px; border-top: 1px solid #d3d6ce; background: #ebeee8; color: #677061; font: 10px Arial,sans-serif; line-height: 1.7; }
+@media (max-width: 1000px) { .property-map-layout { grid-template-columns: minmax(0,1fr) 260px; } .eyefind-property-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 760px) { .nav { grid-template-columns: repeat(5,minmax(0,1fr)); } .nav-item { padding-inline: 3px; } .nav-label { font-size: 9px; } .property-map-layout { grid-template-columns: 1fr; } .property-map-canvas { height: 470px; } .property-map-sidebar { border-left: 0; border-top: 1px solid #44364f; max-height: 420px; } .property-map-toolbar { align-items: stretch; } .property-map-search { flex: 1 1 100%; } #propertyMapType { flex: 1; max-width: none; min-width: 0; } .eyefind-header { padding: 22px; } .eyefind-content { padding: 20px; } .eyefind-ribbon { padding-inline: 22px; font-size: 9px; } .eyefind-header p { font-size: 9px; } .eyefind-site-grid { gap: 12px; } .eyefind-footer { padding-inline: 20px; } }
+@media (max-width: 480px) { .eyefind-site-grid { grid-template-columns: 1fr; } .eyefind-site-grid .eyefind-site > span:first-child { min-height: 100px; padding-block: 22px; } .eyefind-dealer-heading { grid-template-columns: 1fr; } .eyefind-property-grid { grid-template-columns: 1fr; } .eyefind-ribbon > span { display: none; } .eyefind-header > div { align-items: flex-start; } #eyefindTitle { font-size: 45px; } .property-map-owned { font-size: 10px; } }

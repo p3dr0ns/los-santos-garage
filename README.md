@@ -34,6 +34,10 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
   Towers tem 10 vagas, sem exigir número do apartamento. Use o nome da garagem
   para diferenciar as unidades, se quiser.
 - Ao abrir uma garagem, aparecem apenas os veículos guardados nela.
+- Mapa do GTA no menu, apenas com locais de armazenamento permanente, zoom,
+  busca e filtro das garagens vinculadas. **Adicionar garagem** abre um Eyefind
+  com os sites de imóveis; escolher um local preenche o cadastro e o endereço.
+  Veja [MAPA.md](MAPA.md) para a cobertura e as fontes.
 - Vista 2D com vagas numeradas, fotos de referência e posições salvas por veículo.
   Selecione um carro e use **Trocar posição**; escolher uma vaga ocupada troca os
   dois carros. Garagens maiores são divididas em setores de até 10 vagas.

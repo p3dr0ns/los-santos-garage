@@ -20,6 +20,8 @@ Consulta: 6 de novembro de 2026. O aplicativo contabiliza armazenamento permanen
 | Encontro de Carros LS | 0 | Estacionamento temporário |
 | Eclipse Boulevard | 50 | Cinco pisos de 10; diferente do apartamento Eclipse Towers |
 | Clube Vinewood | 100 | Acesso via GTA+ |
+| Complexo | 7 comuns | Exclui vagas exclusivas de Avenger, Thruster, Khanjali, Chernobog e RCV |
+| Kosatka | 1 carro submersível | Apenas Toreador/Stromberg; Sparrow e Avisa têm vagas exclusivas separadas; sem localização fixa no mapa |
 
 Os tipos com restrições exibem essa informação no aplicativo. A aplicação não verifica a compatibilidade de cada modelo com vagas de motos, aeronaves ou veículos especiais.
 

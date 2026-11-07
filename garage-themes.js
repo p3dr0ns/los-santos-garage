@@ -11,6 +11,8 @@ const AUTO_SHOP_STYLES = [
 ];
 
 const PROPERTY_INTERIORS = {
+  facility: { imageId: "facility", label: "Complexo · garagem subterrânea", accent: "#a8c1cb", floor: "#a2aab0", wall: "#334351", pattern: "industrial" },
+  kosatka: { imageId: "kosatka", label: "Kosatka · Moon Pool", accent: "#88bbb5", floor: "#9caeaa", wall: "#344e4c", pattern: "industrial" },
   garage: { imageId: "apartment", label: "Garagem residencial", accent: "#bfcbd4", floor: "#bbc4c9", wall: "#3d4850", pattern: "clean" },
   safehouse: { imageId: "apartment", label: "Garagem de apartamento", accent: "#b0d4e5", floor: "#d2d9dc", wall: "#6b7c86", pattern: "clean" },
   agency: { imageId: "agency", label: "Agência · oficina e garagem", accent: "#91c5b6", floor: "#a2abab", wall: "#34404a", pattern: "clean" },

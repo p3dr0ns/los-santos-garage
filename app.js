@@ -17,6 +17,8 @@ const garageTypes = {
   salvage_yard: { label: "Desmanche", pattern: /desmanche|salvage|ferro.velho|scrapyard/ },
   warehouse_vehicle: { label: "Depósito de veículos", pattern: /deposito|armazem|warehouse/ },
   car_meet: { label: "Encontro de Carros LS", pattern: /car meet|encontro.*carros|ls car/ },
+  facility: { label: "Complexo", icon: "warehouse_vehicle", pattern: /complexo|facility|instalacao/ },
+  kosatka: { label: "Kosatka", icon: "garage", pattern: /kosatka|submarino/ },
   eclipse_boulevard: { label: "Eclipse Boulevard (50 vagas)", icon: "garage", pattern: /eclipse.*(boulevard|blvd|50)|(?:boulevard|blvd).*eclipse/ },
   vinewood_garage: { label: "Garagem do Clube Vinewood", pattern: /vinewood.*(clube|club|garagem|garage)|(clube|club).*vinewood/ },
   safehouse: { label: "Apartamento / casa", pattern: /apartamento|apartment|eclipse|towers|casa|house|tinsel|alta|del perro|weazel|richards/ }
@@ -40,17 +42,22 @@ const garageProfiles = {
   salvage_yard: { capacities: [0], note: "Sem garagem permanente para carros pessoais. Carros de roubos, reboques e estacionamento temporário não são vagas pessoais." },
   warehouse_vehicle: { capacities: [8], note: "8 vagas exclusivas para veículos especiais no subsolo. Os 40 carros de carga do negócio não são veículos pessoais." },
   car_meet: { capacities: [0], note: "Estacionamento temporário; não oferece vagas permanentes para sua coleção." },
+  facility: { capacities: [7], note: "7 vagas comuns para veículos pessoais. As vagas reservadas do Avenger, Thruster, Khanjali, Chernobog e RCV não entram neste total." },
+  kosatka: { capacities: [1], note: "1 vaga para Toreador ou Stromberg. As vagas exclusivas do Sparrow e Avisa não são vagas comuns de carros. Propriedade móvel, sem ponto fixo no mapa." },
   eclipse_boulevard: { capacities: [50], note: "50 vagas, distribuídas em cinco pisos de 10." },
   vinewood_garage: { capacities: [100], note: "100 vagas na garagem do Clube Vinewood, com acesso via GTA+." }
 };
 
 function getGarageProfile(garage) {
+  const location = getPropertyLocation(garage.locationId);
+  if (location && location.type === getGarageType(garage) && ["garage", "safehouse"].includes(location.type)) return { capacities: [location.capacity], note: `${location.name}: ${location.capacity} vagas conforme a referência do imóvel.` };
   if (getGarageType(garage) === "safehouse" && /eclipse/i.test(garage.name)) return { capacities: [10], note: "Eclipse Towers: 10 vagas por apartamento. Cadastre cada apartamento separadamente." };
   return garageProfiles[getGarageType(garage)];
 }
 
 function updateGarageCapacity() {
-  const garage = { name: $("#garageName").value, type: $("#garageType").value };
+  renderGarageLocationOptions();
+  const garage = { name: $("#garageName").value, type: $("#garageType").value, locationId: $("#garageLocation").value };
   const profile = getGarageProfile(garage);
   const select = $("#garageCapacity");
   const previousType = select.dataset.propertyType;
@@ -65,7 +72,7 @@ function updateGarageCapacity() {
 }
 
 function renderGaragePreview() {
-  const garage = { name: $("#garageName").value.trim(), type: $("#garageType").value };
+  const garage = { name: $("#garageName").value.trim(), type: $("#garageType").value, locationId: $("#garageLocation").value };
   const type = getGarageType(garage);
   const profile = getGarageProfile(garage);
   const capacity = Number($("#garageCapacity").value);
@@ -85,7 +92,7 @@ function renderGaragePreview() {
 }
 
 function renderPropertyPicker() {
-  const orderedTypes = ["garage", "safehouse", "agency", "arcade", "auto_shop_property", "office", "bat_club_property", "arena_workshop", "eclipse_boulevard", "vinewood_garage", "biker_clubhouse", "casino", "hangar", "warehouse_vehicle", "property_bunker", "salvage_yard", "car_meet"];
+  const orderedTypes = ["garage", "safehouse", "agency", "arcade", "auto_shop_property", "office", "bat_club_property", "arena_workshop", "eclipse_boulevard", "vinewood_garage", "biker_clubhouse", "casino", "hangar", "warehouse_vehicle", "facility", "kosatka", "property_bunker", "salvage_yard", "car_meet"];
   $("#propertyPicker").innerHTML = orderedTypes.map(type => {
     const info = garageTypes[type];
     const capacity = garageProfiles[type].capacities.at(-1);
@@ -215,12 +222,14 @@ function render() {
   $("#lsgBrandBanner").hidden = currentFilter !== "all";
   $(".stats").hidden = currentFilter !== "all";
   $("#garageSection").hidden = !!selectedGarage || (currentFilter !== "all" && currentFilter !== "garages");
-  $("#vehicleSection").hidden = currentFilter === "garages" && !selectedGarage;
+  $("#vehicleSection").hidden = currentFilter === "map" || (currentFilter === "garages" && !selectedGarage);
+  $("#mapSection").hidden = currentFilter !== "map";
   const pages = {
     all: ["Visão geral", "Sua coleção, organizada do seu jeito."],
     vehicles: ["Seus veículos", "Encontre cada carro e o lugar que ele chama de casa."],
     garages: ["Suas garagens", "Todas as propriedades. Cada vaga sob controle."],
-    favorites: ["Favoritos", "Os que merecem um lugar especial na coleção."]
+    favorites: ["Favoritos", "Os que merecem um lugar especial na coleção."],
+    map: ["Mapa de garagens", "Localize imóveis com armazenamento permanente em Los Santos e Blaine County."]
   };
   $("#pageTitle").textContent = pages[currentFilter][0];
   $("#pageDescription").textContent = pages[currentFilter][1];
@@ -253,10 +262,11 @@ function render() {
   $("#garageSectionCount").textContent = data.garages.length;
   const totalCapacity = data.garages.reduce((sum, garage) => sum + garage.capacity, 0);
   $("#sidebarStorageFill").style.width = `${totalCapacity ? Math.min(100, data.vehicles.length / totalCapacity * 100) : 0}%`;
-  $("#searchInput").disabled = currentFilter === "garages" && !selectedGarage;
+  $("#searchInput").disabled = currentFilter === "map" || (currentFilter === "garages" && !selectedGarage);
   renderGarages();
   renderCategories();
   renderVehicles();
+  if (currentFilter === "map" && typeof renderPropertyMap === "function") renderPropertyMap();
 }
 
 function renderGarages() {
@@ -477,7 +487,7 @@ $("#vehicleGaragePicker").addEventListener("click", event => {
   $("#vehicleGarage").value = button.dataset.vehicleGarage;
   renderVehicleGaragePicker();
 });
-$("#addGarageButton").addEventListener("click", () => openGarageDialog());
+$("#addGarageButton").addEventListener("click", () => openEyefind());
 $("#garageType").innerHTML = '<option value="auto">Automático pelo nome</option>' + Object.entries(garageTypes).map(([type, info]) => `<option value="${type}">${info.label}</option>`).join("");
 renderPropertyPicker();
 $("#propertyPicker").addEventListener("click", event => {
@@ -494,6 +504,11 @@ $("#garageCapacityOptions").addEventListener("click", event => {
   renderGaragePreview();
 });
 $("#garageName").addEventListener("input", updateGarageCapacity);
+$("#garageLocation").addEventListener("change", () => {
+  const location = getPropertyLocation($("#garageLocation").value);
+  if (location && !$("#garageId").value) $("#garageName").value = location.name;
+  updateGarageCapacity();
+});
 $("#garageType").addEventListener("change", updateGarageCapacity);
 $("#garageInteriorPicker").addEventListener("click", event => {
   const button = event.target.closest("[data-interior-style]");
@@ -571,6 +586,8 @@ $("#garageForm").addEventListener("submit", event => {
   const type = getGarageType({ name: $("#garageName").value.trim(), type: $("#garageType").value });
   const id = $("#garageId").value;
   const garage = { ...(getGarage(id) || {}), id: id || crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value), tags: [...new Set($("#garageTags").value.split(",").map(tag => tag.trim()).filter(Boolean))].slice(0, 10) };
+  const location = getPropertyLocation($("#garageLocation").value);
+  garage.locationId = location?.type === type ? location.id : null;
   const profile = getGarageProfile(garage);
   if (type === "auto_shop_property") garage.interiorStyle = AUTO_SHOP_STYLES.some(style => style.id === $("#garageInteriorStyle").value) ? $("#garageInteriorStyle").value : "undressed";
   if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade.", "warning");
@@ -596,6 +613,8 @@ function openGarageDialog(id = null) {
   $("#garageId").value = garage?.id || "";
   $("#garageName").value = garage?.name || "";
   $("#garageType").value = garage ? getGarageType(garage) : "garage";
+  renderGarageLocationOptions();
+  $("#garageLocation").value = garage?.locationId || "";
   $("#garageTags").value = (garage?.tags || []).join(", ");
   $("#garageInteriorStyle").value = AUTO_SHOP_STYLES.some(style => style.id === garage?.interiorStyle) ? garage.interiorStyle : "undressed";
   $("#garageDialogTitle").textContent = garage ? "Editar garagem" : "Adicionar garagem";

@@ -4,10 +4,10 @@ Capturas dos interiores e das decorações do GTA Online, Rockstar Games,
 obtidas das páginas do GTA Wiki em 7 de novembro de 2026.
 
 `../interior-images.js` registra a página de origem e o endereço original de
-cada imagem. São 25 referências: os nove estilos da Oficina de Tuning e
+cada imagem. São 27 referências: os nove estilos da Oficina de Tuning e
 interiores de apartamentos, agência, escritório, Arena, fliperama, clube
 noturno, motoclube, cassino, hangar, bunker, desmanche, depósito, LS Car Meet,
-Eclipse Boulevard e Clube Vinewood.
+Eclipse Boulevard, Clube Vinewood, Complexo e Moon Pool do Kosatka.
 
 As imagens são capturas do jogo, utilizadas como referência visual nos
 cartões, no formulário e no mapa. O mapa de vagas continua sendo uma

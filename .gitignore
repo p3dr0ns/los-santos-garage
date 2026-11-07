@@ -20,4 +20,3 @@ Thumbs.db
 # Artefatos de publicação
 dist/
 .cache/
-.openai/*.tmp

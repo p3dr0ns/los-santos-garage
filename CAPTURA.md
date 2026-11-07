@@ -23,7 +23,9 @@ As imagens ficam no **IndexedDB** do navegador, separadas dos cadastros em local
 
 Abra **Iniciar captura.cmd** na raiz do projeto. Ele compila e abre o assistente usando o .NET Framework disponível no Windows, sem instalar dependências. O código-fonte está em `capture/CaptureAssistant.cs`.
 
-No assistente, clique em **Abrir organizador**. Isso conecta a aba ao assistente da sessão, mantendo o mesmo arquivo `index.html` e seus cadastros existentes. O assistente deve continuar aberto durante o ensaio. Se reiniciá-lo, use o botão **Abrir organizador** novamente.
+No assistente, clique em **Abrir organizador**. Quando `capture/site-url.txt` estiver presente, ele abre a versão hospedada nesse endereço e conecta a aba ao assistente da sessão. Sem esse arquivo, abre o `index.html` local. O assistente deve continuar aberto durante o ensaio. Se reiniciá-lo, use o botão **Abrir organizador** novamente.
+
+O site online e o arquivo local têm armazenamentos separados. Os cadastros e as fotos anteriores não são movidos automaticamente ao publicar; ensaios podem ser exportados na versão local e importados na ficha do veículo da versão online. A captura hospedada exige o assistente atualizado, em execução neste mesmo PC. Se já houver um assistente antigo aberto, feche-o e execute `Iniciar captura.cmd` para recompilar e iniciar a versão atual. O navegador pode solicitar acesso à rede local para conectar ao assistente.
 
 O assistente não inicia o GTA nem carrega uma sessão. Abra o GTA antes, use janela sem bordas e configure a entrada de mouse como **Windows**, quando essa opção estiver disponível. Um perfil gravado depende da resolução, sensibilidade, câmera inicial e configuração de entrada usadas na calibração.
 
@@ -59,4 +61,4 @@ A compilação, o armazenamento, o protocolo e a interface foram verificados. A 
 
 - `tests/run-checks.ps1`: usa Chrome com perfis descartáveis para verificar ficha, edição, seis fotos, persistência, capa, remoção, importação, cancelamento e fluxo do protocolo com respostas simuladas. Não usa o navegador pessoal nem envia comandos ao jogo.
 - `capture/MinhaGaragemCapture.exe --self-test`: verifica perfil, serialização, validação e estrutura de entrada do Windows, sem capturar nem mover o mouse.
-- O serviço escuta somente em `127.0.0.1:47831`, exige o token da sessão para suas operações e aceita o site aberto como arquivo local. A câmera usa [SendInput](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput), a calibração usa [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/raw-input), e os atalhos usam [RegisterHotKey](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey).
+- O serviço escuta somente em `127.0.0.1:47831`, exige o token da sessão para suas operações e aceita o arquivo local ou a origem HTTPS exata configurada em `capture/site-url.txt`. A câmera usa [SendInput](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput), a calibração usa [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/raw-input), e os atalhos usam [RegisterHotKey](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey).

@@ -16,3 +16,7 @@ capture/obj/
 *.tmp
 Thumbs.db
 .DS_Store
+
+# Artefatos de publicação
+dist/
+.openai/*.tmp

@@ -54,6 +54,7 @@ public sealed class CaptureAssistant : Form {
     readonly JavaScriptSerializer json = new JavaScriptSerializer { MaxJsonLength = 32000000 };
     readonly object sync = new object();
     readonly string root, storage, token;
+    readonly string hostedUrl, hostedOrigin;
     readonly Label status = new Label();
     readonly Label instruction = new Label();
     readonly Button calibrate = new Button(), open = new Button(), reference = new Button();
@@ -70,6 +71,13 @@ public sealed class CaptureAssistant : Form {
 
     public CaptureAssistant(string projectRoot) {
         root = projectRoot;
+        try {
+            Uri address;
+            string configuredUrl = File.ReadAllText(Path.Combine(root, "capture", "site-url.txt")).Trim();
+            if (Uri.TryCreate(configuredUrl, UriKind.Absolute, out address) && address.Scheme == "https") {
+                hostedUrl = address.AbsoluteUri; hostedOrigin = address.GetLeftPart(UriPartial.Authority);
+            }
+        } catch { }
         storage = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MinhaGaragemCapture");
         Directory.CreateDirectory(storage);
         byte[] secret = new byte[32]; using (var random = RandomNumberGenerator.Create()) random.GetBytes(secret);
@@ -87,7 +95,7 @@ public sealed class CaptureAssistant : Form {
         StyleButton(reference, "Ver câmera inicial", 422, 365, 195);
         var note = new Label { Text = "Perfil experimental: confira o enquadramento antes de salvar o ensaio.", Location = new Point(26, 425), Size = new Size(595, 30), ForeColor = Color.FromArgb(144, 165, 195), Font = new Font("Segoe UI", 9) };
         Controls.AddRange(new Control[] { title, instruction, status, open, calibrate, reference, note });
-        open.Click += delegate { Process.Start(new ProcessStartInfo(new Uri(Path.Combine(root, "index.html")).AbsoluteUri + "#capture=" + token) { UseShellExecute = true }); };
+        open.Click += delegate { Process.Start(new ProcessStartInfo((hostedUrl ?? new Uri(Path.Combine(root, "index.html")).AbsoluteUri) + "#capture=" + token) { UseShellExecute = true }); };
         calibrate.Click += delegate { if (running || recording) return; SetStatus("No GTA, deixe a câmera na posição inicial e pressione F6. Depois, F7 marca cada ângulo."); };
         reference.Click += delegate { string path = Path.Combine(storage, "reference.jpg"); if (File.Exists(path)) Process.Start(new ProcessStartInfo(path) { UseShellExecute = true }); else SetStatus("Calibre uma vez para guardar a câmera inicial."); };
         SetStatus(profile == null ? "Nenhum perfil calibrado. Calibre as seis câmeras para começar." : "Perfil de seis câmeras carregado. Abra o organizador para conectar.");
@@ -290,12 +298,13 @@ public sealed class CaptureAssistant : Form {
                     int split = line.IndexOf(':'); if (split > 0) headers[line.Substring(0, split)] = line.Substring(split + 1).Trim();
                 }
                 string origin;
-                if (headers.TryGetValue("Origin", out origin) && origin != "null") { Reply(stream, 403, new { error = "Origem não autorizada." }, false); return; }
+                if (headers.TryGetValue("Origin", out origin) && origin != "null" && origin != hostedOrigin) { Reply(stream, 403, new { error = "Origem não autorizada." }, false); return; }
+                origin = origin ?? "null";
                 string host;
                 if (!headers.TryGetValue("Host", out host) || host != "127.0.0.1:47831") { Reply(stream, 403, new { error = "Endereço não autorizado." }, false); return; }
-                if (parts[0] == "OPTIONS") { Reply(stream, 200, new { ok = true }, true); return; }
+                if (parts[0] == "OPTIONS") { Reply(stream, 200, new { ok = true }, true, origin); return; }
                 string submitted;
-                if (!headers.TryGetValue("X-Capture-Token", out submitted) || submitted != token) { Reply(stream, 401, new { error = "Abra o organizador pelo botão do assistente para conectar." }, true); return; }
+                if (!headers.TryGetValue("X-Capture-Token", out submitted) || submitted != token) { Reply(stream, 401, new { error = "Abra o organizador pelo botão do assistente para conectar." }, true, origin); return; }
                 object response; int code = 200;
                 if (parts[0] == "GET" && parts[1] == "/health") response = new { version = 1, calibrated = profile != null };
                 else if (parts[0] == "GET" && parts[1] == "/status") { lock (sync) response = new { state, error, progress }; }
@@ -303,15 +312,15 @@ public sealed class CaptureAssistant : Form {
                 else if (parts[0] == "POST" && parts[1] == "/capture") { string failure = (string)Invoke((Func<string>)StartCapture); if (failure != null) { code = 409; response = new { error = failure }; } else response = new { started = true }; }
                 else if (parts[0] == "POST" && parts[1] == "/cancel") { cancelled = true; response = new { cancelled = true }; }
                 else { code = 404; response = new { error = "Operação não encontrada." }; }
-                Reply(stream, code, response, true);
+                Reply(stream, code, response, true, origin);
             } catch { /* Conexões interrompidas não alteram o estado da captura. */ }
         }
     }
-    void Reply(NetworkStream stream, int code, object response, bool cors) {
+    void Reply(NetworkStream stream, int code, object response, bool cors, string origin = "null") {
         string body; lock (json) body = json.Serialize(response);
         byte[] bytes = Encoding.UTF8.GetBytes(body);
         string headers = "HTTP/1.1 " + code + " Result\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: " + bytes.Length + "\r\nConnection: close\r\nCache-Control: no-store\r\n";
-        if (cors) headers += "Access-Control-Allow-Origin: null\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: X-Capture-Token, Content-Type\r\nAccess-Control-Allow-Private-Network: true\r\n";
+        if (cors) headers += "Access-Control-Allow-Origin: " + origin + "\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: X-Capture-Token, Content-Type\r\nAccess-Control-Allow-Private-Network: true\r\n";
         byte[] headerBytes = Encoding.ASCII.GetBytes(headers + "\r\n"); stream.Write(headerBytes, 0, headerBytes.Length); stream.Write(bytes, 0, bytes.Length);
     }
     protected override void OnFormClosed(FormClosedEventArgs e) {

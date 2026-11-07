@@ -1,5 +1,7 @@
 # Catálogo interno de carros e motos
 
+Análise de fonte complementar para fichas técnicas, aquisição e desempenho: [GTA Base](GTABASE.md).
+
 O catálogo local em `assets/vehicle-catalog.js` contém **617 nomes/variantes** e **54 fabricantes**. Funciona abrindo o `index.html`, sem servidor e sem internet. A pesquisa mostra variantes por nome, nome em português e aliases, sem diferenciar acentos ou maiúsculas.
 
 No cadastro, digite parte de um nome, como **Sentinel**, **Sultan** ou **Bati**. Escolha o resultado com o mouse ou use as setas e Enter. O modelo, a marca e a categoria são preenchidos juntos. Selecionar uma marca manualmente limita a pesquisa àquele fabricante; “Selecione uma marca” retira esse filtro.

@@ -227,7 +227,8 @@ async function captureRequest(path, options = {}) {
 async function checkCaptureConnection() {
   try {
     const status = await captureRequest("/health");
-    $("#captureStatus").textContent = status.calibrated ? "Assistente conectado · perfil de seis câmeras pronto." : "Assistente conectado. Configure as seis câmeras na janela do Windows.";
+    $("#captureStatus").textContent = status.calibrated ? status.armCapture ? "Assistente conectado · painel no GTA pronto. Prepare aqui e inicie com F8 no jogo." : "Assistente conectado · perfil de seis câmeras pronto. Atualize o assistente para usar o painel e F8." : "Assistente conectado. No GTA, use F6 para calibrar e F7 para marcar cada câmera.";
+    $("#captureSession").textContent = status.armCapture ? "Preparar ensaio · iniciar com F8 no GTA" : "Capturar ensaio · 6 fotos";
     $("#captureSession").disabled = captureRunning || !status.calibrated;
     $("#connectCapture").textContent = "Verificar conexão";
   } catch {
@@ -250,8 +251,9 @@ async function startCaptureSession() {
   captureGeneration++;
   setCapturing(true);
   try {
-    await captureRequest("/capture", { method: "POST" });
-    $("#studioStatus").textContent = "Ensaio iniciado. Não mova o mouse; F9 interrompe a captura.";
+    const assistant = await captureRequest("/health");
+    await captureRequest(assistant.armCapture ? "/arm" : "/capture", { method: "POST" });
+    $("#studioStatus").textContent = assistant.armCapture ? "Ensaio preparado. Volte ao GTA, ajuste a câmera inicial e pressione F8. F9 cancela." : "Ensaio iniciado. Não mova o mouse; F9 interrompe a captura.";
     pollCaptureSession();
   } catch (error) { setCapturing(false); $("#studioStatus").textContent = error.message; }
 }
@@ -281,7 +283,7 @@ async function pollCaptureSession() {
       setCapturing(false);
       return;
     }
-    $("#studioStatus").textContent = `Capturando ${status.progress || 0} de 6 fotos. F9 interrompe.`;
+    $("#studioStatus").textContent = status.state === "armed" ? "Ensaio preparado. Volte ao GTA e pressione F8 na câmera inicial. F9 cancela." : `Capturando ${status.progress || 0} de 6 fotos. F9 interrompe.`;
     capturePoll = setTimeout(pollCaptureSession, 800);
   } catch (error) { if (generation !== captureGeneration) return; setCapturing(false); $("#studioStatus").textContent = error.message || "A conexão foi interrompida."; }
 }
@@ -340,6 +342,9 @@ $("#closeStudio").addEventListener("click", closePhotoStudio);
 $("#discardPhotos").addEventListener("click", closePhotoStudio);
 $("#photoStudioDialog").addEventListener("cancel", event => { event.preventDefault(); closePhotoStudio(); });
 $("#connectCapture").addEventListener("click", checkCaptureConnection);
+setInterval(() => {
+  if ($("#photoStudioDialog").open && !captureRunning) checkCaptureConnection();
+}, 5000);
 $("#captureSession").addEventListener("click", startCaptureSession);
 $("#cancelCapture").addEventListener("click", cancelCaptureSession);
 $("#importPhotos").addEventListener("click", () => {
@@ -398,4 +403,4 @@ readAllPhotos().then(records => {
   });
   renderVehicles();
   if ($("#vehicleDetailsDialog").open) renderVehicleDetails();
-}).catch(() => showToast("Armazenamento de fotos indisponível neste navegador."));
+}).catch(() => showToast("Armazenamento de fotos indisponível neste navegador.", "error"));

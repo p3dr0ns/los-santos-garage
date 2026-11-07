@@ -3,11 +3,11 @@
   const results = [];
   const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
   const originalFetch = window.fetch;
-  let mode = "complete", photoBase64 = "", requests = [];
+  let mode = "complete", photoBase64 = "", requests = [], supportsArming = false;
   window.fetch = async (url, options = {}) => {
     if (!String(url).startsWith(CAPTURE_API)) return originalFetch(url, options);
     const path = String(url).slice(CAPTURE_API.length); requests.push(path);
-    const content = path === "/health" ? { calibrated: true, version: 1 }
+    const content = path === "/health" ? { calibrated: true, version: supportsArming ? 2 : 1, armCapture: supportsArming }
       : path === "/status" ? { state: mode, progress: mode === "complete" ? 6 : 1 }
       : path === "/photos" ? { photos: PHOTO_SHOTS.map(shot => ({ shot: shot.id, data: photoBase64 })) }
       : { ok: true };
@@ -92,6 +92,17 @@
     check("captura aguarda confirmação para persistir", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===5);
     await saveStudio();
     check("salva ensaio da captura", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===6);
+    await openPhotoStudio(); supportsArming=true; mode='armed'; await checkCaptureConnection();
+    check("assistente novo informa início por F8", $('#captureSession').textContent.includes('F8'));
+    await startCaptureSession();
+    for(let count=0;!$('#studioStatus').textContent.includes('Ensaio preparado') && count<20;count++) await new Promise(resolve=>setTimeout(resolve,30));
+    check("preparar aguarda F8 sem substituir fotos", captureRunning && requests.includes('/arm') && studioDraft.size===6 && $('#studioStatus').textContent.includes('F8'));
+    await cancelCaptureSession();
+    check("cancelar preparo preserva ensaio salvo", !captureRunning && (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===6);
+    mode='complete'; await startCaptureSession();
+    for(let count=0;captureRunning && count<80;count++) await new Promise(resolve=>setTimeout(resolve,50));
+    check("ensaio preparado recebe seis fotos após concluir", !captureRunning && studioDraft.size===6);
+    await saveStudio();
     await openPhotoStudio(); mode='running'; await startCaptureSession(); await cancelCaptureSession();
     check("cancelamento mantém fotos", !captureRunning && studioDraft.size===6 && requests.includes('/cancel'));
     closePhotoStudio();
@@ -100,6 +111,21 @@
     openVehicleDetails('v1');
     check("sem fotos volta à imagem de referência", !getVehicleImage(data.vehicles[0]).startsWith('blob:'));
     check("sem overflow horizontal", document.documentElement.scrollWidth<=innerWidth && $('#vehicleDetailsDialog').scrollWidth<=$('#vehicleDetailsDialog').clientWidth);
+    $('#detailsEdit').click();
+    $('#deleteVehicleButton').click();
+    check("confirmação identifica veículo e foca cancelar", $('#deleteVehicleDialog').open && $('#deleteVehicleName').textContent==='Zentorno' && document.activeElement.id==='cancelDeleteVehicle');
+    const focusBeforeToast = document.activeElement;
+    showToast('Teste <b>sem HTML</b>', 'warning');
+    check("aviso aparece acima do modal sem tirar foco", $('#toast').matches(':popover-open') && document.activeElement===focusBeforeToast && $('#toast').dataset.type==='warning');
+    check("mensagem de aviso é texto seguro e cabe na tela", $('#toastMessage').textContent==='Teste <b>sem HTML</b>' && !$('#toastMessage b') && $('#toast').getBoundingClientRect().right<=innerWidth);
+    $('#closeToast').click();
+    check("aviso pode ser fechado sem fechar confirmação", $('#toast').hidden && !$('#toast').matches(':popover-open') && $('#deleteVehicleDialog').open);
+    check("confirmação cabe na tela", $('#deleteVehicleDialog').scrollWidth <= $('#deleteVehicleDialog').clientWidth);
+    $('#cancelDeleteVehicle').click();
+    check("cancelar mantém veículo e edição", !$('#deleteVehicleDialog').open && $('#vehicleDialog').open && data.vehicles.some(vehicle=>vehicle.id==='v1'));
+    $('#deleteVehicleButton').click();
+    $('#confirmDeleteVehicle').click();
+    check("confirmar exclui somente o veículo escolhido", !$('#deleteVehicleDialog').open && !$('#vehicleDialog').open && data.vehicles.length===5 && !data.vehicles.some(vehicle=>vehicle.id==='v1'));
   } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }
   window.fetch=originalFetch;
   const output=document.createElement('pre'); output.id='gallery-check-result'; output.hidden=true;

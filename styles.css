@@ -96,6 +96,17 @@ button:hover { opacity: .9; }
 
 dialog { width: min(550px, calc(100% - 28px)); padding: 0; color: var(--text); background: #111620; border: 1px solid #30394a; border-radius: 18px; box-shadow: 0 30px 100px #000c; }
 dialog::backdrop { background: #04060abd; backdrop-filter: blur(4px); }
+.delete-confirmation { width: min(460px, calc(100% - 28px)); background: linear-gradient(145deg, #1c2330, #111620); }
+.delete-confirmation .dialog-heading { gap: 16px; margin-bottom: 16px; }
+.delete-confirmation-icon { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 18px; border: 1px solid #f4717138; border-radius: 14px; background: #f4717114; color: #ff9191; font-size: 32px; }
+.delete-confirmation p { color: var(--muted); font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+.delete-confirmation p strong { color: var(--text); }
+.delete-confirmation .delete-confirmation-note { margin-top: 12px; font-size: 12px; color: #e5a3a3; }
+.delete-confirmation-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line); }
+.delete-confirmation-actions button { flex: 1; min-height: 44px; }
+.delete-confirmation-button { padding: 11px 16px; border: 1px solid #f27575; border-radius: 9px; background: #c43c49; color: #fff; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.delete-confirmation-button:hover { background: #d74855; }
+.delete-confirmation-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 .dialog-form { padding: 26px; }
 .dialog-heading { display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px; }
 .dialog-heading h2 { font-size: 25px; }
@@ -109,8 +120,21 @@ dialog::backdrop { background: #04060abd; backdrop-filter: blur(4px); }
 .check-row label { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
 .check-row input { width: auto; accent-color: var(--accent); }
 .dialog-actions { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; }
-.toast { position: fixed; z-index: 5; right: 24px; bottom: 24px; padding: 13px 18px; color: white; background: #263148; border: 1px solid #435273; border-radius: 10px; opacity: 0; transform: translateY(12px); pointer-events: none; transition: .25s; }
+.toast { --toast-color: #79aaff; position: fixed; z-index: 100; inset: auto 20px 20px auto; margin: 0; display: flex; align-items: flex-start; gap: 12px; width: min(420px, calc(100vw - 32px)); padding: 18px; color: var(--text); background: linear-gradient(135deg, #1b2535, #111620); border: 1px solid #35435a; border-left: 3px solid var(--toast-color); border-radius: 14px; box-shadow: 0 16px 48px #0008; opacity: 0; transform: translateY(12px); transition: opacity .2s, transform .2s; }
+.toast[hidden] { display: none; }
 .toast.show { opacity: 1; transform: translateY(0); }
+.toast[data-type="success"] { --toast-color: #6ed5ac; }
+.toast[data-type="warning"] { --toast-color: #f1c477; }
+.toast[data-type="error"] { --toast-color: #ff9191; }
+.toast-icon { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border: 1px solid currentColor; border-radius: 10px; color: var(--toast-color); font-weight: 800; }
+.toast-content { flex: 1; min-width: 0; }
+.toast-content strong { display: block; margin: 1px 0 5px; font-size: 13px; }
+.toast-content p { margin: 0; color: #bdc8da; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.toast-close { flex: 0 0 28px; height: 28px; padding: 0; border: 0; border-radius: 7px; color: var(--muted); background: #ffffff08; font-size: 21px; cursor: pointer; }
+.toast-close:hover { color: var(--text); background: #ffffff12; }
+.toast-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 490px) { .toast { inset: auto 16px 16px; } }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
 
 #garageDialog, #vehicleDialog { width: min(690px, calc(100% - 28px)); max-height: calc(100dvh - 36px); background: linear-gradient(145deg, #151b27, #10141d 65%); }
 .garage-form { padding: 28px; }

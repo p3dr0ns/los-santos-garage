@@ -216,9 +216,9 @@ function loadData() {
 
 function saveData(message) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-  catch { showToast("Não foi possível salvar. Verifique o espaço disponível no navegador."); return false; }
+  catch { showToast("Não foi possível salvar. Verifique o espaço disponível no navegador.", "error"); return false; }
   render();
-  if (message) showToast(message);
+  if (message) showToast(message, "success");
   return true;
 }
 
@@ -341,7 +341,7 @@ function renderVehicles() {
 function getGarage(id) { return data.garages.find(garage => garage.id === id); }
 
 function openVehicleDialog(id = null) {
-  if (!data.garages.length) return showToast("Crie uma garagem primeiro");
+  if (!data.garages.length) return showToast("Crie uma garagem antes de adicionar seu veículo.", "info");
   const vehicle = data.vehicles.find(item => item.id === id);
   $("#vehicleDialogTitle").textContent = vehicle ? "Editar veículo" : "Adicionar veículo";
   $("#saveVehicleButton").textContent = vehicle ? "Salvar alterações" : "＋ Adicionar veículo";
@@ -379,7 +379,35 @@ function setActiveNav(filter) { $$(".nav-item").forEach(item => {
   item.classList.toggle("active", item.dataset.filter === filter);
   if (item.dataset.filter === filter) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current");
 }); }
-function showToast(message) { const toast = $("#toast"); toast.textContent = message; toast.classList.add("show"); clearTimeout(showToast.timer); showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200); }
+function dismissToast() {
+  clearTimeout(showToast.timer);
+  const toast = $("#toast");
+  if (typeof toast.hidePopover === "function" && toast.matches(":popover-open")) toast.hidePopover();
+  toast.classList.remove("show");
+  toast.hidden = true;
+}
+
+function showToast(message, type = "info") {
+  const appearances = {
+    success: { title: "Tudo certo", icon: "✓" },
+    info: { title: "Só um detalhe", icon: "i" },
+    warning: { title: "Atenção", icon: "!" },
+    error: { title: "Não foi possível concluir", icon: "!" }
+  };
+  if (!Object.hasOwn(appearances, type)) type = "info";
+  const toast = $("#toast");
+  clearTimeout(showToast.timer);
+  toast.dataset.type = type;
+  $("#toastIcon").textContent = appearances[type].icon;
+  $("#toastTitle").textContent = appearances[type].title;
+  $("#toastMessage").textContent = message;
+  toast.hidden = false;
+  // O popover mantém o aviso visível também acima das fichas e formulários modais.
+  if (typeof toast.showPopover === "function" && !toast.matches(":popover-open")) toast.showPopover();
+  toast.classList.add("show");
+  showToast.timer = setTimeout(dismissToast, type === "error" || type === "warning" ? 8000 : 5000);
+}
+$("#closeToast").addEventListener("click", dismissToast);
 
 $("#addVehicleButton").addEventListener("click", () => openVehicleDialog());
 $("#vehicleBrand").innerHTML = '<option value="">Selecione uma marca</option>' + VEHICLE_CATALOG.brands.map(brand => `<option value="${escapeHtml(brand).replaceAll('"', '&quot;')}">${escapeHtml(brand)}</option>`).join("");
@@ -440,13 +468,13 @@ $$('.nav-item').forEach(item => item.addEventListener("click", () => {
 
 $("#vehicleForm").addEventListener("submit", event => {
   event.preventDefault();
-  if (!$("#vehicleName").value.trim() || !$("#vehicleCategory").value.trim()) return showToast("Preencha o modelo e a categoria do veículo");
+  if (!$("#vehicleName").value.trim() || !$("#vehicleCategory").value.trim()) return showToast("Preencha o modelo e a categoria do veículo.", "warning");
   const id = $("#vehicleId").value;
   const garageId = $("#vehicleGarage").value;
   const garage = getGarage(garageId);
   const used = data.vehicles.filter(vehicle => vehicle.garageId === garageId && vehicle.id !== id).length;
   const movingVehicle = !id || data.vehicles.find(vehicle => vehicle.id === id)?.garageId !== garageId;
-  if (movingVehicle && used >= garage.capacity) return showToast(garage.capacity === 0 ? "Esta propriedade não tem vagas permanentes" : "Esta garagem está lotada");
+  if (movingVehicle && used >= garage.capacity) return showToast(garage.capacity === 0 ? "Esta propriedade não tem vagas permanentes." : "Esta garagem está lotada. Escolha outra garagem para este veículo.", "warning");
   const payload = {
     ...(data.vehicles.find(vehicle => vehicle.id === id) || {}),
     id: id || crypto.randomUUID(), name: $("#vehicleName").value.trim(), category: $("#vehicleCategory").value.trim(),
@@ -461,13 +489,26 @@ $("#vehicleForm").addEventListener("submit", event => {
   openVehicleDetails(payload.id);
 });
 
+let pendingDeleteVehicleId = null;
 $("#deleteVehicleButton").addEventListener("click", () => {
   const id = $("#vehicleId").value;
-  if (!id || !confirm("Excluir este veículo?")) return;
+  const vehicle = data.vehicles.find(item => item.id === id);
+  if (!vehicle) return;
+  pendingDeleteVehicleId = id;
+  $("#deleteVehicleName").textContent = vehicle.name;
+  $("#deleteVehicleDialog").showModal();
+  $("#cancelDeleteVehicle").focus();
+});
+$("#deleteVehicleDialog").addEventListener("close", () => { pendingDeleteVehicleId = null; });
+$("#confirmDeleteVehicle").addEventListener("click", () => {
+  const id = pendingDeleteVehicleId;
+  if (!id || !data.vehicles.some(vehicle => vehicle.id === id)) return;
+  pendingDeleteVehicleId = null;
   data.vehicles = data.vehicles.filter(vehicle => vehicle.id !== id);
+  $("#deleteVehicleDialog").close();
   $("#vehicleDialog").close();
   saveData("Veículo excluído");
-  deleteVehiclePhotos(id).catch(() => showToast("Veículo excluído; não foi possível limpar as fotos locais."));
+  deleteVehiclePhotos(id).catch(() => showToast("Veículo excluído; não foi possível limpar as fotos locais.", "warning"));
 });
 
 $("#garageForm").addEventListener("submit", event => {
@@ -475,7 +516,7 @@ $("#garageForm").addEventListener("submit", event => {
   const type = getGarageType({ name: $("#garageName").value.trim(), type: $("#garageType").value });
   const garage = { id: crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value) };
   const profile = getGarageProfile(garage);
-  if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade");
+  if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade.", "warning");
   data.garages.push(garage);
   event.target.reset();
   updateGarageCapacity();

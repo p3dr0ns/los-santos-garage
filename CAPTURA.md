@@ -44,10 +44,32 @@ O perfil e a imagem inicial ficam em `%LOCALAPPDATA%\MinhaGaragemCapture`. O per
 
 1. Deixe o próximo carro na mesma vaga, parado, com a mesma câmera inicial, resolução e sensibilidade da calibração. Feche menus do jogo e mantenha a iluminação semelhante.
 2. No site, abra a ficha do carro e **Fotos do meu carro**.
-3. Confira se o assistente está conectado e calibrado. Clique em **Capturar ensaio · 6 fotos**.
-4. O assistente traz o GTA para a frente, espera um instante, repete os movimentos gravados e captura a janela do jogo em cada posição. Não mova o mouse durante a execução.
+3. Confira se o assistente está conectado e calibrado. Clique em **Preparar ensaio · iniciar com F8 no GTA**. O ensaio fica aguardando, sem mover a câmera.
+4. Volte ao GTA, ajuste a câmera inicial e pressione **F8**. O assistente espera dois segundos, repete os movimentos gravados e captura a janela do jogo em cada posição. Não mova o mouse durante a execução.
 5. **F9** interrompe. Se o GTA perder o foco ou mudar de resolução, o ensaio também para. Nenhum conjunto incompleto substitui suas fotos anteriores.
 6. Volte ao site, confira as seis imagens recebidas e use **Salvar ensaio** para confirmar.
+
+### Painel sobre o GTA e Alt+Tab
+
+O assistente atualizado mostra um painel no canto superior esquerdo do GTA,
+em modo janela ou janela sem bordas. Ele informa o contato recente com o site,
+o perfil salvo, a etapa da calibração, as fotos concluídas e os atalhos.
+O painel não recebe cliques, não entra no Alt+Tab e não ativa sua janela.
+Ele é ocultado antes da imagem de referência e de cada foto, para não aparecer no ensaio.
+Tela cheia exclusiva não tem suporte garantido para esse painel externo.
+
+É possível usar Alt+Tab **antes de iniciar com F8**, enquanto o ensaio está
+preparado. O reconhecimento do processo do GTA é separado do foco da janela:
+voltar ao jogo faz o painel reaparecer. Durante a gravação ou reprodução dos
+movimentos, sair do jogo interrompe a operação. Não há retomada automática
+no meio de um movimento: volte à câmera inicial e reinicie. O perfil salvo e
+as fotos já salvas no navegador são preservados.
+
+Assistentes antigos continuam usando o botão de captura direta. A versão nova
+também aceita esse protocolo, mas aguarda até 20 segundos para você voltar ao
+jogo, em vez de depender de o Windows permitir uma mudança forçada de foco.
+Para receber painel e F8, feche a versão anterior e execute novamente
+`Iniciar captura.cmd`. O instalador/download pelo site ainda não foi implementado.
 
 ## Limites da automação
 
@@ -60,5 +82,6 @@ A compilação, o armazenamento, o protocolo e a interface foram verificados. A 
 ## Verificação técnica
 
 - `tests/run-checks.ps1`: usa Chrome com perfis descartáveis para verificar ficha, edição, seis fotos, persistência, capa, remoção, importação, cancelamento e fluxo do protocolo com respostas simuladas. Não usa o navegador pessoal nem envia comandos ao jogo.
-- `capture/MinhaGaragemCapture.exe --self-test`: verifica perfil, serialização, validação e estrutura de entrada do Windows, sem capturar nem mover o mouse.
+- `capture/MinhaGaragemCapture.exe --self-test`: verifica perfil, serialização, estrutura de entrada, estilos passivos do painel, preparo/cancelamento e protocolo HTTP real em porta temporária. Testa token, origem HTTPS, Host, preflight e rejeição de fotos incompletas; usa perfil temporário, sem registrar atalhos nem mover o mouse.
+- `--diagnostics`: consulta se o GTA foi encontrado, se está em primeiro plano/minimizado e a área da janela. Não altera o foco nem envia comandos ao jogo. Compile como console (`/target:exe`) para ver a saída desses comandos no terminal.
 - O serviço escuta somente em `127.0.0.1:47831`, exige o token da sessão para suas operações e aceita o arquivo local ou a origem HTTPS exata configurada em `capture/site-url.txt`. A câmera usa [SendInput](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput), a calibração usa [Raw Input](https://learn.microsoft.com/en-us/windows/win32/inputdev/raw-input), e os atalhos usam [RegisterHotKey](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey).

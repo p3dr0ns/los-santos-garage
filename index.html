@@ -181,7 +181,25 @@
     </form>
   </dialog>
 
-  <div class="toast" id="toast" role="status"></div>
+  <dialog id="deleteVehicleDialog" class="delete-confirmation" aria-labelledby="deleteVehicleTitle" aria-describedby="deleteVehicleDescription">
+    <div class="dialog-form">
+      <div class="dialog-heading">
+        <div><span class="delete-confirmation-icon" aria-hidden="true">×</span><h2 id="deleteVehicleTitle">Excluir veículo?</h2></div>
+        <button type="button" class="icon-button" data-close="deleteVehicleDialog" aria-label="Fechar confirmação">×</button>
+      </div>
+      <p id="deleteVehicleDescription">Você vai remover <strong id="deleteVehicleName"></strong> da sua coleção. As fotos salvas deste veículo também serão apagadas.</p>
+      <p class="delete-confirmation-note">Esta ação não pode ser desfeita.</p>
+      <div class="delete-confirmation-actions">
+        <button type="button" class="secondary-button" id="cancelDeleteVehicle" data-close="deleteVehicleDialog" autofocus>Manter veículo</button>
+        <button type="button" class="delete-confirmation-button" id="confirmDeleteVehicle">Excluir veículo</button>
+      </div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" popover="manual" hidden>
+    <span class="toast-icon" id="toastIcon" aria-hidden="true"></span>
+    <div class="toast-content" role="status" aria-live="polite" aria-atomic="true"><strong id="toastTitle"></strong><p id="toastMessage"></p></div>
+    <button type="button" class="toast-close" id="closeToast" aria-label="Fechar notificação">×</button>
+  </div>
   <dialog id="vehicleDetailsDialog" class="collection-dialog" aria-labelledby="detailsName">
     <div class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h2 id="detailsName"></h2></div><button type="button" class="icon-button" data-close="vehicleDetailsDialog" aria-label="Fechar ficha">×</button></div>
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span><button type="button" id="detailsPrevious" class="photo-nav previous" aria-label="Foto anterior">‹</button><button type="button" id="detailsNext" class="photo-nav next" aria-label="Próxima foto">›</button></div>
@@ -191,7 +209,7 @@
   <dialog id="photoStudioDialog" class="collection-dialog" aria-labelledby="studioTitle">
     <div class="detail-heading"><div><p class="eyebrow">SEU CARRO. SEU PROJETO.</p><h2 id="studioTitle">Ensaio do veículo</h2><p class="dialog-intro">Quatro vistas e duas cinematográficas. Escolha a capa da sua coleção.</p></div><button type="button" class="icon-button" id="closeStudio" aria-label="Fechar ensaio">×</button></div>
     <div class="studio-body"><div class="capture-connect"><div><strong>Capturar no GTA</strong><p id="captureStatus" role="status">Conecte o assistente do Windows para usar a câmera calibrada.</p></div><button type="button" class="secondary-button" id="connectCapture">Conectar assistente</button></div>
-      <details class="capture-help"><summary>Configurar captura automática</summary><p>Execute <strong>Iniciar captura.cmd</strong> na pasta do projeto e clique em “Abrir organizador” no assistente. Calibre as seis posições uma vez, na mesma vaga e câmera inicial. O assistente repete os movimentos do perfil; o enquadramento precisa ser conferido no jogo.</p></details>
+      <details class="capture-help"><summary>Configurar captura automática</summary><p>Execute <strong>Iniciar captura.cmd</strong> na pasta do projeto e clique em “Abrir organizador” no assistente. Use o GTA em janela sem bordas para ver o painel de status. Calibre uma vez: <strong>F6</strong> inicia e <strong>F7</strong> marca cada posição. Prepare o ensaio aqui, volte à câmera inicial no jogo e pressione <strong>F8</strong>. <strong>F9</strong> cancela. Sair do jogo durante os movimentos interrompe o ensaio; as fotos anteriores são preservadas.</p></details>
       <div class="studio-toolbar"><span id="studioCount">0 de 6 fotos</span><button type="button" class="primary-button" id="captureSession">Capturar ensaio · 6 fotos</button><button type="button" class="danger-button" id="cancelCapture" hidden>Parar captura</button></div>
       <p class="studio-status" id="studioStatus" role="status">Você também pode enviar fotos em cada posição.</p>
       <div class="studio-grid" id="studioGrid"></div>

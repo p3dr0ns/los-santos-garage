@@ -179,6 +179,7 @@ const initialData = {
 let data = loadData();
 let currentFilter = "all";
 let selectedGarage = null;
+let requestedParkingSlot = null;
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -192,6 +193,9 @@ function loadData() {
     const profile = getGarageProfile(garage);
     if (!profile.capacities.includes(Number(garage.capacity))) garage.capacity = profile.capacities.at(-1);
     else garage.capacity = Number(garage.capacity);
+    getGarageParking(garage, saved.vehicles).forEach((vehicle, slot) => {
+      if (vehicle) vehicle.parking = { garageId: garage.id, slot };
+    });
   });
   return saved;
 }
@@ -326,13 +330,37 @@ function renderVehicles() {
     vehicle.favorite = !vehicle.favorite;
     saveData(vehicle.favorite ? "Adicionado aos favoritos" : "Removido dos favoritos");
   }));
+  if (typeof renderGarageView === "function") renderGarageView(vehicles);
 }
 
 function getGarage(id) { return data.garages.find(garage => garage.id === id); }
+function getGarageParking(garage, vehicles) {
+  const members = vehicles.filter(vehicle => vehicle.garageId === garage.id);
+  const slots = Array(Math.max(garage.capacity, members.length)).fill(null);
+  const pending = [];
+  members.forEach(vehicle => {
+    const parking = vehicle.parking;
+    if (parking?.garageId === garage.id && Number.isInteger(parking.slot) && parking.slot >= 0 && parking.slot < slots.length && !slots[parking.slot]) slots[parking.slot] = vehicle;
+    else pending.push(vehicle);
+  });
+  pending.forEach(vehicle => { slots[slots.indexOf(null)] = vehicle; });
+  return slots;
+}
+function parkingForVehicleSave(id, garageId) {
+  const garage = getGarage(garageId);
+  if (!garage) return null;
+  const slots = getGarageParking(garage, data.vehicles);
+  const existing = slots.findIndex(vehicle => vehicle?.id === id);
+  const requested = requestedParkingSlot;
+  const slot = requested?.garageId === garageId && Number.isInteger(requested.slot) && requested.slot >= 0 && requested.slot < garage.capacity && !slots[requested.slot]
+    ? requested.slot : existing >= 0 ? existing : slots.indexOf(null);
+  return slot >= 0 ? { garageId, slot } : null;
+}
 function garageLabel(garage) { return garage ? `${garage.name}${garage.apartment ? ` · Ap. ${garage.apartment}` : ""}` : "Sem garagem"; }
 function garageTagMarkup(garage) { return (garage.tags || []).length ? `<span class="garage-tags">${garage.tags.map(tag => `<span class="garage-tag">${escapeHtml(tag)}</span>`).join("")}</span>` : ""; }
 
 function openVehicleDialog(id = null) {
+  requestedParkingSlot = null;
   const vehicle = data.vehicles.find(item => item.id === id);
   $("#vehicleDialogTitle").textContent = vehicle ? "Editar veículo" : "Adicionar veículo";
   $("#saveVehicleButton").textContent = vehicle ? "Salvar alterações" : "＋ Adicionar veículo";
@@ -467,6 +495,7 @@ $("#vehicleForm").addEventListener("submit", event => {
     ...(data.vehicles.find(vehicle => vehicle.id === id) || {}),
     id: id || crypto.randomUUID(), name: $("#vehicleName").value.trim(), category: $("#vehicleCategory").value.trim(),
     garageId: garageId || null, favorite: $("#vehicleFavorite").checked,
+    parking: parkingForVehicleSave(id, garageId),
     brand: $("#vehicleBrand").value.trim(), paint: $("#vehiclePaint").value.trim(), ...readVehicleWheels(), plate: $("#vehiclePlate").value.trim(), notes: $("#vehicleNotes").value.trim(),
     catalogId: findCatalogVehicle($("#vehicleName").value, selectedCatalogModelId)?.id || null,
     color: data.vehicles.find(vehicle => vehicle.id === id)?.color || carColors[data.vehicles.length % carColors.length]

@@ -495,3 +495,99 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .vehicle-model-fields { grid-template-columns: 1fr; }
 .vehicle-identity-fields { grid-template-columns: 1.4fr 1fr; align-items: start; }
 @media (max-width: 560px) { .vehicle-identity-fields { grid-template-columns: 1fr; gap: 0; } }
+.vehicle-display-tools { display: flex; align-items: center; gap: 12px; }
+.garage-map-mode .vehicle-heading { justify-content: flex-end; margin-bottom: 12px; }
+.garage-map-mode .vehicle-heading > div:first-child { display: none; }
+.view-toggle { display: flex; gap: 3px; padding: 4px; background: #101620; border: 1px solid var(--line); border-radius: 10px; }
+.view-toggle button { padding: 8px 14px; color: var(--muted); background: transparent; border: 0; border-radius: 7px; font-size: 12px; cursor: pointer; }
+.view-toggle button[aria-pressed=true] { color: #fff; background: #2d4263; box-shadow: 0 2px 6px #0004; }
+#garageViewToggle[hidden], #garageRoom[hidden], #vehicleGrid[hidden] { display: none; }
+.garage-room { overflow: hidden; border: 1px solid #344154; border-radius: 20px; background: #111823; }
+.garage-room-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 26px; border-bottom: 1px solid #293549; background: linear-gradient(110deg, #202c40, #131b28); }
+.garage-room-bar h3 { font-size: 20px; margin-top: 7px; }
+.garage-room-bar .eyebrow { font-size: 9px; }
+.garage-room-occupancy { text-align: right; flex-shrink: 0; }
+.garage-room-occupancy strong { display: block; font-size: 25px; }
+.garage-room-occupancy strong > span { color: #7890af; font-size: 18px; }
+.garage-room-occupancy small { color: #99bdd2; font-size: 11px; }
+.garage-room-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); }
+.parking-manager { min-width: 0; padding: 20px 16px; background: #101620; border-right: 1px solid #293549; }
+.parking-floor-label { display: grid; gap: 8px; margin-bottom: 18px; color: #94a8c4; font-size: 11px; }
+.parking-floor-label select { width: 100%; min-width: 0; padding: 10px; background: #1a2535; color: #eef4ff; border: 1px solid #34465e; border-radius: 7px; font: inherit; }
+.parking-menu { display: grid; gap: 4px; margin-top: 18px; }
+.parking-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 11px 8px; border: 1px solid transparent; border-radius: 6px; color: #e5ebf5; background: transparent; text-align: left; cursor: pointer; }
+.parking-menu-item > span { font-size: 10px; color: #7e94b3; font-variant-numeric: tabular-nums; }
+.parking-menu-item strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 500; }
+.parking-menu-item i, .garage-map-legend i { width: 6px; height: 6px; border-radius: 50%; background: #5e6c7c; flex-shrink: 0; }
+.parking-menu-item i { margin-left: auto; }
+.parking-menu-item i.occupied, .garage-map-legend i.occupied { background: #74b5ff; }
+.parking-menu-item:hover { background: #1e2b3c; }
+.parking-menu-item.selected { background: #dce8fa; color: #12243b; border-color: #fff; }
+.parking-menu-item.selected > span { color: #355985; }
+.parking-selection { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #293549; }
+.parking-selection > .eyebrow, .parking-selection > strong { grid-column: 1 / -1; }
+.parking-selection strong { font-size: 15px; overflow-wrap: anywhere; }
+.parking-selection button, .parking-moving button { width: 100%; justify-content: center; min-height: 36px; padding: 10px; font-size: 11px; }
+.parking-selection-hint { margin-top: 22px; padding-top: 18px; color: #8fa1b9; border-top: 1px solid #293549; font-size: 11px; line-height: 1.7; }
+.parking-moving { margin-top: 18px; padding: 14px; border: 1px solid #458bce; border-radius: 10px; background: #1c3552; }
+.parking-moving strong { font-size: 12px; }
+.parking-moving p { font-size: 11px; color: #bed4ef; line-height: 1.7; margin: 10px 0; }
+.garage-map-area { min-width: 0; background: #aab1b8; }
+.garage-map-wall { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 22px 18px; background: linear-gradient(#303c49, #536170 60%, #293746); border-bottom: 7px solid #1c2835; }
+.garage-map-wall strong { color: #eaf2fa; text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; overflow-wrap: anywhere; }
+.garage-map-wall > span { width: 65px; height: 4px; flex-shrink: 0; background: #f0f9ff; box-shadow: 0 0 15px #c7e5ff, 0 8px 20px #f0f9ff88; }
+.garage-floor { position: relative; padding: 24px 24px 64px; background: linear-gradient(90deg, #0002, transparent 8%, transparent 92%, #0002), repeating-linear-gradient(0deg, transparent 0 81px, #56616b1a 82px 83px), repeating-linear-gradient(90deg, #aab2ba 0 112px, #b1bac2 113px 226px); }
+.garage-drive-lane { position: absolute; inset: 0 40%; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; border-left: 1px dashed #e7eced88; border-right: 1px dashed #e7eced88; color: #e4e9eb; }
+.garage-drive-lane span { font-size: 34px; opacity: .7; }
+.parking-bays { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 22%; row-gap: 12px; }
+.parking-bay { position: relative; display: grid; grid-template-columns: 40% minmax(0,1fr); align-items: center; gap: 9px; min-width: 0; min-height: 88px; padding: 16px 10px 10px; color: #273747; background: #ecf1f3b3; border: 2px solid #edf4f5; border-radius: 4px; text-align: left; box-shadow: 0 4px 8px #27394d26; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.parking-bay:nth-child(even) { grid-template-columns: minmax(0,1fr) 40%; }
+.parking-bay:nth-child(even) .parking-car-photo { grid-column: 2; grid-row: 1; }
+.parking-bay:nth-child(even) .parking-car-name { grid-column: 1; grid-row: 1; }
+.parking-bay-number { position: absolute; top: -2px; left: 8px; padding: 2px 6px; background: #edf4f5; color: #526575; font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+.parking-car-photo { display: grid; place-items: center; min-width: 0; overflow: hidden; border-radius: 4px; background: #22364c; aspect-ratio: 16 / 9; }
+.parking-car-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.parking-car-photo .ui-icon { color: #90a8c6; width: 30px; height: 30px; }
+.parking-car-name { min-width: 0; font-size: 11px; font-weight: 700; overflow-wrap: anywhere; line-height: 1.4; }
+.parking-car-name small { display: block; margin-top: 3px; font-size: 9px; color: #617282; font-weight: 400; }
+.parking-bay.vacant { border-style: dashed; background: #b7c1c955; box-shadow: none; color: #5a6a78; }
+.parking-empty-symbol { text-align: center; font-size: 27px; color: #6c7f8e; }
+.parking-bay.selected, .parking-bay:hover { border-color: #2073cb; box-shadow: 0 0 0 3px #2786ef3b, 0 4px 12px #173c6226; }
+.parking-bay.selected .parking-bay-number { background: #2073cb; color: white; }
+.parking-bay.filtered-out { opacity: .4; }
+.parking-bay.move-target { border-color: #347fbd; border-style: dashed; }
+.parking-overflow { font-size: 8px; color: #b12535; position: absolute; bottom: 2px; right: 4px; }
+.garage-entry { position: absolute; inset: auto 24px 15px; text-align: center; border-top: 8px solid transparent; border-image: repeating-linear-gradient(120deg, #d6b650 0 12px, #46515c 12px 24px) 8; }
+.garage-entry span { display: inline-block; padding-top: 7px; color: #546674; font-size: 9px; font-weight: 700; letter-spacing: 2px; }
+.garage-map-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; padding: 12px; background: #1d2937; color: #9fafc3; font-size: 9px; }
+.garage-map-legend > span { display: flex; align-items: center; gap: 6px; }
+.garage-room-note { padding: 13px 24px; color: #8297b2; background: #111a27; font-size: 10px; line-height: 1.7; border-top: 1px solid #293549; }
+.garage-room-unavailable { padding: 40px; text-align: center; }
+.garage-room-unavailable p { margin-top: 12px; color: var(--muted); font-size: 12px; }
+@media (max-width: 1100px) {
+  .garage-room-layout { grid-template-columns: 190px minmax(0, 1fr); }
+  .parking-bay, .parking-bay:nth-child(even) { grid-template-columns: 1fr; gap: 6px; padding: 17px 8px 8px; }
+  .parking-bay:nth-child(even) .parking-car-photo, .parking-bay:nth-child(even) .parking-car-name { grid-column: auto; grid-row: auto; }
+  .parking-car-photo { aspect-ratio: 16 / 9; }
+}
+@media (max-width: 700px) {
+  .vehicle-display-tools { flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+  .garage-room-layout { grid-template-columns: 1fr; }
+  .parking-manager { display: flex; flex-wrap: wrap; gap: 12px; padding: 14px; border-right: 0; border-bottom: 1px solid #293549; }
+  .parking-floor-label { flex: 1 1 100%; margin: 0; }
+  .parking-menu { display: none; }
+  .parking-selection, .parking-moving, .parking-selection-hint { width: 100%; margin: 0; padding-top: 10px; }
+  .parking-selection { grid-template-columns: 1fr 1fr; }
+  .parking-selection > .eyebrow, .parking-selection > strong { grid-column: 1 / -1; }
+  .garage-room-bar { padding: 18px; }
+  .garage-room-bar h3 { font-size: 16px; }
+  .garage-room-bar .eyebrow { font-size: 8px; letter-spacing: 1px; }
+  .garage-floor { padding: 18px 12px 60px; }
+  .parking-bays { column-gap: 18%; row-gap: 14px; }
+  .parking-bay { min-height: 96px; }
+  .parking-car-name { font-size: 10px; }
+  .parking-car-name small { font-size: 8px; }
+  .garage-map-wall { gap: 12px; }
+  .garage-map-wall > span { width: 28px; }
+  .garage-room-note { padding: 12px 16px; }
+}

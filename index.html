@@ -92,11 +92,12 @@
             <p class="eyebrow" id="vehicleEyebrow">VEÍCULOS</p>
             <h2><span id="vehicleTitle">Todos os veículos</span> <span class="section-count" id="vehicleResultCount">0</span></h2>
           </div>
-          <select id="categoryFilter" aria-label="Filtrar por categoria">
+          <div class="vehicle-display-tools"><div id="garageViewToggle" class="view-toggle" role="group" aria-label="Visualização da garagem" hidden><button type="button" data-garage-view="room" aria-pressed="true">Vagas</button><button type="button" data-garage-view="list" aria-pressed="false">Lista</button></div><select id="categoryFilter" aria-label="Filtrar por categoria">
             <option value="all">Todas as categorias</option>
-          </select>
+          </select></div>
         </div>
         <div id="activeGarageFilter" class="active-garage-filter" hidden><span id="activeGarageName"></span><button type="button" id="clearGarageFilter">Limpar filtro <span aria-hidden="true">×</span></button></div>
+        <section id="garageRoom" class="garage-room" aria-label="Mapa de vagas da garagem" hidden></section>
         <div class="vehicle-grid" id="vehicleGrid"></div>
         <div class="empty-state" id="emptyState" hidden>
           <svg class="ui-icon"><use href="#ui-car"/></svg>
@@ -215,6 +216,7 @@
   <script src="app.js"></script>
   <script src="catalog-ui.js"></script>
   <script src="wheels-ui.js"></script>
+  <script src="garage-view.js"></script>
   <script src="vehicle-details.js"></script>
 
 </body>

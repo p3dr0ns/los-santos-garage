@@ -22,6 +22,12 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
   Towers tem 10 vagas, sem exigir número do apartamento. Use o nome da garagem
   para diferenciar as unidades, se quiser.
 - Ao abrir uma garagem, aparecem apenas os veículos guardados nela.
+- Vista 2D com vagas numeradas, fotos de referência e posições salvas por veículo.
+  Selecione um carro e use **Trocar posição**; escolher uma vaga ocupada troca os
+  dois carros. Garagens maiores são divididas em setores de até 10 vagas.
+  Vagas livres permitem cadastrar um veículo diretamente naquela posição.
+  A opção **Lista** mantém a visualização em cartões. O mapa é ilustrativo,
+  sem reprodução 3D do interior do GTA e sem alterar a organização dentro do jogo.
 - Remover uma garagem mantém seus veículos como **Sem garagem**, para realocação posterior.
 - Layout responsivo para computador e celular.
 

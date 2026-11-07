@@ -73,6 +73,10 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleDialog').close(); openGarageDialog('g1'); document.querySelector('#garageTags').value='JDM, Drift'; document.querySelector('#garageTags').scrollIntoView({block:'center'});" } | Out-Null
         $garageScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "garage-form-$tag.png"), [Convert]::FromBase64String($garageScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#garageDialog').close(); data.vehicles.push({id:'map-preview-a',name:'Sentinel GTS',catalogId:'sentinel5',category:'Esportivo',garageId:'g1',parking:{garageId:'g1',slot:0}},{id:'map-preview-b',name:'Cypher',catalogId:'cypher',category:'Esportivo',garageId:'g1',parking:{garageId:'g1',slot:5}},{id:'map-preview-c',name:'Rhinehart',catalogId:'rhinehart',category:'Sedã',garageId:'g1',parking:{garageId:'g1',slot:7}}); document.querySelector('[data-filter=garages]').click(); document.querySelector('.garage-card[data-garage-id=g1] .garage-open').click(); selectParkingSlot(0);" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageRoom img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
+        $mapScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "garage-map-$tag.png"), [Convert]::FromBase64String($mapScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

@@ -13,6 +13,15 @@ Os cadastros ficam no `localStorage` e as fotos no `IndexedDB` do navegador usad
 
 ## Recursos atuais
 
+- cadastro de veículo com foto automática, sem campo de URL; marca e categoria agrupadas, com ações de salvar acessíveis durante a rolagem;
+- cada garagem abre uma visão exclusiva de seus veículos, com retorno à lista de garagens;
+- edição e remoção de garagens, tags de tema separadas por vírgula e identificação por apartamento (obrigatória em Eclipse Towers, com 10 vagas por unidade);
+- remover uma garagem mantém os veículos, fotos e configurações na coleção como **Sem garagem**, permitindo realocá-los depois.
+
+- configurador 2D no portfólio, pelo botão **Personalizar em 2D**: pintura por área delimitada na foto, rodas ilustrativas posicionáveis, comparação com o original e salvamento por veículo;
+- listas de peças específicas do GTA Base nos modelos já coletados. A coleta inicial cobre 33 modelos; modelos sem dados exibem um aviso. Peças são registradas na ficha, sem montagem visual de para-choques ou aerofólios. As imagens coletadas do GTA Base ficam locais para uso offline; as fotos originais são preservadas;
+- atualização da coleta por `scripts/update-customization.ps1 -ModelIds zentorno`, com intervalo entre requisições e interrupção ao encontrar limite da fonte.
+
 - cadastro e edição de veículos;
 - exclusão e marcação de favoritos;
 - cadastro de garagens e controle de vagas;

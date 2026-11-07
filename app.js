@@ -46,6 +46,7 @@ const garageProfiles = {
 };
 
 function getGarageProfile(garage) {
+  if (getGarageType(garage) === "safehouse" && /eclipse/i.test(garage.name)) return { capacities: [10], note: "Eclipse Towers: 10 vagas por apartamento. Cadastre cada apartamento separadamente." };
   return garageProfiles[getGarageType(garage)];
 }
 
@@ -67,16 +68,21 @@ function updateGarageCapacity() {
 function renderGaragePreview() {
   const garage = { name: $("#garageName").value.trim(), type: $("#garageType").value };
   const type = getGarageType(garage);
-  const profile = garageProfiles[type];
+  const profile = getGarageProfile(garage);
   const capacity = Number($("#garageCapacity").value);
   $("#garagePreviewIcon").innerHTML = garageIcon(garage);
-  $("#garagePreviewName").textContent = garage.name || garageTypes[type].label;
+  garage.apartment = $("#garageApartment").value.trim();
+  $("#garagePreviewName").textContent = garageLabel({ ...garage, name: garage.name || garageTypes[type].label });
+  const apartmentVisible = type === "safehouse";
+  $("#garageApartmentField").hidden = !apartmentVisible;
+  $("#garageApartment").required = apartmentVisible && /eclipse/i.test(garage.name);
   $("#garageCapacityTotal").textContent = capacity;
   $("#garageCapacityUnit").textContent = type === "hangar" ? "aeronaves" : capacity === 1 ? "vaga" : "vagas";
   $("#garageCapacityConfig").hidden = profile.capacities.length === 1;
   $("#garageCapacityOptions").innerHTML = profile.capacities.map(value => `<button type="button" class="capacity-choice ${value === capacity ? "selected" : ""}" data-capacity="${value}" aria-pressed="${value === capacity}">${value} vagas</button>`).join("");
   $$("[data-property-type]").forEach(button => {
-    const selected = button.dataset.propertyType === type;
+    const eclipse = type === "safehouse" && /eclipse/i.test(garage.name);
+    const selected = button.dataset.propertyType === type && (button.dataset.propertyName ? eclipse : !eclipse);
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
@@ -88,7 +94,8 @@ function renderPropertyPicker() {
     const info = garageTypes[type];
     const capacity = garageProfiles[type].capacities.at(-1);
     return `<button type="button" class="property-choice" data-property-type="${type}" aria-pressed="false">${garageIcon({name: "", type})}<span><strong>${info.label.replace(" (50 vagas)", "")}</strong><small>${capacity ? `${garageProfiles[type].capacities.length > 1 ? "Até " : ""}${capacity} ${type === "hangar" ? "aeronaves" : "vagas"}` : "Sem vagas permanentes"}</small></span><span class="property-check" aria-hidden="true">✓</span></button>`;
-  }).join("");
+  }).join("") + `<button type="button" class="property-choice" data-property-type="safehouse" data-property-name="Eclipse Towers" aria-pressed="false">${garageIcon({ name: "Eclipse Towers", type: "safehouse" })}<span><strong>Eclipse Towers</strong><small>10 vagas por apartamento</small></span><span class="property-check" aria-hidden="true">✓</span></button>`;
+  $("#propertyPicker [data-property-type='safehouse']").after($("#propertyPicker [data-property-name='Eclipse Towers']"));
 }
 
 function getGarageType(garage) {
@@ -139,7 +146,7 @@ function findCatalogVehicle(value, id = "") {
 function updateVehiclePreview() {
   const name = $("#vehicleName").value.trim();
   const savedVehicle = data.vehicles.find(vehicle => vehicle.id === $("#vehicleId").value);
-  const image = getVehicleImage({ ...savedVehicle, name, image: $("#vehicleImage").value.trim() });
+  const image = getVehicleImage({ ...savedVehicle, name, catalogId: selectedCatalogModelId });
   $("#vehiclePreviewName").textContent = name || "Qual é o próximo carro?";
   $("#vehiclePreviewCategory").textContent = $("#vehicleCategory").value.trim() || "SUA PRÓXIMA AQUISIÇÃO";
   const preview = $("#vehiclePreviewImage");
@@ -150,7 +157,7 @@ function updateVehiclePreview() {
     else if (preview.complete && preview.naturalWidth > 0) preview.hidden = false;
   } else preview.removeAttribute("src");
   const hasSessionPhoto = savedVehicle && [...photoUrls.keys()].some(key => key.startsWith(`${savedVehicle.id}:`));
-  $("#vehicleImageStatus").textContent = image ? (hasSessionPhoto ? "Foto do seu ensaio" : $("#vehicleImage").value.trim() ? "Imagem personalizada" : "Imagem automática") : name ? "Sem imagem disponível" : "Prévia do veículo";
+  $("#vehicleImageStatus").textContent = image ? (hasSessionPhoto ? "Foto do seu ensaio" : "Imagem automática") : name ? "Sem imagem disponível" : "Prévia do veículo";
 }
 
 function renderVehicleGaragePicker() {
@@ -161,10 +168,10 @@ function renderVehicleGaragePicker() {
     const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id && vehicle.id !== vehicleId).length;
     const free = Math.max(0, garage.capacity - used);
     const blocked = free === 0 && garage.id !== existingGarageId;
-    return `<button type="button" class="property-choice ${garage.id === selectedId ? "selected" : ""}" data-vehicle-garage="${garage.id}" aria-pressed="${garage.id === selectedId}" ${blocked ? "disabled" : ""}>${garageIcon(garage)}<span><strong>${escapeHtml(garage.name)}</strong><small>${garage.capacity === 0 ? "Sem vagas permanentes" : free ? `${free} de ${garage.capacity} vagas livres` : "Garagem lotada"}</small></span><span class="property-check" aria-hidden="true">✓</span></button>`;
-  }).join("");
+    return `<button type="button" class="property-choice ${garage.id === selectedId ? "selected" : ""}" data-vehicle-garage="${garage.id}" aria-pressed="${garage.id === selectedId}" ${blocked ? "disabled" : ""}>${garageIcon(garage)}<span><strong>${escapeHtml(garageLabel(garage))}</strong><small>${garage.capacity === 0 ? "Sem vagas permanentes" : free ? `${free} de ${garage.capacity} vagas livres` : "Garagem lotada"}</small>${garageTagMarkup(garage)}</span><span class="property-check" aria-hidden="true">✓</span></button>`;
+  }).join("") + `<button type="button" class="property-choice ${!selectedId ? "selected" : ""}" data-vehicle-garage="" aria-pressed="${!selectedId}"><span><strong>Sem garagem</strong><small>Decidir depois</small></span></button>`;
   const selected = getGarage(selectedId);
-  $("#vehicleGarageSummary").textContent = selected?.name || "Selecione uma garagem";
+  $("#vehicleGarageSummary").textContent = selected ? garageLabel(selected) : "Sem garagem";
 }
 
 function getVehicleImage(vehicle) {
@@ -173,6 +180,9 @@ function getVehicleImage(vehicle) {
   const firstPhoto = [...photoUrls].find(([key]) => key.startsWith(`${vehicle.id}:`));
   if (firstPhoto) return firstPhoto[1];
   if (vehicle.image) return vehicle.image;
+  const catalogModel = findCatalogVehicle(vehicle.name, vehicle.catalogId);
+  const automatic = VEHICLE_CUSTOMIZATION[catalogModel?.id];
+  if (automatic?.localImage || automatic?.image) return automatic.localImage || automatic.image;
   const name = vehicle.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
   const model = vehicleImages[name];
   return model ? `assets/vehicles/${model}.png` : "";
@@ -225,8 +235,8 @@ function saveData(message) {
 function render() {
   document.body.dataset.view = currentFilter;
   $(".stats").hidden = currentFilter !== "all";
-  $("#garageSection").hidden = currentFilter !== "all" && currentFilter !== "garages";
-  $("#vehicleSection").hidden = currentFilter === "garages";
+  $("#garageSection").hidden = !!selectedGarage || (currentFilter !== "all" && currentFilter !== "garages");
+  $("#vehicleSection").hidden = currentFilter === "garages" && !selectedGarage;
   const pages = {
     all: ["Visão geral", "Sua coleção, organizada do seu jeito."],
     vehicles: ["Seus veículos", "Encontre cada carro e o lugar que ele chama de casa."],
@@ -235,6 +245,12 @@ function render() {
   };
   $("#pageTitle").textContent = pages[currentFilter][0];
   $("#pageDescription").textContent = pages[currentFilter][1];
+  if (selectedGarage) {
+    $("#pageTitle").textContent = garageLabel(getGarage(selectedGarage));
+    const garage = getGarage(selectedGarage);
+    $("#pageDescription").textContent = garage.tags?.length ? `Tema: ${garage.tags.join(" · ")}` : "Os veículos guardados nesta garagem.";
+  }
+  $("#garageDetailActions").hidden = !selectedGarage;
   const free = data.garages.reduce((sum, garage) => sum + Math.max(0, garage.capacity - data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length), 0);
   $("#vehicleCount").textContent = data.vehicles.length;
   $("#garageCount").textContent = data.garages.length;
@@ -248,7 +264,7 @@ function render() {
   $("#garageSectionCount").textContent = data.garages.length;
   const totalCapacity = data.garages.reduce((sum, garage) => sum + garage.capacity, 0);
   $("#sidebarStorageFill").style.width = `${totalCapacity ? Math.min(100, data.vehicles.length / totalCapacity * 100) : 0}%`;
-  $("#searchInput").disabled = currentFilter === "garages";
+  $("#searchInput").disabled = currentFilter === "garages" && !selectedGarage;
   renderGarages();
   renderCategories();
   renderVehicles();
@@ -259,22 +275,24 @@ function renderGarages() {
     const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
     const percent = garage.capacity > 0 ? Math.min(100, used / garage.capacity * 100) : 0;
     const free = Math.max(0, garage.capacity - used);
-    return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" role="button" tabindex="0" aria-label="Ver veículos: ${escapeHtml(garage.name).replaceAll('"', '&quot;')}" data-garage-id="${garage.id}" style="--card-color:${garageColors[index % garageColors.length]}">
+    return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" data-garage-id="${garage.id}" style="--card-color:${garageColors[index % garageColors.length]}"><button type="button" class="garage-open" aria-label="Ver veículos: ${escapeHtml(garageLabel(garage)).replaceAll('"', '&quot;')}">
       <div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
-      <h3>${escapeHtml(garage.name)}</h3>
+      <h3>${escapeHtml(garageLabel(garage))}</h3>${garageTagMarkup(garage)}
       <p class="garage-kind" title="${escapeHtml(getGarageProfile(garage).note).replaceAll('"', '&quot;')}">${garageTypes[getGarageType(garage)].label}</p>
       <div class="progress"><span style="width:${percent}%"></span></div>
       <div class="garage-card-bottom"><p><strong>${used}</strong> de ${garage.capacity} ocupadas</p><svg class="ui-icon"><use href="#ui-arrow"/></svg></div>
-    </article>`;
+    </button><div class="garage-card-tools"><button type="button" data-edit-garage="${garage.id}">Editar garagem</button></div></article>`;
   }).join("");
-  $$(".garage-card").forEach(card => card.addEventListener("click", () => {
-    selectedGarage = selectedGarage === card.dataset.garageId ? null : card.dataset.garageId;
-    currentFilter = "vehicles";
-    setActiveNav("vehicles");
+  $$(".garage-card").forEach(card => card.addEventListener("click", event => {
+    if (event.target.closest("[data-edit-garage]")) { openGarageDialog(card.dataset.garageId); return; }
+    selectedGarage = card.dataset.garageId;
+    currentFilter = "garages";
+    $("#searchInput").value = "";
+    $("#categoryFilter").value = "all";
+    setActiveNav("garages");
     render();
-  }));
-  $$(".garage-card").forEach(card => card.addEventListener("keydown", event => {
-    if (event.key === "Enter" || event.key === " ") { event.preventDefault(); card.click(); }
+    $("#pageTitle").focus({ preventScroll: true });
+    window.scrollTo(0, 0);
   }));
 }
 
@@ -291,7 +309,7 @@ function renderVehicles() {
   const category = $("#categoryFilter").value;
   let vehicles = data.vehicles.filter(vehicle => {
     const garage = getGarage(vehicle.garageId);
-    const matchesQuery = `${vehicle.name} ${vehicle.brand || ""} ${vehicle.category} ${vehicle.plate || ""} ${garage?.name || ""}`.toLowerCase().includes(query);
+    const matchesQuery = `${vehicle.name} ${vehicle.brand || ""} ${vehicle.category} ${vehicle.plate || ""} ${garageLabel(garage)} ${(garage?.tags || []).join(" ")}`.toLowerCase().includes(query);
     const matchesCategory = category === "all" || vehicle.category === category;
     const matchesGarage = !selectedGarage || vehicle.garageId === selectedGarage;
     const matchesMode = currentFilter !== "favorites" || vehicle.favorite;
@@ -299,10 +317,10 @@ function renderVehicles() {
   });
 
   const titles = { favorites: "Veículos favoritos" };
-  $("#vehicleTitle").textContent = selectedGarage ? getGarage(selectedGarage)?.name : (titles[currentFilter] || "Todos os veículos");
+  $("#vehicleTitle").textContent = selectedGarage ? garageLabel(getGarage(selectedGarage)) : (titles[currentFilter] || "Todos os veículos");
   $("#vehicleResultCount").textContent = vehicles.length;
   $("#activeGarageFilter").hidden = !selectedGarage;
-  $("#activeGarageName").textContent = selectedGarage ? `Garagem: ${getGarage(selectedGarage)?.name || ""}` : "";
+  $("#activeGarageName").textContent = selectedGarage ? `Garagem: ${garageLabel(getGarage(selectedGarage))}` : "";
   $("#vehicleGrid").innerHTML = vehicles.map(vehicle => {
     const garage = getGarage(vehicle.garageId);
     const image = getVehicleImage(vehicle);
@@ -313,7 +331,7 @@ function renderVehicles() {
         ${image ? `<img src="${escapeHtml(image).replaceAll('"', '&quot;')}" alt="${escapeHtml(vehicle.name).replaceAll('"', '&quot;')}" loading="lazy" decoding="async">` : ""}
         <span class="vehicle-category-badge">${escapeHtml(vehicle.category)}</span>
       </div>
-      <div class="vehicle-info"><h3>${escapeHtml(vehicle.name)}</h3><div class="vehicle-meta"><span class="vehicle-garage">${garage ? garageIcon(garage, "garage-icon-small") : ""} ${escapeHtml(garage?.name || "Sem garagem")}</span><svg class="ui-icon vehicle-detail-arrow"><use href="#ui-arrow"/></svg></div></div>
+      <div class="vehicle-info"><h3>${escapeHtml(vehicle.name)}</h3><div class="vehicle-meta"><span class="vehicle-garage">${garage ? garageIcon(garage, "garage-icon-small") : ""} ${escapeHtml(garageLabel(garage))}</span><svg class="ui-icon vehicle-detail-arrow"><use href="#ui-arrow"/></svg></div></div>
     </article>`;
   }).join("");
   $$(".vehicle-image img").forEach(img => {
@@ -339,9 +357,10 @@ function renderVehicles() {
 }
 
 function getGarage(id) { return data.garages.find(garage => garage.id === id); }
+function garageLabel(garage) { return garage ? `${garage.name}${garage.apartment ? ` · Ap. ${garage.apartment}` : ""}` : "Sem garagem"; }
+function garageTagMarkup(garage) { return (garage.tags || []).length ? `<span class="garage-tags">${garage.tags.map(tag => `<span class="garage-tag">${escapeHtml(tag)}</span>`).join("")}</span>` : ""; }
 
 function openVehicleDialog(id = null) {
-  if (!data.garages.length) return showToast("Crie uma garagem antes de adicionar seu veículo.", "info");
   const vehicle = data.vehicles.find(item => item.id === id);
   $("#vehicleDialogTitle").textContent = vehicle ? "Editar veículo" : "Adicionar veículo";
   $("#saveVehicleButton").textContent = vehicle ? "Salvar alterações" : "＋ Adicionar veículo";
@@ -361,13 +380,11 @@ function openVehicleDialog(id = null) {
   setVehicleWheels(vehicle);
   $("#vehiclePlate").value = vehicle?.plate || "";
   $("#vehicleNotes").value = vehicle?.notes || "";
-  $("#vehicleImage").value = vehicle?.image || "";
   $("#vehicleFavorite").checked = vehicle?.favorite || false;
-  $("#vehicleGarage").innerHTML = data.garages.map(garage => `<option value="${garage.id}">${escapeHtml(garage.name)}</option>`).join("");
+  $("#vehicleGarage").innerHTML = '<option value="">Sem garagem</option>' + data.garages.map(garage => `<option value="${garage.id}">${escapeHtml(garageLabel(garage))}</option>`).join("");
   const availableGarages = data.garages.filter(garage => data.vehicles.filter(item => item.garageId === garage.id).length < garage.capacity);
-  $("#vehicleGarage").value = vehicle?.garageId || availableGarages.find(garage => garage.id === selectedGarage)?.id || availableGarages[0]?.id || data.garages[0].id;
+  $("#vehicleGarage").value = vehicle ? vehicle.garageId || "" : availableGarages.find(garage => garage.id === selectedGarage)?.id || availableGarages[0]?.id || "";
   $("#deleteVehicleButton").hidden = !vehicle;
-  $("#vehicleImageDetails").open = Boolean(vehicle?.image);
   updateVehiclePreview();
   renderVehicleGaragePicker();
   resetCatalogSearch();
@@ -419,8 +436,6 @@ $("#vehicleName").addEventListener("input", () => {
   updateVehiclePreview();
 });
 $("#vehicleCategory").addEventListener("input", updateVehiclePreview);
-$("#vehicleImage").addEventListener("input", updateVehiclePreview);
-$("#vehicleImage").addEventListener("invalid", () => { $("#vehicleImageDetails").open = true; });
 $("#vehiclePreviewImage").addEventListener("load", () => { $("#vehiclePreviewImage").hidden = false; });
 $("#vehiclePreviewImage").addEventListener("error", () => {
   $("#vehiclePreviewImage").hidden = true;
@@ -432,16 +447,14 @@ $("#vehicleGaragePicker").addEventListener("click", event => {
   $("#vehicleGarage").value = button.dataset.vehicleGarage;
   renderVehicleGaragePicker();
 });
-$("#addGarageButton").addEventListener("click", () => {
-  updateGarageCapacity();
-  $("#garageDialog").showModal();
-});
+$("#addGarageButton").addEventListener("click", () => openGarageDialog());
 $("#garageType").innerHTML = '<option value="auto">Automático pelo nome</option>' + Object.entries(garageTypes).map(([type, info]) => `<option value="${type}">${info.label}</option>`).join("");
 renderPropertyPicker();
 $("#propertyPicker").addEventListener("click", event => {
   const button = event.target.closest("[data-property-type]");
   if (!button) return;
   $("#garageType").value = button.dataset.propertyType;
+  if (button.dataset.propertyName) $("#garageName").value = button.dataset.propertyName;
   updateGarageCapacity();
 });
 $("#garageCapacityOptions").addEventListener("click", event => {
@@ -451,9 +464,12 @@ $("#garageCapacityOptions").addEventListener("click", event => {
   renderGaragePreview();
 });
 $("#garageName").addEventListener("input", updateGarageCapacity);
+$("#garageApartment").addEventListener("input", renderGaragePreview);
 $("#garageType").addEventListener("change", updateGarageCapacity);
 $("#searchInput").addEventListener("input", renderVehicles);
-$("#clearGarageFilter").addEventListener("click", () => { selectedGarage = null; render(); });
+$("#clearGarageFilter").addEventListener("click", returnToGarages);
+$("#backToGarages").addEventListener("click", returnToGarages);
+$("#editSelectedGarage").addEventListener("click", () => openGarageDialog(selectedGarage));
 $(".brand").addEventListener("click", event => { event.preventDefault(); $('[data-filter="all"]').click(); });
 $("#categoryFilter").addEventListener("change", renderVehicles);
 $$('[data-close]').forEach(button => button.addEventListener("click", () => $("#" + button.dataset.close).close()));
@@ -472,13 +488,14 @@ $("#vehicleForm").addEventListener("submit", event => {
   const id = $("#vehicleId").value;
   const garageId = $("#vehicleGarage").value;
   const garage = getGarage(garageId);
+  if (garageId && !garage) return showToast("Selecione uma garagem existente.", "warning");
   const used = data.vehicles.filter(vehicle => vehicle.garageId === garageId && vehicle.id !== id).length;
   const movingVehicle = !id || data.vehicles.find(vehicle => vehicle.id === id)?.garageId !== garageId;
-  if (movingVehicle && used >= garage.capacity) return showToast(garage.capacity === 0 ? "Esta propriedade não tem vagas permanentes." : "Esta garagem está lotada. Escolha outra garagem para este veículo.", "warning");
+  if (garage && movingVehicle && used >= garage.capacity) return showToast(garage.capacity === 0 ? "Esta propriedade não tem vagas permanentes." : "Esta garagem está lotada. Escolha outra garagem para este veículo.", "warning");
   const payload = {
     ...(data.vehicles.find(vehicle => vehicle.id === id) || {}),
     id: id || crypto.randomUUID(), name: $("#vehicleName").value.trim(), category: $("#vehicleCategory").value.trim(),
-    garageId, image: $("#vehicleImage").value.trim(), favorite: $("#vehicleFavorite").checked,
+    garageId: garageId || null, favorite: $("#vehicleFavorite").checked,
     brand: $("#vehicleBrand").value.trim(), paint: $("#vehiclePaint").value.trim(), ...readVehicleWheels(), plate: $("#vehiclePlate").value.trim(), notes: $("#vehicleNotes").value.trim(),
     catalogId: findCatalogVehicle($("#vehicleName").value, selectedCatalogModelId)?.id || null,
     color: data.vehicles.find(vehicle => vehicle.id === id)?.color || carColors[data.vehicles.length % carColors.length]
@@ -514,14 +531,61 @@ $("#confirmDeleteVehicle").addEventListener("click", () => {
 $("#garageForm").addEventListener("submit", event => {
   event.preventDefault();
   const type = getGarageType({ name: $("#garageName").value.trim(), type: $("#garageType").value });
-  const garage = { id: crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value) };
+  const id = $("#garageId").value;
+  const garage = { id: id || crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value), apartment: type === "safehouse" ? $("#garageApartment").value.trim() : "", tags: [...new Set($("#garageTags").value.split(",").map(tag => tag.trim()).filter(Boolean))].slice(0, 10) };
   const profile = getGarageProfile(garage);
   if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade.", "warning");
-  data.garages.push(garage);
+  if (type === "safehouse" && /eclipse/i.test(garage.name) && !garage.apartment) { $("#garageApartment").focus(); return showToast("Informe o número do apartamento no Eclipse Towers.", "warning"); }
+  if (garage.apartment && data.garages.some(item => item.id !== id && normalizeVehicleText(item.name) === normalizeVehicleText(garage.name) && normalizeVehicleText(item.apartment) === normalizeVehicleText(garage.apartment))) return showToast("Este apartamento já tem uma garagem cadastrada.", "warning");
+  const used = data.vehicles.filter(vehicle => vehicle.garageId === id).length;
+  if (id && garage.capacity < used) return showToast(`Esta garagem tem ${used} veículos. Mova os carros antes de reduzir as vagas.`, "warning");
+  const previous = data.garages;
+  data.garages = id ? data.garages.map(item => item.id === id ? garage : item) : [...data.garages, garage];
+  if (!saveData(id ? "Garagem atualizada" : "Garagem criada")) { data.garages = previous; return; }
   event.target.reset();
   updateGarageCapacity();
   $("#garageDialog").close();
-  saveData("Garagem criada");
+});
+
+function returnToGarages() {
+  selectedGarage = null; currentFilter = "garages";
+  $("#searchInput").value = ""; $("#categoryFilter").value = "all";
+  setActiveNav("garages"); render();
+}
+
+function openGarageDialog(id = null) {
+  const garage = getGarage(id);
+  $("#garageForm").reset();
+  $("#garageId").value = garage?.id || "";
+  $("#garageName").value = garage?.name || "";
+  $("#garageType").value = garage ? getGarageType(garage) : "garage";
+  $("#garageApartment").value = garage?.apartment || "";
+  $("#garageTags").value = (garage?.tags || []).join(", ");
+  $("#garageDialogTitle").textContent = garage ? "Editar garagem" : "Adicionar garagem";
+  $("#saveGarageButton").textContent = garage ? "Salvar alterações" : "＋ Criar garagem";
+  $("#deleteGarageButton").hidden = !garage;
+  $("#garageCapacity").dataset.propertyType = "";
+  updateGarageCapacity();
+  if (garage) { $("#garageCapacity").value = garage.capacity; renderGaragePreview(); }
+  $("#garageDialog").showModal();
+}
+
+let pendingDeleteGarageId = null;
+$("#deleteGarageButton").addEventListener("click", () => {
+  const garage = getGarage($("#garageId").value); if (!garage) return;
+  pendingDeleteGarageId = garage.id;
+  const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
+  $("#deleteGarageDescription").textContent = `Remover ${garageLabel(garage)}? ${used ? `Os ${used} veículos serão mantidos na coleção, como “Sem garagem”, junto com suas fotos e configurações.` : "Esta garagem está vazia."}`;
+  $("#deleteGarageDialog").showModal(); $("#cancelDeleteGarage").focus();
+});
+$("#confirmDeleteGarage").addEventListener("click", () => {
+  if (!getGarage(pendingDeleteGarageId)) return;
+  const previousGarages = data.garages, previousVehicles = data.vehicles, previousSelected = selectedGarage;
+  data.garages = data.garages.filter(garage => garage.id !== pendingDeleteGarageId);
+  data.vehicles = data.vehicles.map(vehicle => vehicle.garageId === pendingDeleteGarageId ? { ...vehicle, garageId: null } : vehicle);
+  if (selectedGarage === pendingDeleteGarageId) selectedGarage = null;
+  if (!saveData("Garagem removida. Seus veículos foram preservados.")) { data.garages = previousGarages; data.vehicles = previousVehicles; selectedGarage = previousSelected; render(); return; }
+  pendingDeleteGarageId = null; $("#deleteGarageDialog").close(); $("#garageDialog").close();
 });
 
 updateGarageCapacity();

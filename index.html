@@ -50,7 +50,7 @@
       <header class="topbar">
         <div>
           <p class="eyebrow page-breadcrumb">MINHA GARAGEM <span>/</span> GTA ONLINE</p>
-          <h1 id="pageTitle">Visão geral</h1>
+          <h1 id="pageTitle" tabindex="-1">Visão geral</h1>
           <p class="page-description" id="pageDescription">Sua coleção, organizada do seu jeito.</p>
         </div>
         <div class="top-actions">
@@ -85,6 +85,7 @@
         <div class="garage-list" id="garageList"></div>
       </section>
 
+      <div id="garageDetailActions" class="garage-detail-actions" hidden><button type="button" class="secondary-button" id="backToGarages">← Todas as garagens</button><button type="button" class="secondary-button" id="editSelectedGarage">Editar garagem</button></div>
       <section class="vehicle-section" id="vehicleSection">
         <div class="section-heading vehicle-heading">
           <div>
@@ -121,11 +122,11 @@
       </div>
       <div class="form-row vehicle-model-fields">
         <div class="model-search-field"><label for="vehicleName">Modelo do veículo</label><input id="vehicleName" required maxlength="100" placeholder="Busque: Sentinel, Sultan, Bati…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="vehicleModelSuggestions" aria-describedby="vehicleModelHint"><div id="vehicleModelSuggestions" class="model-suggestions" role="listbox" aria-label="Modelos do catálogo" hidden></div><small id="vehicleModelHint">Busque um carro ou uma moto para preencher os dados.</small></div>
-        <label>Categoria<input id="vehicleCategory" required maxlength="50" list="vehicleCategories" placeholder="Ex.: Super" autocomplete="off"><datalist id="vehicleCategories"></datalist></label>
+
       </div>
-      <label>Marca<select id="vehicleBrand" aria-describedby="vehicleBrandHint"><option value="">Selecione uma marca</option></select><small class="catalog-field-hint" id="vehicleBrandHint">Preenchida ao escolher um modelo. Você também pode selecionar uma marca para filtrar a busca.</small></label>
+      <div class="form-row vehicle-identity-fields"><label>Marca<select id="vehicleBrand" aria-describedby="vehicleBrandHint"><option value="">Selecione uma marca</option></select><small class="catalog-field-hint" id="vehicleBrandHint">Preenchida ao escolher um modelo. Você também pode selecionar uma marca para filtrar a busca.</small></label><label>Categoria<input id="vehicleCategory" required maxlength="50" list="vehicleCategories" placeholder="Ex.: Super" autocomplete="off"><datalist id="vehicleCategories"></datalist></label></div>
       <fieldset class="property-fieldset vehicle-garage-fieldset"><legend>Onde vai ficar? <span id="vehicleGarageSummary"></span></legend><div id="vehicleGaragePicker" class="vehicle-garage-picker"></div></fieldset>
-      <select id="vehicleGarage" hidden aria-label="Garagem" required></select>
+      <select id="vehicleGarage" hidden aria-label="Garagem"></select>
       <div class="vehicle-extras">
         <details class="vehicle-image-details" id="vehicleCustomizationDetails"><summary>Personalizações e observações <span>opcional</span></summary>
           <div class="form-row"><label>Cor / pintura<input id="vehiclePaint" maxlength="100" placeholder="Ex.: Azul metálico e preto"></label><label>Placa<input id="vehiclePlate" maxlength="16" placeholder="Sua placa"></label></div>
@@ -136,7 +137,6 @@
           </fieldset>
           <label>Observações<textarea id="vehicleNotes" rows="3" maxlength="2000" placeholder="Aerofólio, motor, cor das rodas, detalhes do projeto..."></textarea></label>
         </details>
-        <details class="vehicle-image-details" id="vehicleImageDetails"><summary>Imagem de referência <span>opcional</span></summary><label for="vehicleImage">URL da imagem<input id="vehicleImage" type="url" placeholder="https://..." aria-describedby="vehicleImageHelp"></label><p id="vehicleImageHelp">Usada quando o carro ainda não tem um ensaio. Depois de salvar o veículo, adicione suas fotos e escolha a capa na ficha.</p></details>
         <label class="favorite-toggle"><input id="vehicleFavorite" type="checkbox"><span class="favorite-toggle-star" aria-hidden="true">★</span><span>Marcar como favorito<small>Encontre rápido na sua coleção</small></span></label>
       </div>
       <div class="vehicle-dialog-footer">
@@ -151,6 +151,7 @@
 
   <dialog id="garageDialog" aria-labelledby="garageDialogTitle" aria-describedby="garageDialogIntro">
     <form method="dialog" id="garageForm" class="dialog-form garage-form">
+      <input type="hidden" id="garageId">
       <div class="dialog-heading">
         <div><p class="eyebrow">SUA COLEÇÃO, NO LUGAR CERTO</p><h2 id="garageDialogTitle">Adicionar garagem</h2><p class="dialog-intro" id="garageDialogIntro">Escolha a propriedade. As vagas já vêm configuradas.</p></div>
         <button type="button" class="icon-button" data-close="garageDialog" aria-label="Fechar">×</button>
@@ -171,16 +172,19 @@
         <p id="garageCapacityNote" class="capacity-note"></p>
       </section>
       <label class="garage-name-label" for="garageName">Nome da garagem <span>opcional</span><input id="garageName" maxlength="80" placeholder="Ex.: Minha agência de Rockford Hills" autocomplete="off"><small>Deixe em branco para usar o nome da propriedade.</small></label>
+      <label id="garageApartmentField" hidden>Número do apartamento<input id="garageApartment" maxlength="20" placeholder="Ex.: 3, 31 ou cobertura 1" autocomplete="off"><small>Identifica cada garagem do mesmo prédio. Obrigatório para Eclipse Towers.</small></label>
+      <label>Tags / tema<input id="garageTags" maxlength="300" placeholder="Ex.: JDM, Drift, Coleção azul" autocomplete="off"><small>Separe as tags por vírgula. Até 10 temas por garagem.</small></label>
       <div class="garage-dialog-footer">
-        <span>Adicione seus veículos depois.</span>
+        <button type="button" class="danger-button" id="deleteGarageButton" hidden>Remover garagem</button>
         <div class="garage-dialog-actions">
         <button type="button" class="secondary-button" data-close="garageDialog">Cancelar</button>
-        <button class="primary-button" value="default"><span aria-hidden="true">＋</span> Criar garagem</button>
+        <button class="primary-button" id="saveGarageButton" value="default">＋ Criar garagem</button>
         </div>
       </div>
     </form>
   </dialog>
 
+  <dialog id="deleteGarageDialog" class="delete-confirmation" aria-labelledby="deleteGarageTitle" aria-describedby="deleteGarageDescription"><div class="dialog-form"><div class="dialog-heading"><h2 id="deleteGarageTitle">Remover garagem?</h2><button type="button" class="icon-button" data-close="deleteGarageDialog" aria-label="Fechar confirmação">×</button></div><p id="deleteGarageDescription"></p><div class="delete-confirmation-actions"><button type="button" class="secondary-button" id="cancelDeleteGarage" data-close="deleteGarageDialog" autofocus>Manter garagem</button><button type="button" class="delete-confirmation-button" id="confirmDeleteGarage">Remover garagem</button></div></div></dialog>
   <dialog id="deleteVehicleDialog" class="delete-confirmation" aria-labelledby="deleteVehicleTitle" aria-describedby="deleteVehicleDescription">
     <div class="dialog-form">
       <div class="dialog-heading">
@@ -204,7 +208,7 @@
     <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>MINHA GARAGEM / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span><button type="button" id="detailsPrevious" class="photo-nav previous" aria-label="Foto anterior">‹</button><button type="button" id="detailsNext" class="photo-nav next" aria-label="Próxima foto">›</button></div>
     <div id="detailsThumbnails" class="detail-thumbnails" aria-label="Fotos do veículo"></div>
-    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
+    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" onclick="openConfigurator()">Personalizar em 2D</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
   </section>
   <dialog id="photoStudioDialog" class="collection-dialog" aria-labelledby="studioTitle">
     <div class="detail-heading"><div><p class="eyebrow">SEU CARRO. SEU PROJETO.</p><h2 id="studioTitle">Ensaio do veículo</h2><p class="dialog-intro">Um print já basta. Adicione outros ângulos quando quiser.</p></div><button type="button" class="icon-button" id="closeStudio" aria-label="Fechar ensaio">×</button></div>
@@ -224,13 +228,31 @@
     <div class="detail-heading"><div><p class="eyebrow">ACABAMENTO FOTOGRÁFICO</p><h2 id="enhanceTitle">Melhorar foto</h2><p class="dialog-intro">Luz, contraste, cor e nitidez. O original fica preservado.</p></div><button type="button" class="icon-button" id="closeEnhance" aria-label="Fechar ajustes">×</button></div>
     <div class="studio-body"><div class="enhance-comparison"><figure><img id="enhanceBefore" alt="Foto original"><figcaption>Original</figcaption></figure><figure><img id="enhanceAfter" alt="Prévia da foto com ajustes"><figcaption>Com acabamento</figcaption></figure></div><label class="enhance-strength" for="enhanceStrength">Intensidade <output id="enhanceStrengthValue">60%</output><input id="enhanceStrength" type="range" min="0" max="100" value="60"></label><p id="enhanceStatus" class="studio-status" role="status">Os ajustes preservam o carro e o enquadramento do print.</p><div class="enhance-actions"><button type="button" class="secondary-button" id="restoreOriginal">Restaurar original</button><button type="button" class="primary-button" id="applyEnhance">Aplicar melhoria</button></div></div>
   </dialog>
+  <dialog id="configDialog" class="config-dialog" aria-labelledby="configTitle">
+    <header class="detail-heading"><div><p class="eyebrow">OFICINA / CONFIGURADOR 2D</p><h2 id="configTitle">Configure seu carro</h2><p>Experimente a pintura sobre a foto e monte sua lista de modificações.</p></div><button type="button" class="icon-button" id="configClose" aria-label="Fechar configurador">×</button></header>
+    <div class="config-layout"><div class="config-preview">
+      <svg id="configStage" viewBox="0 0 100 56.25" role="img" aria-label="Prévia ilustrativa do carro. Use as ferramentas para marcar pintura e rodas.">
+        <image id="configImage" width="100" height="56.25" preserveAspectRatio="xMidYMid meet"/>
+        <polygon id="configPaint" style="mix-blend-mode:color"/>
+        <g id="configWheels"></g><polyline id="configOutline" fill="none" stroke="white" stroke-width=".15" stroke-dasharray="1 1"/><g id="configPoints"></g>
+      </svg>
+      <p id="configImageStatus" role="status"></p><p id="configHint"></p>
+      <div class="config-toolbar"><label>Ferramenta<select id="configTool"><option value="paint">Delimitar lataria</option><option value="wheels">Posicionar rodas</option></select></label><button type="button" id="configUndo">Desfazer ponto</button><button type="button" id="configClear">Limpar marcações</button><label><input type="checkbox" id="configCompare"> Ver original</label></div>
+      <p class="config-disclaimer">Prévia aproximada. A pintura usa a área marcada por você. Rodas são desenhos ilustrativos ajustados à foto. Para-choques, capôs e demais peças ficam registrados na lista; ainda não há imagens individuais para montá-los na foto.</p>
+    </div><aside class="config-controls">
+      <h3>Pintura</h3><label>Cor da lataria<input type="color" id="configColor" value="#d92d36"></label>
+      <h3>Prévia de rodas</h3><label>Desenho ilustrativo<select id="configWheelStyle"><option value="original">Manter a foto original</option><option value="sport">Cinco raios</option><option value="classic">Oito raios</option><option value="mesh">Multirraios</option></select></label><label>Cor das rodas<input type="color" id="configWheelColor" value="#c5c8cc"></label><label>Tamanho na foto<input type="range" id="configRadius" min="1" max="12" step=".1" value="5"></label>
+      <h3>Peças deste modelo</h3><p id="configCoverage"></p><a id="configSource" target="_blank" rel="noopener noreferrer">Ver imagem e modificações no GTA Base ↗</a><div id="configParts"></div>
+    </aside></div><footer class="config-footer"><span id="configSaveStatus" role="status"></span><button type="button" class="primary-button" id="configSave">Salvar configuração</button></footer>
+  </dialog>
   <script src="assets/vehicle-catalog.js"></script>
   <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>
+  <script src="assets/vehicle-customization.js"></script>
   <script src="app.js"></script>
   <script src="catalog-ui.js"></script>
   <script src="wheels-ui.js"></script>
-  <script src="vehicle-details.js"></script>
+  <script src="vehicle-details.js"></script><script src="configurator.js"></script>
   <script src="photo-enhancer.js"></script>
 </body>
 </html>

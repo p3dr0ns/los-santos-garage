@@ -59,6 +59,10 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-sentinel',catalogId:'sentinel5',name:'Sentinel GTS',category:'Esportivo',garageId:'g1'}); openVehicleDetails('preview-sentinel'); document.querySelector('#detailsMechanical').scrollIntoView({block:'start'});" } | Out-Null
         $performanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "performance-$tag.png"), [Convert]::FromBase64String($performanceScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-config',catalogId:'zentorno',name:'Zentorno',category:'Super',garageId:'g1'}); openVehicleDetails('preview-config'); openConfigurator();" } | Out-Null
+        $configScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "configurator-$tag.png"), [Convert]::FromBase64String($configScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#configDialog').close(); data.vehicles.pop(); openVehicleDetails('preview-sentinel');" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "(async () => { await openPhotoStudio(); await uploadPhoto(window.galleryTestPhoto, 'cinematicFront'); openPhotoEnhancer('cinematicFront'); for(let i=0;document.querySelector('#applyEnhance').disabled && i<60;i++) await new Promise(resolve=>setTimeout(resolve,30)); })()"; awaitPromise = $true } | Out-Null
         $enhanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "enhance-$tag.png"), [Convert]::FromBase64String($enhanceScreenshot.data))
@@ -70,6 +74,12 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closeCatalogSuggestions(); document.querySelector('#vehicleCustomizationDetails').open=true; document.querySelector('#vehicleWheelType').value='street'; document.querySelector('#vehicleWheelType').dispatchEvent(new Event('change')); document.querySelector('#vehicleWheels').value=wheelGroup('street').wheels[0].name; document.querySelector('.wheel-fields').scrollIntoView({block:'center'});" } | Out-Null
         $wheelScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "wheels-$tag.png"), [Convert]::FromBase64String($wheelScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleCustomizationDetails').open=false; document.querySelector('#vehicleName').value='Sentinel GTS'; selectedCatalogModelId='sentinel5'; document.querySelector('#vehicleCategory').value='Esportivo'; document.querySelector('#vehicleBrand').value='Übermacht'; updateVehiclePreview(); document.querySelector('#vehicleDialog').scrollTop=0;" } | Out-Null
+        $vehicleScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "vehicle-form-$tag.png"), [Convert]::FromBase64String($vehicleScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleDialog').close(); openGarageDialog('g1'); document.querySelector('#garageApartment').value='31'; document.querySelector('#garageTags').value='JDM, Drift'; document.querySelector('#garageApartment').dispatchEvent(new Event('input')); document.querySelector('#garageApartment').scrollIntoView({block:'center'});" } | Out-Null
+        $garageScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "garage-form-$tag.png"), [Convert]::FromBase64String($garageScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

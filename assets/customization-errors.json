@@ -1,0 +1,2258 @@
+﻿[
+    {
+        "id":  "bfinjection",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bison",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bjxl",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blade",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blazer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blazer2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blazer3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blazer4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blazer5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blista",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blista2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "blista3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bobcatxl",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bodhi2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "boor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "boxville",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "boxville2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "boxville5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "boxville6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brawler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brigham",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brioso",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brioso2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brioso3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "broadway",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bruiser",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bruiser2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bruiser3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brutus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brutus2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "brutus3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "btype",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "btype2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "btype3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buccaneer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buccaneer2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buffalo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buffalo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buffalo3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buffalo4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "buffalo5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "bullet",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "burrito",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "burrito2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "calico",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "camper",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "caracara",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "caracara2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "carbonizzare",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "carbonrs",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "casco",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "castigator",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cavalcade",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cavalcade3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "champion",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "chavosv6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cheburek",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cheetah",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cheetah2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cheetah3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "chimera",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "chino",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "chino2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cinquemila",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cliffhanger",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "clique",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "clique2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "club",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cog55",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cog552",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cogcabrio",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cognoscenti",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cognoscenti2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "comet7",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "contender",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coquette6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "corsita",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "coureur",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cyclone",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cyclone2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "cypher",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "daemon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "daemon2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deathbike",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deathbike2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deathbike3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "defiler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deity",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deluxo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deveste",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "deviant",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "diablous",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "diablous2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dilettante",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dloader",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator10",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator7",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator8",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dominator9",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dorado",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "double",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "drafter",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "draugur",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "driftl352",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dubsta",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dubsta3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dukes",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dukes2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dukes3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dune",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dune2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dune3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dune4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "dynasty",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "elegy",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "elegy2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ellie",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "emerus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "emperor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "enduro",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "entity2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "entity3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "entityxf",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "envisage",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "esskey",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "eudora",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "euros",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "eurosx32",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "everon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "everon2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "everon3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "exemplar",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "f620",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faction",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faction2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faction3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fagaloa",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faggio",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faggio2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "faggio3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fcr",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fcr2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "felon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "felon2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "feltzer2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "feltzer3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "firebolt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "flashgt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fmj",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fmj2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "formula",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "formula2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fq2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fr36",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "freecrawler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fugitive",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "furia",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "furoregt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "fusilade",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "futo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "futo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gargoyle",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gauntlet6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gb200",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gburrito",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "glendale",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "glendale2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gp1",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "granger",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "granger2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "greenwood",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gresley",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "growler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gt500",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "gt750",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "habanero",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hakuchou",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hakuchou2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hardy",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hellion",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hermes",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hexer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hotknife",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hotring",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "huntley",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "hustler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ignus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ignus2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "imorgon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "impaler6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "imperator",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "imperator2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "imperator3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "infernus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "infernus2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ingot",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "innovation",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "insurgent",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "insurgent2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "insurgent3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "intruder",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi7",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "issi8",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "itali2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "italigtb",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "italigtb2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "italigto",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "italirsx",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "iwagen",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jackal",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jb700",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jb7002",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jester",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jester2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jester3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jester4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jester5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "journey",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "journey2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jubilee",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "jugular",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kalahari",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kamacho",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kanjo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kanjosj",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "khamelion",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "komoda",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "krieger",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kuruma",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "kuruma2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "l35",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "l352",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "landstalker",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "landstalker2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "le7b",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "lectro",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "limo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "lm87",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "locust",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "luiva",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "lurcher",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "lynx",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "mamba",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "manana",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "manana2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "manchez",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "manchez2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "manchez3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "marshall",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "massacro",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "massacro2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "menacer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "mesa",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "mesa3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "michelli",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "minimus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "minivan",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "minivan2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monroe",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monster",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monster3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monster4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monster5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "monstrociti",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "moonbeam",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "moonbeam2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nebula",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nemesis",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "neo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "neon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nero",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nero2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nightblade",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nightshade",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "nightshark",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ninef",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ninef2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "niobe",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "novak",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "omnis",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "omnisegt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "openwheel1",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "openwheel2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "oppressor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "oppressor2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "oracle",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "oracle2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "osiris",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "outlaw",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "panthere",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "panto",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "paradise",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "paragon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "paragon2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "paragon3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pariah",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "patriot",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "patriot2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "patriot3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pcj",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "penetrator",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "penumbra",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "penumbra2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "peyote",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "peyote2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "peyote3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pfister811",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "phoenix",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "picador",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pigalle",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pipistrello",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pizzaboy",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "pony",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "postlude",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "powersurge",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "prairie",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "premier",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "previon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "primo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "primo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "prototipo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "r300",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "radi",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "raiden",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rancherxl",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rapidgt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rapidgt3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rapidgt4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "raptor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ratbike",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ratel",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ratloader",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ratloader2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rcbandito",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "reaper",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rebel",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rebel2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rebla",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "reever",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "regina",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "remus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "retinue",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "retinue2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "revolter",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rhapsody",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rhinehart",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "riata",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rocoto",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "romero",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rrocket",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rt3000",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ruffian",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ruiner",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ruiner2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ruiner4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rumpo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "rumpo3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ruston",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "s80",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "s95",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sabregt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sabregt2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sanchez",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sanchez2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sanctus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sandking",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sandking2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "savestra",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sc1",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schafter2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schafter3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schafter4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schafter5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schafter6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schlagen",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "schwarzer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "scramjet",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "seminole",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "seminole2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sentinel6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "serrano",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "seven70",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sheava",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "shinobi",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "shotaro",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "slamvan6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sm722",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sovereign",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "specter",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "specter2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "speedo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "speedo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "speedo4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "squaddie",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stafford",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stalion",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stalion2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stanier",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stinger",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stingergt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stingertt",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stratum",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "streiter",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stretch",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stromberg",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "stryder",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sugoi",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sultan",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sultan2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sultan3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "sultanrs",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "superd",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "surano",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "surfer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "surfer3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "surge",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "suzume",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "swinger",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "t20",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "taco",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tahoma",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tailgater",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tailgater2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "taipan",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tampa",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tampa2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tampa3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tampa4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "technical",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "technical2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "technical3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tempesta",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tenf",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tenf2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "terminus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tezeract",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "thrax",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "thrust",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tigon",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "toreador",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "torero",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "torero2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tornado",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tornado5",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tornado6",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "toros",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "trophytruck",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "trophytruck2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tropos",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tulip",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tulip2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "turismo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "turismo3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "turismor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tyrant",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "tyrus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "uranus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vacca",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vader",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vagner",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vagrant",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vamos",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vectre",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "verlierer2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "verus",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "veto",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "veto2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vigero",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vigero2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vigero3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vigilante",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vindicator",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "virgo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "virgo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "virgo3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "virtue",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "viseris",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "visione",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vivanite",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "voltic",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "voltic2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "voodoo",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "voodoo2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vorschlaghammer",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vortex",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "vstr",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "warrener",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "warrener2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "washington",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "weevil",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "weevil2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "windsor",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "windsor2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "winky",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "wolfsbane",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "woodlander",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "xa21",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "xls",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "xls2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "xtreme",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "yosemite",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "yosemite1500",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "yosemite2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "yosemite3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "youga",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "youga2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "youga3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "youga4",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "z190",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zeno",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zentorno",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zhaba",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zion",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zion2",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zion3",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zombiea",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zombieb",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zorrusso",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zr350",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zr380",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zr3802",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "zr3803",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    },
+    {
+        "id":  "ztype",
+        "error":  "O servidor remoto retornou um erro: (429) Too Many Requests."
+    }
+]

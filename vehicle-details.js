@@ -117,11 +117,18 @@ function renderVehicleDetails() {
   if (!vehicle) return;
   $("#detailsBrand").textContent = getBrand(vehicle);
   $("#detailsName").textContent = vehicle.name;
-  $("#detailsSubtitle").textContent = `${vehicle.category} · ${getGarage(vehicle.garageId)?.name || "Sem garagem"}`;
+  $("#detailsSubtitle").textContent = `${vehicle.category} · ${garageLabel(getGarage(vehicle.garageId))}`;
   $("#detailsFavorite").textContent = vehicle.favorite ? "★ Favorito" : "☆ Favoritar";
   $("#detailsFavorite").setAttribute("aria-pressed", String(Boolean(vehicle.favorite)));
-  const fields = [["Marca", getBrand(vehicle)], ["Modelo", vehicle.name], ["Categoria", vehicle.category], ["Garagem", getGarage(vehicle.garageId)?.name || "Sem garagem"], ["Pintura", vehicle.paint || "Não informada"], ["Rodas", getWheelDescription(vehicle) || "Não informadas"], ["Placa", vehicle.plate || "Não informada"]];
+  const fields = [["Marca", getBrand(vehicle)], ["Modelo", vehicle.name], ["Categoria", vehicle.category], ["Garagem", garageLabel(getGarage(vehicle.garageId))], ["Pintura", vehicle.paint || "Não informada"], ["Rodas", getWheelDescription(vehicle) || "Não informadas"], ["Placa", vehicle.plate || "Não informada"]];
   $("#detailsSpecs").innerHTML = fields.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
+  if (vehicle.configuration2d) {
+    const configuration = vehicle.configuration2d;
+    $("#detailsSpecs").innerHTML += `<div><dt>Projeto 2D · pintura</dt><dd>${escapeHtml(configuration.color)}</dd></div>`;
+    Object.entries(configuration.parts || {}).forEach(([label, value]) => {
+      $("#detailsSpecs").innerHTML += `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`;
+    });
+  }
   const model = findCatalogVehicle(vehicle.name, vehicle.catalogId);
   const reference = model ? VEHICLE_REFERENCE[model.id] : null;
   $("#detailsReferenceNotice").hidden = Boolean(reference);

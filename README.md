@@ -10,7 +10,7 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 ## Recursos
 
 - Cadastro e edição de veículos, favoritos e busca por modelo, marca e categoria.
-- Catálogo de 617 modelos/variantes e 54 marcas; veja [CATALOGO.md](CATALOGO.md).
+- Catálogo de 618 modelos/variantes e 54 marcas; veja [CATALOGO.md](CATALOGO.md).
 - Imagem automática do GTA Base nos cartões, cadastro e ficha. As imagens ficam
   locais para uso offline. Fotos pessoais e URLs antigas não são utilizadas.
 - Ficha com preços, desempenho, inspiração real e especificações técnicas;

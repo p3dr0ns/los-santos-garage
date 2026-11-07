@@ -27,14 +27,18 @@
     check('configuração visual antiga não aparece na ficha', !$('#detailsSpecs').textContent.includes('Legacy part') && !$('#detailsSpecs').textContent.includes('Projeto 2D'));
     $('#backToCollection').click();
 
-    check("catálogo local completo para a versão", vehicleModels.length === 617 && VEHICLE_CATALOG.brands.length === 54);
+    check("catálogo local completo para a versão", vehicleModels.length === 618 && VEHICLE_CATALOG.brands.length === 54);
     check("catálogo sem aeronaves ou barcos", vehicleModels.every(model => ['car','motorcycle'].includes(model.type)) && !vehicleModels.some(model => ['hydra','lazer','luxor','dinghy','buzzard','bmx'].includes(model.id)));
     const missingReferences = vehicleModels.filter(model => !VEHICLE_REFERENCE[model.id]);
-    check("referências cobrem todos os modelos sem configuração Drift separada", missingReferences.length === 22 && missingReferences.every(model => model.id.startsWith('drift')) && Object.keys(VEHICLE_REFERENCE).length === 595);
+    check("referências cobrem todos os modelos sem configuração Drift separada", missingReferences.length === 22 && missingReferences.every(model => model.id.startsWith('drift')) && Object.keys(VEHICLE_REFERENCE).length === 596);
     check("referências preservam IDs do catálogo e pontuações válidas", Object.entries(VEHICLE_REFERENCE).every(([id, ref]) => vehicleModels.some(model => model.id === id) && ref.model === id && Object.values(ref.stats).every(value => value === null || (typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100))));
     const sentinelNames = searchVehicleCatalog('sentinel').map(model => model.name);
     check("variantes Sentinel", ['Sentinel','Sentinel XS','Sentinel XS4','Sentinel Classic','Sentinel Classic Widebody','Sentinel GTS','Sentinel XS (Drift)'].every(name => sentinelNames.includes(name)));
     check("busca sem acento e aliases", searchVehicleCatalog('ubermacht sentinel').some(model => model.id === 'sentinel5') && searchVehicleCatalog('sentinel5').some(model => model.name === 'Sentinel GTS'));
+    check('Tampa GT e Dubsta 2 têm modelos e imagens próprios', findCatalogVehicle('Tampa GT').id==='tampa4' && findCatalogVehicle('Dubsta 2').id==='dubsta2' && VEHICLE_IMAGES.dubsta.image!==VEHICLE_IMAGES.dubsta2.image);
+    check('Dubsta 2 separado sem alterar o Dubsta original', findCatalogVehicle('Dubsta').id==='dubsta' && !findCatalogVehicle('Dubsta').models.includes('dubsta2') && findCatalogVehicle('dubsta2').id==='dubsta2');
+    check('cadastro explícito antigo de Dubsta 2 resolve nova ficha', findCatalogVehicle('Dubsta 2','dubsta').id==='dubsta2' && findCatalogVehicle('Dubsta','dubsta').id==='dubsta');
+    check('preços dos dois modelos entram no total', getVehicleValuation([{name:'Tampa GT'},{name:'Dubsta 2',catalogId:'dubsta'}]).total===1381000);
     check("nomes do catálogo são únicos por marca e categoria", new Set(vehicleModels.map(model => `${model.name}|${model.brand}|${model.category}`)).size === vehicleModels.length);
     check("catálogo de rodas local e categorias", WHEEL_CATALOG.groups.length===14 && ['sport','tuner','street','track','bennys-original','bennys-bespoke','bike','bike-rear'].every(id=>wheelGroup(id)?.wheels.length>0));
     openVehicleDialog(); $('#vehicleName').value='sentinel'; $('#vehicleName').dispatchEvent(new Event('input'));

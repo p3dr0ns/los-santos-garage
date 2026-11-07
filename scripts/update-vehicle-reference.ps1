@@ -1,4 +1,4 @@
-param([ValidateRange(3, 3600)][int]$DelaySeconds = 3, [switch]$Refresh, [switch]$CacheOnly)
+param([ValidateRange(3, 3600)][int]$DelaySeconds = 3, [switch]$Refresh, [switch]$CacheOnly, [string[]]$Urls)
 $ErrorActionPreference = 'Stop'
 if ($Refresh -and $CacheOnly) { throw 'Use either -Refresh or -CacheOnly, not both.' }
 . (Join-Path $PSScriptRoot 'parse-vehicle-reference.ps1')
@@ -23,7 +23,9 @@ function Save-ReferenceData {
 }
 # Discover real URLs from the sitemap, never construct them from vehicle names.
 $linksPath = Join-Path $cacheRoot 'links.json'
-if ((Test-Path -LiteralPath $linksPath) -and !$Refresh) {
+if ($Urls) {
+    $links = @($Urls)
+} elseif ((Test-Path -LiteralPath $linksPath) -and !$Refresh) {
     $loadedLinks = [IO.File]::ReadAllText($linksPath) | ConvertFrom-Json
     $links = @(foreach ($link in $loadedLinks) { if ($link -is [string]) { $link } elseif ($link.value) { [string]$link.value } })
 } else {
@@ -37,6 +39,7 @@ if ((Test-Path -LiteralPath $linksPath) -and !$Refresh) {
     [IO.File]::WriteAllText($linksPath, (ConvertTo-Json -InputObject $links))
 }
 $priority = @($links | Where-Object { $_ -match 'sentinel-gts$|pegassi-zentorno$|truffade-adder$|karin-kuruma-armored$|annis-elegy-retro-custom$|karin-sultan-rs$|grotti-turismo-r$|vapid-dominator$' }) + @($records.Values | ForEach-Object { $_.url })
+if ($Urls) { $priority = @() }
 $failures = @()
 $unmatched = @()
 $ambiguous = @()

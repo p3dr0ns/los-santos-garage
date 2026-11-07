@@ -26,3 +26,11 @@ if ($resolved.Count -ne 1 -or $resolved[0].model -ne 'sentinel5') { throw 'Expli
 $alternateField = ConvertFrom-GtaBaseVehicleHtml ($fixture.Replace('in-game-model-name', 'model-id')) 'https://example.test' '2026-11-07'
 if ($alternateField.model -ne 'sentinel5') { throw 'The alternate model-id field must be supported.' }
 Write-Output 'PASS: vehicle reference parser (source fixtures, missing fields and zero).'
+$tampa = ConvertFrom-GtaBaseVehicleHtml ([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'fixtures/tampa-gt.html'))) 'https://www.gtabase.com/vehicles/grand-theft-auto-v/tampa-gt' '2026-11-07'
+if ($tampa.model -ne 'tampa4' -or $tampa.price -ne 1311000 -or $tampa.topSpeedKmh -ne 210.02 -or $tampa.weightKg -ne 1800 -or $tampa.drivetrain -ne 'RWD' -or $tampa.stats.overall -ne 60.87) { throw 'Tampa GT must use normal Online price and standard tested speed, without HSW.' }
+$dubsta = ConvertFrom-GtaBaseVehicleHtml ([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'fixtures/dubsta-2.html'))) 'https://www.gtabase.com/grand-theft-auto-v/vehicles/benefactor-dubsta-2' '2026-11-07'
+if ($dubsta.model -ne 'dubsta2' -or $dubsta.price -ne 70000 -or $dubsta.topSpeedKmh -ne 164.15 -or $dubsta.seats -ne 4 -or $dubsta.weightKg -ne 2400 -or $dubsta.drivetrain -ne 'AWD') { throw 'Dubsta 2 must use its own purchase price and specifications.' }
+$dubstaCatalog = @([pscustomobject]@{id='dubsta';name='Dubsta';brand='Benefactor';models=@('dubsta')},[pscustomobject]@{id='dubsta2';name='Dubsta 2';brand='Benefactor';models=@('dubsta2')})
+$dubstaResolved = @(Resolve-VehicleReference $dubsta $dubstaCatalog)
+if ($dubstaResolved.Count -ne 1 -or $dubstaResolved[0].model -ne 'dubsta2') { throw 'Dubsta 2 must not overwrite the standard Dubsta.' }
+Write-Output 'PASS: Tampa GT and Dubsta 2 (exact variants, purchase prices and standard specifications).'

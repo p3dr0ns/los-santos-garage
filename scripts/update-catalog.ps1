@@ -13,7 +13,7 @@ $categories = @{
 }
 $types = @('CAR','BIKE','QUADBIKE','AMPHIBIOUS_QUADBIKE','AMPHIBIOUS_AUTOMOBILE','SUBMARINECAR')
 $brandNames = @{ UBERMACHT='Übermacht'; OVERFLOD='Överflöd' }
-$displayNames = @{ sentinel3='Sentinel Classic'; kuruma2='Kuruma Blindado' }
+$displayNames = @{ sentinel3='Sentinel Classic'; kuruma2='Kuruma Blindado'; dubsta2='Dubsta 2' }
 $models = @{}
 foreach ($vehicle in $vehicles) {
     if ($vehicle.Type -notin $types -or !$categories.ContainsKey($vehicle.Class)) { continue }
@@ -26,6 +26,7 @@ foreach ($vehicle in $vehicles) {
     if ($brandNames.ContainsKey([string]$vehicle.Manufacturer)) { $brand = $brandNames[[string]$vehicle.Manufacturer] }
     if (!$brand) { $brand = '' }
     $aliases = @($vehicle.DisplayName.English, $vehicle.DisplayName.Portuguese, $id, $name) | Where-Object { $_ } | Sort-Object -Unique
+    if ($id -eq 'dubsta2') { $aliases = @($aliases | Where-Object { $_ -ne 'Dubsta' }) }
     # Unifica somente nomes/classes/fabricantes iguais. Preserva codigos como aliases.
     $key = "$brand|$name|$($vehicle.Class)"
     if ($models.ContainsKey($key)) {

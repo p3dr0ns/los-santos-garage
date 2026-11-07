@@ -78,9 +78,14 @@ sequencialmente com intervalo mínimo de três segundos e interrompe em HTTP
 retomar sem repetir downloads. `-Refresh` atualiza o sitemap e as fichas; use
 apenas quando for necessário renovar os dados.
 `-CacheOnly` reprocessa os arquivos já baixados sem acessar a rede.
+`-Urls @('https://www.gtabase.com/vehicles/grand-theft-auto-v/tampa-gt', 'https://www.gtabase.com/grand-theft-auto-v/vehicles/benefactor-dubsta-2')` restringe a atualização às fichas indicadas.
+
+Tampa GT (`tampa4`) e Dubsta 2 (`dubsta2`) tiveram suas fichas conferidas em
+7 de novembro de 2026. O Dubsta 2 passou a ter registro separado do Dubsta comum,
+com preço normal de GTA$ 70.000; Tampa GT permanece em GTA$ 1.311.000.
 
 Na coleta de 7 de novembro de 2026, foram consultadas as **840 fichas** do
-sitemap, sem bloqueios nessa rodada. **595 dos 617 modelos** do catálogo
+sitemap, sem bloqueios nessa rodada. **596 dos 618 modelos** do catálogo
 receberam referências. Os **22 pendentes são configurações Drift** sem
 correspondência específica nas fichas consultadas. A fonte trata Drift Tuning
 como uma modificação que altera o desempenho; os números da configuração

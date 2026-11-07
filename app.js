@@ -114,6 +114,8 @@ function normalizeVehicleText(value) {
 }
 
 function findCatalogVehicle(value, id = "") {
+  // Antes da separação das variantes, cadastros explícitos de Dubsta 2 podiam ter o ID agrupado.
+  if (id === "dubsta" && ["dubsta2", "dubsta 2", "benefactor dubsta 2"].includes(normalizeVehicleText(value))) id = "dubsta2";
   if (id) {
     const byId = vehicleModels.find(model => model.id === id);
     if (byId) return byId;

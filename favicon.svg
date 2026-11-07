@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="background" x2="1" y2="1">
-      <stop stop-color="#39304e"/>
-      <stop offset="1" stop-color="#171424"/>
+      <stop stop-color="#35345F"/>
+      <stop offset="1" stop-color="#17171F"/>
     </linearGradient>
     <linearGradient id="chrome" x2="0" y2="1">
-      <stop stop-color="#fff9e9"/>
-      <stop offset=".48" stop-color="#eee6da"/>
-      <stop offset=".52" stop-color="#afa8b9"/>
-      <stop offset="1" stop-color="#f3cb78"/>
+      <stop stop-color="#ECEDEB"/>
+      <stop offset=".48" stop-color="#BFC3CE"/>
+      <stop offset=".52" stop-color="#747B91"/>
+      <stop offset="1" stop-color="#ECEDEB"/>
     </linearGradient>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#background)" stroke="#a58cbd" stroke-width="2"/>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#background)" stroke="#59558B" stroke-width="2"/>
   <path d="M19 18h9l-6 25h11l-2 8H11zm33 1-2 8c-3-2-5-3-8-3-2 0-4 1-4 3 0 4 13 3 13 12 0 8-7 13-15 13-4 0-7-1-10-3l2-8c3 2 6 4 9 4s5-2 5-4c0-4-13-3-13-12 0-8 7-13 15-13 3 0 6 1 8 3Z" fill="#0d0b14" transform="translate(1 2)"/>
   <path d="M19 18h9l-6 25h11l-2 8H11zm33 1-2 8c-3-2-5-3-8-3-2 0-4 1-4 3 0 4 13 3 13 12 0 8-7 13-15 13-4 0-7-1-10-3l2-8c3 2 6 4 9 4s5-2 5-4c0-4-13-3-13-12 0-8 7-13 15-13 3 0 6 1 8 3Z" fill="url(#chrome)"/>
 </svg>

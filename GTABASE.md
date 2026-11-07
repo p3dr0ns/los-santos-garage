@@ -10,7 +10,7 @@ de aquisição, armazenamento, personalização e desempenho. A quantidade total
 de veículos do site não é diretamente comparável à do catálogo: o site também
 inclui aeronaves, barcos e outras classes fora do escopo do organizador.
 
-## Campos úteis para uma futura ficha de referência
+## Informações disponíveis na fonte
 
 | Campo | Utilidade no organizador |
 | --- | --- |
@@ -49,5 +49,59 @@ dos arquivos do jogo é outro indicador e não deve ocupar o mesmo campo.
 - Separar especificações do modelo das personalizações, fotos e valores registrados pelo usuário.
 - Usar dados locais para preservar o funcionamento offline. A consulta realizada não estabelece uma API pública ou integração automática.
 
-Esta análise registra a fonte e um exemplo verificado; não representa uma
-importação completa nem altera os veículos salvos ou a interface do aplicativo.
+## Dados incorporados ao portfólio
+
+`assets/vehicle-reference.js` guarda referências associadas por código interno
+exato. Os veículos já cadastrados também recebem os dados do catálogo, sem
+alterar fotos ou personalizações do usuário. Os campos disponíveis são:
+
+- preço normal do GTA Online e preço de negociação em GTA$;
+- velocidade máxima testada em km/h, com melhorias completas e sem HSW;
+- inspiração em veículos da vida real;
+- assentos, massa em kg, tração e marchas;
+- pontuações de velocidade, aceleração, frenagem e dirigibilidade, com barras
+  de 0 a 100, além do Overall publicado pela fonte.
+
+A pontuação de velocidade não representa km/h. O Overall é importado como
+publicado, sem recalcular a média dos valores arredondados. O preço de
+negociação pode exigir desbloqueio. Promoções e disponibilidade podem variar;
+conversões podem envolver custos adicionais. Campos ausentes permanecem
+`null` e aparecem como “Não informado”; zero é preservado quando publicado.
+Cada registro tem URL individual e data da consulta.
+
+## Coleta e cobertura
+
+Execute `powershell -ExecutionPolicy Bypass -File scripts/update-vehicle-reference.ps1`.
+O coletor descobre URLs pelo sitemap público do GTA Base, consulta as fichas
+sequencialmente com intervalo mínimo de três segundos e interrompe em HTTP
+429 ou 403. HTML e datas ficam em `.cache/gtabase/` (ignorado pelo Git), para
+retomar sem repetir downloads. `-Refresh` atualiza o sitemap e as fichas; use
+apenas quando for necessário renovar os dados.
+`-CacheOnly` reprocessa os arquivos já baixados sem acessar a rede.
+
+Na coleta de 7 de novembro de 2026, foram consultadas as **840 fichas** do
+sitemap, sem bloqueios nessa rodada. **595 dos 617 modelos** do catálogo
+receberam referências. Os **22 pendentes são configurações Drift** sem
+correspondência específica nas fichas consultadas. A fonte trata Drift Tuning
+como uma modificação que altera o desempenho; os números da configuração
+comum não são aplicados automaticamente a esses registros.
+
+Listas explícitas de códigos de modelo são separadas e associadas aos códigos
+agrupados do catálogo. Fichas individuais de variantes têm preferência sobre
+fichas genéricas Arena. A fonte lista Future Shock Issi e Nightmare Issi na
+ficha comum Issi (Arena); os dois registros indicam essa origem compartilhada.
+O Uranus LozSpeed informa `uranus1` no site e `uranus` no catálogo: esse único
+caso foi associado por nome completo e fabricante exatos, e mantém o código
+original da fonte. Metadados de associação permitem revisar essas decisões.
+
+O relatório `assets/vehicle-reference-report.json` registra a cobertura do
+catálogo, modelos pendentes, páginas sem correspondência, associações ambíguas
+e erros de consulta. Ter um registro no novo formato não significa que a
+fonte publicou todos os campos, especialmente preço de negociação.
+O catálogo inclui carros e motos; aeronaves, barcos e veículos fora dele não
+são acrescentados automaticamente. Variantes sem código correspondente não
+herdam os dados de outra variante. Não há consulta ao site durante o uso.
+
+A extração está em `scripts/parse-vehicle-reference.ps1`. Os testes usam
+fragmentos das fichas reais do Sentinel GTS e do Zentorno, verificando preços,
+velocidade testada, especificações, estatísticas, campos ausentes e zero.

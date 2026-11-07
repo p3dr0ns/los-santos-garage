@@ -19,7 +19,8 @@ Os cadastros ficam no `localStorage` e as fotos no `IndexedDB` do navegador usad
 - movimentação do veículo ao alterar sua garagem;
 - pesquisa e filtro por categoria;
 - layout responsivo para computador e celular.
-- ficha de cada veículo com marca, modelo e personalizações;
+- portfólio de cada veículo ao clicar no cartão, com página própria, foto em destaque, galeria, marca, modelo e personalizações; botão para voltar à coleção e endereço `#carro/ID` para reabrir no mesmo navegador;
+- referências offline do GTA Base no portfólio: preços normal e de negociação, velocidade testada, inspiração real, assentos, peso, tração, marchas e estatísticas com Overall; cobertura e coleta em [GTABASE.md](GTABASE.md);
 - galeria de seis fotos próprias, escolha de capa, envio e Ctrl+V;
 - exportação e importação de ensaios;
 - assistente Windows para repetir movimentos de câmera calibrados e capturar seis fotos.

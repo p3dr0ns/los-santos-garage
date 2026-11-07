@@ -200,12 +200,12 @@
     <div class="toast-content" role="status" aria-live="polite" aria-atomic="true"><strong id="toastTitle"></strong><p id="toastMessage"></p></div>
     <button type="button" class="toast-close" id="closeToast" aria-label="Fechar notificação">×</button>
   </div>
-  <dialog id="vehicleDetailsDialog" class="collection-dialog" aria-labelledby="detailsName">
-    <div class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h2 id="detailsName"></h2></div><button type="button" class="icon-button" data-close="vehicleDetailsDialog" aria-label="Fechar ficha">×</button></div>
+  <section id="vehicleDetailsDialog" class="vehicle-portfolio" aria-labelledby="detailsName" hidden>
+    <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>MINHA GARAGEM / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span><button type="button" id="detailsPrevious" class="photo-nav previous" aria-label="Foto anterior">‹</button><button type="button" id="detailsNext" class="photo-nav next" aria-label="Próxima foto">›</button></div>
     <div id="detailsThumbnails" class="detail-thumbnails" aria-label="Fotos do veículo"></div>
-    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><dl class="vehicle-specs" id="detailsSpecs"></dl><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
-  </dialog>
+    <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button><button type="button" class="primary-button" id="detailsPhotos">Fotos do meu carro</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
+  </section>
   <dialog id="photoStudioDialog" class="collection-dialog" aria-labelledby="studioTitle">
     <div class="detail-heading"><div><p class="eyebrow">SEU CARRO. SEU PROJETO.</p><h2 id="studioTitle">Ensaio do veículo</h2><p class="dialog-intro">Quatro vistas e duas cinematográficas. Escolha a capa da sua coleção.</p></div><button type="button" class="icon-button" id="closeStudio" aria-label="Fechar ensaio">×</button></div>
     <div class="studio-body"><div class="capture-connect"><div><strong>Capturar no GTA</strong><p id="captureStatus" role="status">Conecte o assistente do Windows para usar a câmera calibrada.</p></div><button type="button" class="secondary-button" id="connectCapture">Conectar assistente</button></div>
@@ -220,6 +220,7 @@
     </div>
   </dialog>
   <script src="assets/vehicle-catalog.js"></script>
+  <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>
   <script src="app.js"></script>
   <script src="catalog-ui.js"></script>

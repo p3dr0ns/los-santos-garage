@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'reference-check.ps1')
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $browserPath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 if (!(Test-Path -LiteralPath $browserPath)) { throw 'Google Chrome not found at its default path.' }
@@ -55,7 +56,11 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         $dom = Send-Cdp $socket 'Runtime.evaluate' @{ expression = 'document.documentElement.outerHTML'; returnByValue = $true }
         [IO.File]::WriteAllText((Join-Path $runDirectory "$tag.html"), $dom.result.value)
         if ($value -notlike 'PASS:*') { throw "Gallery tests failed. Inspect $runDirectory" }
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#vehicleDetailsDialog').close(); openVehicleDialog(); document.querySelector('#vehicleName').value='sentinel'; document.querySelector('#vehicleName').dispatchEvent(new Event('input')); document.querySelector('#vehicleName').focus();" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-sentinel',catalogId:'sentinel5',name:'Sentinel GTS',category:'Esportivo',garageId:'g1'}); openVehicleDetails('preview-sentinel'); document.querySelector('#detailsMechanical').scrollIntoView({block:'start'});" } | Out-Null
+        $performanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "performance-$tag.png"), [Convert]::FromBase64String($performanceScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.pop();" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closeVehiclePortfolio(); openVehicleDialog(); document.querySelector('#vehicleName').value='sentinel'; document.querySelector('#vehicleName').dispatchEvent(new Event('input')); document.querySelector('#vehicleName').focus();" } | Out-Null
         $catalogScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "catalog-$tag.png"), [Convert]::FromBase64String($catalogScreenshot.data))
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closeCatalogSuggestions(); document.querySelector('#vehicleCustomizationDetails').open=true; document.querySelector('#vehicleWheelType').value='street'; document.querySelector('#vehicleWheelType').dispatchEvent(new Event('change')); document.querySelector('#vehicleWheels').value=wheelGroup('street').wheels[0].name; document.querySelector('.wheel-fields').scrollIntoView({block:'center'});" } | Out-Null

@@ -15,375 +15,115 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
-// Compilado com o .NET Framework do Windows. Não carrega código no jogo.
-public class CameraEvent { public int dx, dy, delay; }
-public class CameraShot { public string id; public List<CameraEvent> events = new List<CameraEvent>(); }
-public class CameraProfile { public int width, height; public List<CameraShot> shots = new List<CameraShot>(); }
-public class CapturedPhoto { public string shot, data; }
-
+public class CapturedPhoto { public long id; public string session, data; }
 public static class Native {
     [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
-    [StructLayout(LayoutKind.Sequential)] public struct RAWDEVICE { public ushort page, usage; public uint flags; public IntPtr target; }
-    [StructLayout(LayoutKind.Sequential)] public struct RAWHEADER { public uint type, size; public IntPtr device, wParam; }
-    [StructLayout(LayoutKind.Explicit)] public struct RAWMOUSE {
-        [FieldOffset(0)] public ushort flags;
-        [FieldOffset(4)] public uint buttons;
-        [FieldOffset(12)] public int dx;
-        [FieldOffset(16)] public int dy;
-    }
-    [StructLayout(LayoutKind.Sequential)] public struct MOUSEINPUT { public int dx, dy; public uint data, flags, time; public UIntPtr extra; }
-    [StructLayout(LayoutKind.Sequential)] public struct INPUT { public uint type; public MOUSEINPUT mouse; }
     [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
     [DllImport("user32.dll")] public static extern bool RegisterHotKey(IntPtr window, int id, uint modifiers, uint key);
     [DllImport("user32.dll")] public static extern bool UnregisterHotKey(IntPtr window, int id);
-    [DllImport("user32.dll")] public static extern bool RegisterRawInputDevices(RAWDEVICE[] devices, uint count, uint size);
-    [DllImport("user32.dll")] public static extern uint GetRawInputData(IntPtr input, uint command, IntPtr data, ref uint size, uint headerSize);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
-    [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr window);
-    [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr window, int command);
     [DllImport("user32.dll")] public static extern bool GetClientRect(IntPtr window, out RECT rect);
     [DllImport("user32.dll")] public static extern bool ClientToScreen(IntPtr window, ref POINT point);
-    [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr window);
     [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr window);
-    [DllImport("user32.dll", SetLastError=true)] public static extern uint SendInput(uint count, INPUT[] input, int size);
 }
-
-// Janela externa ao jogo: não ativa, não recebe cliques nem aparece no Alt+Tab.
-public sealed class CaptureOverlay : Form {
-    readonly Label heading = new Label(), detail = new Label();
-    public CaptureOverlay() {
-        FormBorderStyle = FormBorderStyle.None; ShowInTaskbar = false; TopMost = true;
-        StartPosition = FormStartPosition.Manual; ClientSize = new Size(410, 168);
-        BackColor = Color.FromArgb(17, 22, 32); ForeColor = Color.White; Opacity = 0.93;
-        heading.SetBounds(16, 12, 378, 24); heading.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-        detail.SetBounds(16, 42, 378, 114); detail.Font = new Font("Segoe UI", 9); detail.ForeColor = Color.LightSkyBlue;
-        Controls.AddRange(new Control[] { heading, detail });
-    }
-    protected override bool ShowWithoutActivation { get { return true; } }
-    public bool HasPassiveWindowStyles { get { return (CreateParams.ExStyle & 0x080800A0) == 0x080800A0 && ShowWithoutActivation && !ShowInTaskbar; } }
-    protected override CreateParams CreateParams {
-        get { var value = base.CreateParams; value.ExStyle |= 0x08000000 | 0x00000020 | 0x00000080 | 0x00080000; return value; }
-    }
-    protected override void WndProc(ref Message message) {
-        if (message.Msg == 0x0084) { message.Result = new IntPtr(-1); return; }
-        if (message.Msg == 0x0021) { message.Result = new IntPtr(3); return; }
-        base.WndProc(ref message);
-    }
-    public void UpdateStatus(Rectangle bounds, string title, string message) {
-        Location = new Point(bounds.Left + 16, bounds.Top + 16);
-        heading.Text = title; detail.Text = message;
-        if (!Visible) Show();
-    }
-}
-
+// Captures the visible GTA window only after F8; never sends input to the game.
 public sealed class CaptureAssistant : Form {
-    static readonly string[] Shots = { "front", "rear", "left", "right", "cinematicFront", "cinematicRear" };
-    static readonly string[] Labels = { "Frente", "Traseira", "Lateral esquerda", "Lateral direita", "Cinematográfica dianteira", "Cinematográfica traseira" };
-    readonly JavaScriptSerializer json = new JavaScriptSerializer { MaxJsonLength = 32000000 };
+    readonly JavaScriptSerializer json = new JavaScriptSerializer { MaxJsonLength = 64000000 };
     readonly object sync = new object();
-    readonly string root, storage, token;
-    readonly string hostedUrl, hostedOrigin;
-    readonly bool validationMode;
-    int servicePort = 47831;
+    readonly string token, siteUrl, hostedOrigin;
     readonly Label status = new Label();
-    readonly Label instruction = new Label();
-    readonly Button calibrate = new Button(), open = new Button(), reference = new Button();
-    readonly CaptureOverlay overlay = new CaptureOverlay();
-    readonly System.Windows.Forms.Timer overlayTimer = new System.Windows.Forms.Timer { Interval = 200 };
-    bool armed, takingPhoto;
-    DateTime lastSiteContact = DateTime.MinValue;
-    DateTime nextGameSearch = DateTime.MinValue;
-    IntPtr detectedGame;
+    readonly List<CapturedPhoto> photos = new List<CapturedPhoto>();
     TcpListener listener;
-    CameraProfile profile, draft;
-    List<CameraEvent> events = new List<CameraEvent>();
-    List<CapturedPhoto> photos = new List<CapturedPhoto>();
-    Stopwatch recordingClock = new Stopwatch();
-    IntPtr gameWindow;
-    volatile bool recording, running, cancelled, closing;
-    int checkpoint, progress;
-    long previousEvent;
-    string state = "idle", error = "";
-
-    public CaptureAssistant(string projectRoot) : this(projectRoot, false) { }
-    CaptureAssistant(string projectRoot, bool validateOnly) {
-        validationMode = validateOnly;
-        root = projectRoot;
-        try {
-            Uri address;
-            string configuredUrl = File.ReadAllText(Path.Combine(root, "capture", "site-url.txt")).Trim();
-            if (Uri.TryCreate(configuredUrl, UriKind.Absolute, out address) && address.Scheme == "https") {
-                hostedUrl = address.AbsoluteUri; hostedOrigin = address.GetLeftPart(UriPartial.Authority);
-            }
-        } catch { }
-        storage = validateOnly ? Path.Combine(projectRoot, "test-profile") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MinhaGaragemCapture");
-        Directory.CreateDirectory(storage);
-        byte[] secret = new byte[32]; using (var random = RandomNumberGenerator.Create()) random.GetBytes(secret);
-        token = BitConverter.ToString(secret).Replace("-", "").ToLowerInvariant();
-        LoadProfile();
-        Text = "Minha Garagem · Assistente de captura";
-        ClientSize = new Size(650, 470); MinimumSize = new Size(620, 470); StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Color.FromArgb(16, 23, 35); ForeColor = Color.FromArgb(226, 236, 251); Font = new Font("Segoe UI", 10);
-        var title = new Label { Text = "Um estúdio para a sua coleção", Location = new Point(25, 23), Size = new Size(590, 34), Font = new Font("Segoe UI", 18, FontStyle.Bold) };
-        instruction.SetBounds(26, 76, 595, 205);
-        instruction.Text = "1. Deixe o GTA em janela sem bordas e use entrada de mouse Windows. O painel aparece sobre o jogo sem receber cliques.\n\n2. Calibre dentro do GTA: F6 inicia; F7 marca cada uma das seis posições.\n\n3. Prepare o ensaio no site. Volte ao GTA, ajuste a câmera inicial e pressione F8 para capturar.\n\nF9 cancela. Foco e resolução precisam permanecer iguais durante os movimentos.";
-        status.SetBounds(26, 296, 595, 53); status.ForeColor = Color.LightSkyBlue;
-        StyleButton(open, "Abrir organizador", 26, 365, 185);
-        StyleButton(calibrate, "Calibrar câmeras", 224, 365, 185);
-        StyleButton(reference, "Ver câmera inicial", 422, 365, 195);
-        var note = new Label { Text = "Perfil experimental: confira o enquadramento antes de salvar o ensaio.", Location = new Point(26, 425), Size = new Size(595, 30), ForeColor = Color.FromArgb(144, 165, 195), Font = new Font("Segoe UI", 9) };
-        Controls.AddRange(new Control[] { title, instruction, status, open, calibrate, reference, note });
-        open.Click += delegate { Process.Start(new ProcessStartInfo((hostedUrl ?? new Uri(Path.Combine(root, "index.html")).AbsoluteUri) + "#capture=" + token) { UseShellExecute = true }); };
-        calibrate.Click += delegate { if (running || recording) return; SetStatus("No GTA, deixe a câmera na posição inicial e pressione F6. Depois, F7 marca cada ângulo."); };
-        reference.Click += delegate { string path = Path.Combine(storage, "reference.jpg"); if (File.Exists(path)) Process.Start(new ProcessStartInfo(path) { UseShellExecute = true }); else SetStatus("Calibre uma vez para guardar a câmera inicial."); };
-        SetStatus(profile == null ? "Nenhum perfil calibrado. Calibre as seis câmeras para começar." : "Perfil de seis câmeras carregado. Abra o organizador para conectar.");
-        overlayTimer.Tick += delegate { UpdateOverlay(); };
-        if (!validationMode) overlayTimer.Start();
-    }
-
-    void UpdateOverlay() {
-        if (closing) return;
-        if (DateTime.UtcNow >= nextGameSearch || (detectedGame != IntPtr.Zero && !Native.IsWindow(detectedGame))) {
-            detectedGame = FindGame(); nextGameSearch = DateTime.UtcNow.AddSeconds(2);
-        }
-        bool focused = detectedGame != IntPtr.Zero && Native.GetForegroundWindow() == detectedGame;
-        if (recording && (!focused || detectedGame != gameWindow)) {
-            recording = false;
-            SetStatus("Calibração interrompida: o GTA perdeu o foco. Volte à câmera inicial e pressione F6.");
-        }
-        if (!focused || takingPhoto) { overlay.Hide(); return; }
-        try {
-            var bounds = ClientBounds(detectedGame);
-            string connection = DateTime.UtcNow.Subtract(lastSiteContact).TotalSeconds < 30 ? "Site conectado" : "Site sem contato recente";
-            string title = "MINHA GARAGEM · " + (running ? "Capturando " + progress + "/6" : recording ? "Calibrando " + (checkpoint + 1) + "/6" : armed ? "Ensaio preparado · F8 inicia" : "Assistente de captura");
-            overlay.UpdateStatus(bounds, title, connection + " · " + (profile == null ? "Sem calibração" : "Perfil salvo") + "\n" + status.Text + "\nF6 calibrar · F7 marcar · F8 capturar · F9 cancelar");
-        } catch { overlay.Hide(); }
-    }
-
-    // Oculta o painel antes da cópia da tela, inclusive em versões antigas do Windows.
-    byte[] CaptureCleanJpeg(IntPtr window) {
-        Action hide = () => { takingPhoto = true; overlay.Hide(); };
-        if (InvokeRequired) Invoke(hide); else hide();
-        try {
-            Thread.Sleep(100);
-            if (Native.GetForegroundWindow() != window) throw new InvalidOperationException("O GTA perdeu o foco antes da foto.");
-            return CaptureJpeg(window);
-        } finally {
-            Action restore = () => { takingPhoto = false; };
-            if (!closing && IsHandleCreated) { if (InvokeRequired) Invoke(restore); else restore(); }
-        }
-    }
-
-    string ArmCapture() {
-        if (running || recording || armed) return "Já há um ensaio preparado, captura ou calibração em andamento.";
-        if (profile == null) return "Calibre as seis câmeras com F6/F7 antes de preparar o ensaio.";
-        armed = true; cancelled = false;
-        lock (sync) { state = "armed"; error = ""; progress = 0; photos.Clear(); }
-        SetStatus("Ensaio preparado. Volte ao GTA, ajuste a câmera inicial e pressione F8. F9 cancela.");
-        return null;
-    }
-
-    void CancelCapture() {
-        cancelled = true; recording = false; armed = false;
-        lock (sync) { state = "cancelled"; error = "Captura/calibração cancelada. Prepare um novo ensaio no site."; photos.Clear(); }
-        SetStatus("Cancelado. O perfil salvo e as fotos do organizador foram mantidos.");
-    }
-
-    void StyleButton(Button button, string text, int x, int y, int width) {
-        button.Text = text; button.SetBounds(x, y, width, 42); button.FlatStyle = FlatStyle.Flat;
-        button.FlatAppearance.BorderColor = Color.FromArgb(66, 93, 133); button.BackColor = Color.FromArgb(31, 49, 77); button.ForeColor = ForeColor;
+    volatile bool closing;
+    bool enabled, takingPhoto;
+    string session = "", error = "";
+    long sequence;
+    DateTime lastSiteContact = DateTime.MinValue;
+    int servicePort = 47831;
+    readonly bool validationMode;
+    public CaptureAssistant(string root, bool validate = false) {
+        validationMode = validate;
+        siteUrl = "https://p3dr0ns.github.io/organizador-garagem-gta-v/";
+        string config = Path.Combine(root, "capture", "site-url.txt");
+        Uri configured;
+        if (File.Exists(config) && Uri.TryCreate(File.ReadAllText(config).Trim(), UriKind.Absolute, out configured) && configured.Scheme == "https") siteUrl = configured.AbsoluteUri;
+        hostedOrigin = new Uri(siteUrl).GetLeftPart(UriPartial.Authority);
+        byte[] bytes = new byte[32]; using (var random = RandomNumberGenerator.Create()) random.GetBytes(bytes);
+        token = BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+        Text = "Minha Garagem · Enviar prints";
+        ClientSize = new Size(620, 330); FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
+        BackColor = Color.FromArgb(16, 23, 35); ForeColor = Color.White; Font = new Font("Segoe UI", 10);
+        var title = new Label { Text = "Um print. Direto para o seu carro.", Location = new Point(24, 24), Size = new Size(575, 38), Font = new Font("Segoe UI", 17, FontStyle.Bold) };
+        var help = new Label { Text = "1. Abra o site pelo botão abaixo e escolha o carro.\n2. Em Fotos do meu carro, ative Receber prints.\n3. No GTA em janela sem bordas, enquadre a foto e pressione F8.\n\nCada print é salvo no site. F9 pausa. Nenhuma calibração é necessária.", Location = new Point(26, 80), Size = new Size(565, 135) };
+        var open = new Button { Text = "Abrir site e conectar", Location = new Point(26, 228), Size = new Size(250, 40), FlatStyle = FlatStyle.Flat };
+        open.Click += delegate { Process.Start(new ProcessStartInfo(siteUrl + "#capture=" + token) { UseShellExecute = true }); };
+        status.SetBounds(26, 282, 565, 40); status.ForeColor = Color.LightSkyBlue;
+        status.Text = "Abra o site para escolher o carro que receberá os prints.";
+        Controls.AddRange(new Control[] { title, help, open, status });
     }
     void SetStatus(string message) {
         if (closing || IsDisposed) return;
         if (InvokeRequired) { BeginInvoke((Action)(() => SetStatus(message))); return; }
         status.Text = message;
     }
-    void LoadProfile() {
-        try { profile = json.Deserialize<CameraProfile>(File.ReadAllText(Path.Combine(storage, "profile.json"))); ValidateProfile(profile); }
-        catch { profile = null; }
-    }
-    static void ValidateProfile(CameraProfile value) {
-        if (value == null || value.width < 640 || value.height < 360 || value.shots == null || value.shots.Count != 6) throw new InvalidDataException("Perfil incompleto.");
-        for (int i = 0; i < 6; i++) {
-            var shot = value.shots[i];
-            if (shot.id != Shots[i] || shot.events == null || shot.events.Count > 120000) throw new InvalidDataException("Perfil inválido.");
-            foreach (var step in shot.events) if (Math.Abs((long)step.dx) > 10000 || Math.Abs((long)step.dy) > 10000 || step.delay < 0 || step.delay > 10000) throw new InvalidDataException("Movimento inválido.");
-            if (shot.events.Sum(step => (long)step.delay) > 120000) throw new InvalidDataException("Cada posição deve levar menos de dois minutos.");
-        }
-    }
     protected override void OnHandleCreated(EventArgs e) {
         base.OnHandleCreated(e);
         if (validationMode) return;
-        bool hotkeys = Native.RegisterHotKey(Handle, 6, 0x4000, (uint)Keys.F6);
-        hotkeys &= Native.RegisterHotKey(Handle, 7, 0x4000, (uint)Keys.F7);
-        hotkeys &= Native.RegisterHotKey(Handle, 8, 0x4000, (uint)Keys.F8);
-        hotkeys &= Native.RegisterHotKey(Handle, 9, 0x4000, (uint)Keys.F9);
-        var raw = new Native.RAWDEVICE { page = 1, usage = 2, flags = 0x100, target = Handle };
-        if (!Native.RegisterRawInputDevices(new[] { raw }, 1, (uint)Marshal.SizeOf(typeof(Native.RAWDEVICE))) || !hotkeys) SetStatus("Não foi possível registrar os atalhos. Feche outros assistentes de captura e reabra.");
-        try {
-            listener = new TcpListener(IPAddress.Loopback, 47831); listener.Start();
-            Task.Run((Action)AcceptClients);
-        } catch (Exception ex) { SetStatus("Não foi possível iniciar a conexão local: " + ex.Message); }
+        if (!Native.RegisterHotKey(Handle, 8, 0x4000, (uint)Keys.F8) || !Native.RegisterHotKey(Handle, 9, 0x4000, (uint)Keys.F9)) SetStatus("F8/F9 indisponíveis. Feche outros assistentes e reabra.");
+        try { listener = new TcpListener(IPAddress.Loopback, servicePort); listener.Start(); Task.Run((Action)AcceptClients); }
+        catch (Exception ex) { SetStatus("Não foi possível conectar: " + ex.Message); }
     }
     protected override void WndProc(ref Message message) {
-        if (message.Msg == 0x0312) {
-            int id = message.WParam.ToInt32();
-            if (id == 9) CancelCapture();
-            if (id == 6) BeginCalibration();
-            if (id == 7 && recording) MarkShot();
-            if (id == 8 && armed) {
-                var window = FindGame();
-                if (window != IntPtr.Zero && Native.GetForegroundWindow() == window) {
-                    string failure = StartCapture();
-                    if (failure != null) SetStatus(failure);
-                }
-            }
-        }
-        if (message.Msg == 0x00FF && recording) ReadMouse(message.LParam);
+        if (message.Msg == 0x0312 && message.WParam.ToInt32() == 8) TakeScreenshot();
+        if (message.Msg == 0x0312 && message.WParam.ToInt32() == 9) CancelCapture();
         base.WndProc(ref message);
     }
     static IntPtr FindGame() {
         foreach (var process in Process.GetProcesses()) {
             try {
                 string name = process.ProcessName.ToLowerInvariant();
-                if ((name == "gta5" || name == "gta5_enhanced" || name == "gtav" || name == "gta5 enhanced") && process.MainWindowHandle != IntPtr.Zero) return process.MainWindowHandle;
-            } catch { }
-            finally { process.Dispose(); }
+                if ((name == "gta5" || name == "gta5_enhanced" || name == "gtav" || name == "gta5 enhanced") && process.MainWindowHandle != IntPtr.Zero && process.MainWindowHandle == Native.GetForegroundWindow()) return process.MainWindowHandle;
+            } catch { } finally { process.Dispose(); }
         }
         return IntPtr.Zero;
     }
-    static Rectangle ClientBounds(IntPtr window) {
+    static byte[] CapturePng(IntPtr window) {
         Native.RECT rect; var point = new Native.POINT();
-        if (Native.IsIconic(window) || !Native.GetClientRect(window, out rect) || !Native.ClientToScreen(window, ref point)) throw new InvalidOperationException("Volte ao GTA e restaure a janela antes de capturar.");
+        if (Native.IsIconic(window) || !Native.GetClientRect(window, out rect) || !Native.ClientToScreen(window, ref point)) throw new InvalidOperationException("Restaure a janela do GTA antes do print.");
         var bounds = new Rectangle(point.X, point.Y, rect.Right - rect.Left, rect.Bottom - rect.Top);
-        if (bounds.Width < 640 || bounds.Height < 360 || !SystemInformation.VirtualScreen.Contains(bounds)) throw new InvalidOperationException("Deixe a janela do GTA visível e inteira na tela, em modo sem bordas.");
-        return bounds;
-    }
-    void BeginCalibration() {
-        if (running || recording || armed) return;
-        try {
-            gameWindow = FindGame();
-            if (gameWindow == IntPtr.Zero || Native.GetForegroundWindow() != gameWindow) throw new InvalidOperationException("Abra o GTA, deixe a câmera inicial pronta e pressione F6 dentro do jogo.");
-            Rectangle bounds = ClientBounds(gameWindow);
-            // O perfil anterior só é substituído ao concluir as seis posições.
-            File.WriteAllBytes(Path.Combine(storage, "reference-draft.jpg"), CaptureCleanJpeg(gameWindow));
-            draft = new CameraProfile { width = bounds.Width, height = bounds.Height };
-            events = new List<CameraEvent>(); checkpoint = 0; previousEvent = 0; cancelled = false;
-            recordingClock.Restart(); recording = true;
-            SetStatus("Gravando movimentos. Ajuste a câmera para FRENTE e pressione F7 (1/6).");
-        } catch (Exception ex) { SetStatus(ex.Message); }
-    }
-    void ReadMouse(IntPtr input) {
-        if (Native.GetForegroundWindow() != gameWindow) { recording = false; SetStatus("Calibração interrompida: o GTA perdeu o foco. Pressione F6 para reiniciar."); return; }
-        uint size = 0, headerSize = (uint)Marshal.SizeOf(typeof(Native.RAWHEADER));
-        Native.GetRawInputData(input, 0x10000003, IntPtr.Zero, ref size, headerSize);
-        if (size == 0 || size > 4096) return;
-        IntPtr buffer = Marshal.AllocHGlobal((int)size);
-        try {
-            if (Native.GetRawInputData(input, 0x10000003, buffer, ref size, headerSize) != size) return;
-            var header = (Native.RAWHEADER)Marshal.PtrToStructure(buffer, typeof(Native.RAWHEADER));
-            if (header.type != 0) return;
-            var mouse = (Native.RAWMOUSE)Marshal.PtrToStructure(IntPtr.Add(buffer, (int)headerSize), typeof(Native.RAWMOUSE));
-            if (mouse.flags != 0 || (mouse.dx == 0 && mouse.dy == 0)) return;
-            long elapsed = recordingClock.ElapsedMilliseconds;
-            if (elapsed > 120000 || events.Count >= 120000) { recording = false; SetStatus("Calibração longa demais. Reinicie com F6 e use movimentos curtos."); return; }
-            events.Add(new CameraEvent { dx = mouse.dx, dy = mouse.dy, delay = (int)Math.Min(10000, elapsed - previousEvent) });
-            previousEvent = elapsed;
-        } finally { Marshal.FreeHGlobal(buffer); }
-    }
-    void MarkShot() {
-        if (Native.GetForegroundWindow() != gameWindow) return;
-        draft.shots.Add(new CameraShot { id = Shots[checkpoint], events = new List<CameraEvent>(events) });
-        checkpoint++; events.Clear(); previousEvent = 0; recordingClock.Restart();
-        if (checkpoint < 6) { SetStatus("Posição salva. Ajuste para " + Labels[checkpoint] + " e pressione F7 (" + (checkpoint + 1) + "/6)."); return; }
-        recording = false;
-        try {
-            ValidateProfile(draft);
-            string temporary = Path.Combine(storage, "profile-draft.json");
-            File.WriteAllText(temporary, json.Serialize(draft), Encoding.UTF8);
-            string destination = Path.Combine(storage, "profile.json");
-            if (File.Exists(destination)) File.Replace(temporary, destination, null); else File.Move(temporary, destination);
-            File.Copy(Path.Combine(storage, "reference-draft.jpg"), Path.Combine(storage, "reference.jpg"), true);
-            profile = draft;
-            SetStatus("Seis câmeras calibradas. Volte à câmera INICIAL e inicie o ensaio pelo organizador.");
-        } catch (Exception ex) { SetStatus("Não foi possível salvar o perfil: " + ex.Message); }
-    }
-    string StartCapture() {
-        if (running || recording) return "Já há uma captura ou calibração em andamento.";
-        if (profile == null) return "Calibre as seis câmeras com F6/F7 antes de capturar.";
-        var window = FindGame();
-        if (window == IntPtr.Zero) return "O GTA não está aberto. Abra o jogo e deixe o carro na vaga de captura.";
-        try {
-            var bounds = ClientBounds(window);
-            if (bounds.Width != profile.width || bounds.Height != profile.height) return "A resolução mudou. Use a resolução da calibração ou calibre novamente.";
-        } catch (Exception ex) { return ex.Message; }
-        gameWindow = window; cancelled = false; running = true; armed = false;
-        lock (sync) { state = "running"; error = ""; progress = 0; photos = new List<CapturedPhoto>(); }
-        calibrate.Enabled = false;
-        Task.Run((Action)RunCapture);
-        return null;
-    }
-    void EnsureGame() {
-        if (cancelled || closing) throw new OperationCanceledException("Captura cancelada com F9.");
-        if (!Native.IsWindow(gameWindow) || Native.GetForegroundWindow() != gameWindow) throw new InvalidOperationException("O GTA perdeu o foco. A captura foi interrompida.");
-        var bounds = ClientBounds(gameWindow);
-        if (bounds.Width != profile.width || bounds.Height != profile.height) throw new InvalidOperationException("A resolução mudou durante a captura.");
-    }
-    void WaitInGame(int milliseconds) {
-        for (int left = milliseconds; left > 0; left -= 20) { EnsureGame(); Thread.Sleep(Math.Min(20, left)); }
-    }
-    void RunCapture() {
-        try {
-            SetStatus("Preparando ensaio. F9 interrompe. Deixe o mouse parado.");
-            // O Windows pode negar SetForegroundWindow vindo de um servidor local.
-            // Aguarda o usuário voltar ao jogo em vez de tirar fotos de outra janela.
-            var focusWait = Stopwatch.StartNew();
-            while (Native.GetForegroundWindow() != gameWindow) {
-                if (cancelled || closing) throw new OperationCanceledException("Captura cancelada.");
-                if (focusWait.ElapsedMilliseconds > 20000) throw new InvalidOperationException("Volte ao GTA antes de iniciar. Prepare novamente no site e use F8 dentro do jogo.");
-                SetStatus("Aguardando você voltar ao GTA. F9 cancela."); Thread.Sleep(100);
-            }
-            SetStatus("Iniciando em 2 segundos. Não mova o mouse. F9 cancela."); WaitInGame(2000);
-            var result = new List<CapturedPhoto>();
-            foreach (var shot in profile.shots) {
-                foreach (var movement in shot.events) {
-                    WaitInGame(movement.delay);
-                    EnsureGame();
-                    var input = new Native.INPUT { type = 0, mouse = new Native.MOUSEINPUT { dx = movement.dx, dy = movement.dy, flags = 0x0001 | 0x2000 } };
-                    if (Native.SendInput(1, new[] { input }, Marshal.SizeOf(typeof(Native.INPUT))) != 1) throw new InvalidOperationException("O Windows não aceitou o movimento de câmera. Verifique se jogo e assistente estão no mesmo nível de permissão.");
-                }
-                WaitInGame(1200);
-                EnsureGame();
-                byte[] image = CaptureCleanJpeg(gameWindow);
-                EnsureGame();
-                result.Add(new CapturedPhoto { shot = shot.id, data = Convert.ToBase64String(image) });
-                lock (sync) progress = result.Count;
-                SetStatus("Fotografando " + result.Count + "/6. F9 interrompe.");
-            }
-            EnsureGame();
-            lock (sync) { photos = result; state = "complete"; }
-            SetStatus("Ensaio concluído. Confira e salve as seis fotos no organizador.");
-        } catch (Exception ex) {
-            lock (sync) { state = cancelled ? "cancelled" : "error"; error = ex.Message; photos.Clear(); }
-            SetStatus(ex.Message);
-        } finally {
-            running = false;
-            if (!closing && IsHandleCreated) BeginInvoke((Action)(() => calibrate.Enabled = true));
-        }
-    }
-    static byte[] CaptureJpeg(IntPtr window) {
-        var bounds = ClientBounds(window);
+        if (bounds.Width < 640 || bounds.Height < 360 || !SystemInformation.VirtualScreen.Contains(bounds)) throw new InvalidOperationException("Use o GTA em janela sem bordas e visível na tela.");
         using (var bitmap = new Bitmap(bounds.Width, bounds.Height)) {
             using (var graphics = Graphics.FromImage(bitmap)) graphics.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size, CopyPixelOperation.SourceCopy);
-            int width = Math.Min(1600, bitmap.Width), height = (int)Math.Round(bitmap.Height * (double)width / bitmap.Width);
-            using (var resized = new Bitmap(bitmap, width, height)) using (var stream = new MemoryStream()) {
-                var encoder = ImageCodecInfo.GetImageEncoders().First(info => info.MimeType == "image/jpeg");
-                using (var parameters = new EncoderParameters(1)) { parameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 88L); resized.Save(stream, encoder, parameters); }
-                return stream.ToArray();
-            }
+            if (Native.GetForegroundWindow() != window) throw new InvalidOperationException("O GTA perdeu o foco. Tire outro print.");
+            double scale = Math.Min(1.0, 2560.0 / Math.Max(bounds.Width, bounds.Height));
+            using (var resized = new Bitmap(bitmap, Math.Max(1, (int)(bounds.Width * scale)), Math.Max(1, (int)(bounds.Height * scale))))
+            using (var stream = new MemoryStream()) { resized.Save(stream, ImageFormat.Png); return stream.ToArray(); }
         }
     }
+    void TakeScreenshot() {
+        string target;
+        lock (sync) {
+            if (!enabled || takingPhoto) return;
+            if ((DateTime.UtcNow - lastSiteContact).TotalSeconds > 90) { enabled = false; error = "O site ficou sem contato. Reconecte para continuar."; return; }
+            if (photos.Count >= 6) { error = "Aguardando o site receber os prints anteriores."; return; }
+            takingPhoto = true; target = session;
+        }
+        var window = FindGame();
+        Task.Run(() => {
+            try {
+                if (window == IntPtr.Zero) throw new InvalidOperationException("Deixe o GTA em primeiro plano para usar F8.");
+                string data = Convert.ToBase64String(CapturePng(window));
+                lock (sync) { if (enabled && target == session) { photos.Add(new CapturedPhoto { id = ++sequence, session = target, data = data }); error = ""; } }
+                SetStatus("Print capturado. O site recebe e salva a foto no carro escolhido.");
+            } catch (Exception ex) { lock (sync) error = ex.Message; SetStatus(ex.Message); }
+            finally { lock (sync) takingPhoto = false; }
+        });
+    }
+    string ArmCapture() {
+        lock (sync) { if (enabled) throw new InvalidOperationException("Outra aba já recebe prints. Pause nela ou pressione F9 antes de reconectar."); enabled = true; session = Guid.NewGuid().ToString("N"); photos.Clear(); error = ""; return session; }
+    }
+    void CancelCapture() { lock (sync) { enabled = false; photos.Clear(); } SetStatus("Envio pausado. Ative Receber prints no carro desejado para continuar."); }
     void AcceptClients() {
         while (!closing) {
             try { var client = listener.AcceptTcpClient(); Task.Run(() => HandleClient(client)); }
@@ -414,14 +154,13 @@ public sealed class CaptureAssistant : Form {
                 if (parts[0] == "OPTIONS") { Reply(stream, 200, new { ok = true }, true, origin); return; }
                 string submitted;
                 if (!headers.TryGetValue("X-Capture-Token", out submitted) || submitted != token) { Reply(stream, 401, new { error = "Abra o organizador pelo botão do assistente para conectar." }, true, origin); return; }
-                Invoke((Action)(() => lastSiteContact = DateTime.UtcNow));
+                lock (sync) lastSiteContact = DateTime.UtcNow;
                 object response; int code = 200;
-                if (parts[0] == "GET" && parts[1] == "/health") response = new { version = 2, calibrated = profile != null, overlay = true, armCapture = true };
-                else if (parts[0] == "GET" && parts[1] == "/status") { lock (sync) response = new { state, error, progress }; }
-                else if (parts[0] == "GET" && parts[1] == "/photos") { lock (sync) { if (state != "complete") { code = 409; response = new { error = "Nenhum ensaio concluído." }; } else response = new { photos = photos.ToArray() }; } }
-                else if (parts[0] == "POST" && parts[1] == "/capture") { string failure = (string)Invoke((Func<string>)StartCapture); if (failure != null) { code = 409; response = new { error = failure }; } else response = new { started = true }; }
-                else if (parts[0] == "POST" && parts[1] == "/arm") { string failure = (string)Invoke((Func<string>)ArmCapture); if (failure != null) { code = 409; response = new { error = failure }; } else response = new { armed = true }; }
-                else if (parts[0] == "POST" && parts[1] == "/cancel") { Invoke((Action)CancelCapture); response = new { cancelled = true }; }
+                if (parts[0] == "GET" && parts[1] == "/health") response = new { version = 3, manualCapture = true };
+                else if (parts[0] == "GET" && parts[1] == "/photos") { lock (sync) response = new { enabled, session, error, photos = photos.Take(1).ToArray() }; }
+                else if (parts[0] == "POST" && parts[1] == "/arm") { try { response = new { session = ArmCapture() }; } catch (Exception ex) { code = 409; response = new { error = ex.Message }; } }
+                else if (parts[0] == "POST" && parts[1].StartsWith("/ack/")) { long id; if (!Int64.TryParse(parts[1].Substring(5), out id)) { code = 400; response = new { error = "Print inválido." }; } else { lock (sync) photos.RemoveAll(photo => photo.id == id); response = new { ok = true }; } }
+                else if (parts[0] == "POST" && parts[1] == "/cancel") { CancelCapture(); response = new { cancelled = true }; }
                 else { code = 404; response = new { error = "Operação não encontrada." }; }
                 Reply(stream, code, response, true, origin);
             } catch { /* Conexões interrompidas não alteram o estado da captura. */ }
@@ -434,98 +173,55 @@ public sealed class CaptureAssistant : Form {
         if (cors) headers += "Access-Control-Allow-Origin: " + origin + "\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: X-Capture-Token, Content-Type\r\nAccess-Control-Allow-Private-Network: true\r\n";
         byte[] headerBytes = Encoding.ASCII.GetBytes(headers + "\r\n"); stream.Write(headerBytes, 0, headerBytes.Length); stream.Write(bytes, 0, bytes.Length);
     }
+
     protected override void OnFormClosed(FormClosedEventArgs e) {
-        closing = true; cancelled = true;
-        overlayTimer.Stop(); overlayTimer.Dispose(); overlay.Dispose();
+        closing = true; lock (sync) enabled = false;
         if (listener != null) listener.Stop();
-        if (!validationMode) foreach (int key in new[] { 6, 7, 8, 9 }) Native.UnregisterHotKey(Handle, key);
+        if (!validationMode) { Native.UnregisterHotKey(Handle, 8); Native.UnregisterHotKey(Handle, 9); }
         base.OnFormClosed(e);
     }
-    public static int SelfTest() {
-        var value = new CameraProfile { width = 1920, height = 1080 };
-        foreach (string shot in Shots) value.shots.Add(new CameraShot { id = shot, events = new List<CameraEvent> { new CameraEvent { dx = 12, dy = -3, delay = 10 } } });
-        ValidateProfile(value);
-        var serializer = new JavaScriptSerializer();
-        ValidateProfile(serializer.Deserialize<CameraProfile>(serializer.Serialize(value)));
-        var invalid = serializer.Deserialize<CameraProfile>(serializer.Serialize(value));
-        invalid.shots.RemoveAt(0);
-        try { ValidateProfile(invalid); return 2; } catch (InvalidDataException) { }
-        if (Marshal.SizeOf(typeof(Native.INPUT)) != (IntPtr.Size == 8 ? 40 : 28)) return 3;
-        // Perfil e porta isolados; não registra atalhos nem envia comandos ao GTA aberto.
-        string temporaryRoot = Path.Combine(Path.GetTempPath(), "garage-capture-test-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(temporaryRoot);
-        Directory.CreateDirectory(Path.Combine(temporaryRoot, "capture"));
-        File.WriteAllText(Path.Combine(temporaryRoot, "capture", "site-url.txt"), "https://garage.example/app/");
-        try {
-            using (var assistant = new CaptureAssistant(temporaryRoot, true)) {
-                var handle = assistant.Handle;
-                if (!assistant.overlay.HasPassiveWindowStyles) return 4;
-                if (assistant.ArmCapture() == null) return 5;
-                assistant.profile = value;
-                if (assistant.ArmCapture() != null || !assistant.armed || assistant.state != "armed") return 6;
-                if (assistant.ArmCapture() == null) return 7;
-                assistant.CancelCapture();
-                if (assistant.armed || assistant.state != "cancelled" || assistant.profile != value) return 8;
-                assistant.listener = new TcpListener(IPAddress.Loopback, 0); assistant.listener.Start();
-                assistant.servicePort = ((IPEndPoint)assistant.listener.LocalEndpoint).Port;
-                Task.Run((Action)assistant.AcceptClients);
-                var protocol = Task.Run(() => {
-                    string origin = "https://invalid.example";
-                    if (TestRequest(assistant, "GET", "/health", "wrong", "null").Item1 != 401) return false;
-                    if (TestRequest(assistant, "GET", "/health", assistant.token, origin).Item1 != 403) return false;
-                    if (TestRequest(assistant, "GET", "/health", assistant.token, "null", "other.example").Item1 != 403) return false;
-                    var hosted = TestRequest(assistant, "GET", "/health", assistant.token, "https://garage.example");
-                    if (hosted.Item1 != 200 || !hosted.Item2.Contains("Access-Control-Allow-Origin: https://garage.example\r\n")) return false;
-                    if (TestRequest(assistant, "OPTIONS", "/arm", "", "null").Item1 != 200) return false;
-                    var health = TestRequest(assistant, "GET", "/health", assistant.token, "null");
-                    if (health.Item1 != 200 || !health.Item2.Contains("\"armCapture\":true")) return false;
-                    if (TestRequest(assistant, "POST", "/arm", assistant.token, "null").Item1 != 200) return false;
-                    if (!TestRequest(assistant, "GET", "/status", assistant.token, "null").Item2.Contains("\"state\":\"armed\"")) return false;
-                    if (TestRequest(assistant, "POST", "/arm", assistant.token, "null").Item1 != 409) return false;
-                    if (TestRequest(assistant, "POST", "/cancel", assistant.token, "null").Item1 != 200) return false;
-                    if (!TestRequest(assistant, "GET", "/status", assistant.token, "null").Item2.Contains("\"state\":\"cancelled\"")) return false;
-                    if (TestRequest(assistant, "GET", "/photos", assistant.token, "null").Item1 != 409) return false;
-                    assistant.Invoke((Action)(() => assistant.profile = null));
-                    return TestRequest(assistant, "POST", "/capture", assistant.token, "null").Item1 == 409;
-                });
-                var timeout = Stopwatch.StartNew();
-                while (!protocol.IsCompleted && timeout.ElapsedMilliseconds < 15000) { Application.DoEvents(); Thread.Sleep(5); }
-                if (!protocol.IsCompleted || !protocol.Result) return 9;
-                assistant.Close();
-            }
-        } finally { Directory.Delete(temporaryRoot, true); }
-        Console.WriteLine("PASS: perfil, Win32, overlay passivo, preparo/cancelamento e protocolo HTTP autenticado isolado.");
+    [STAThread] public static int Main(string[] args) {
+        if (args.Contains("--self-test")) return SelfTest();
+        Native.SetProcessDPIAware(); Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
+        string root = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."));
+        using (var mutex = new Mutex(false, "Local\\MinhaGaragemCaptureAssistant")) {
+            if (!mutex.WaitOne(0)) { MessageBox.Show("O assistente já está aberto. Feche a versão anterior para atualizar."); return 1; }
+            try { Application.Run(new CaptureAssistant(root)); } finally { mutex.ReleaseMutex(); }
+        }
         return 0;
     }
-    static Tuple<int, string> TestRequest(CaptureAssistant assistant, string method, string path, string secret, string origin, string host = null) {
+    static string TestRequest(CaptureAssistant assistant, string method, string path, string secret, string origin, string host = null) {
         using (var client = new TcpClient()) {
             client.Connect(IPAddress.Loopback, assistant.servicePort); client.ReceiveTimeout = 3000;
             var stream = client.GetStream();
             string request = method + " " + path + " HTTP/1.1\r\nHost: " + (host ?? "127.0.0.1:" + assistant.servicePort) + "\r\nOrigin: " + origin + "\r\nX-Capture-Token: " + secret + "\r\nContent-Length: 0\r\n\r\n";
             byte[] bytes = Encoding.ASCII.GetBytes(request); stream.Write(bytes, 0, bytes.Length);
-            string response = new StreamReader(stream).ReadToEnd();
-            return Tuple.Create(Int32.Parse(response.Split(' ')[1]), response);
+            return new StreamReader(stream).ReadToEnd();
         }
     }
-    [STAThread] public static int Main(string[] args) {
-        if (args.Contains("--self-test")) return SelfTest();
-        if (args.Contains("--diagnostics")) {
-            var game = FindGame();
-            Console.WriteLine("GTA encontrado: " + (game != IntPtr.Zero));
-            if (game != IntPtr.Zero) {
-                Console.WriteLine("Em primeiro plano: " + (Native.GetForegroundWindow() == game));
-                Console.WriteLine("Minimizado: " + Native.IsIconic(game));
-                try { var bounds = ClientBounds(game); Console.WriteLine("Área de captura: " + bounds.Width + "x" + bounds.Height); }
-                catch (Exception ex) { Console.WriteLine(ex.Message); }
-            }
-            return 0;
+    public static int SelfTest() {
+        using (var assistant = new CaptureAssistant(Path.GetTempPath(), true)) {
+            var handle = assistant.Handle;
+            assistant.listener = new TcpListener(IPAddress.Loopback, 0); assistant.listener.Start();
+            assistant.servicePort = ((IPEndPoint)assistant.listener.LocalEndpoint).Port;
+            Task.Run((Action)assistant.AcceptClients);
+            try {
+                if (!TestRequest(assistant, "GET", "/health", "", "null").StartsWith("HTTP/1.1 401")) return 1;
+                if (!TestRequest(assistant, "GET", "/health", assistant.token, "https://untrusted.example").StartsWith("HTTP/1.1 403")) return 2;
+                if (!TestRequest(assistant, "GET", "/health", assistant.token, "null", "untrusted.example").StartsWith("HTTP/1.1 403")) return 3;
+                if (!TestRequest(assistant, "OPTIONS", "/arm", "", assistant.hostedOrigin).Contains("Access-Control-Allow-Private-Network: true")) return 4;
+                if (!TestRequest(assistant, "GET", "/health", assistant.token, assistant.hostedOrigin).Contains("\"manualCapture\":true")) return 5;
+                if (!TestRequest(assistant, "POST", "/arm", assistant.token, "null").StartsWith("HTTP/1.1 200") || !assistant.enabled) return 6;
+                if (!TestRequest(assistant, "POST", "/arm", assistant.token, "null").StartsWith("HTTP/1.1 409")) return 7;
+                lock (assistant.sync) assistant.photos.Add(new CapturedPhoto { id = 1, session = assistant.session, data = "test" });
+                if (!TestRequest(assistant, "GET", "/photos", assistant.token, "null").Contains("\"id\":1")) return 8;
+                TestRequest(assistant, "POST", "/ack/1", assistant.token, "null");
+                if (assistant.photos.Count != 0) return 9;
+                TestRequest(assistant, "POST", "/cancel", assistant.token, "null");
+                if (assistant.enabled) return 10;
+                if (!TestRequest(assistant, "POST", "/capture", assistant.token, "null").StartsWith("HTTP/1.1 404")) return 11;
+                return 0;
+            } finally { assistant.closing = true; assistant.listener.Stop(); }
         }
-        Native.SetProcessDPIAware(); Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
-        string projectRoot = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".."));
-        using (var mutex = new Mutex(false, "Local\\MinhaGaragemCaptureAssistant")) {
-            if (!mutex.WaitOne(0)) { MessageBox.Show("O assistente de captura já está aberto."); return 1; }
-            try { Application.Run(new CaptureAssistant(projectRoot)); } finally { mutex.ReleaseMutex(); }
-        }
-        return 0;
     }
 }

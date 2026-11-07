@@ -23,11 +23,12 @@ Os cadastros ficam no `localStorage` e as fotos no `IndexedDB` do navegador usad
 - referências offline do GTA Base no portfólio: preços normal e de negociação, velocidade testada, inspiração real, assentos, peso, tração, marchas e estatísticas com Overall; cobertura e coleta em [GTABASE.md](GTABASE.md);
 - galeria de seis fotos próprias, escolha de capa, envio e Ctrl+V;
 - exportação e importação de ensaios;
-- assistente Windows para repetir movimentos de câmera calibrados e capturar seis fotos.
+- print manual por F8 no GTA, com envio e salvamento automático no carro escolhido, sem macro nem calibração;
+- melhoria fotográfica local com prévia, intensidade e restauração do original.
 - catálogo offline com 617 modelos/variantes e 54 marcas de carros e motos, busca por nome e preenchimento automático de marca e categoria; detalhes em [CATALOGO.md](CATALOGO.md).
 - catálogo offline de rodas por tipo e modelo, com rodas dianteira/traseira para motos; detalhes em [RODAS.md](RODAS.md).
 
-Para a captura, abra `Iniciar captura.cmd`. A macro exige calibração e o mesmo ponto inicial no GTA; a precisão dentro do jogo ainda precisa ser validada. Veja [CAPTURA.md](CAPTURA.md) para o passo a passo e os limites.
+Para os prints, abra `Iniciar captura.cmd` e clique em **Abrir site e conectar**. Escolha o carro, ative **Receber prints** e use **F8** no GTA em janela sem bordas; **F9** pausa. Uma foto já basta para a capa. Veja [CAPTURA.md](CAPTURA.md) para o fluxo, a melhoria de imagem e os limites.
 
 ## Publicação
 

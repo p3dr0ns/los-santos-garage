@@ -46,7 +46,7 @@ async function writeVehiclePhotos(vehicleId, entries) {
     const store = transaction.objectStore("photos");
     PHOTO_SHOTS.forEach(shot => {
       const key = `${vehicleId}:${shot.id}`;
-      if (entries.has(shot.id)) store.put({ key, vehicleId, shot: shot.id, blob: entries.get(shot.id).blob });
+      if (entries.has(shot.id)) store.put({ key, vehicleId, shot: shot.id, blob: entries.get(shot.id).blob, originalBlob: entries.get(shot.id).originalBlob || null, enhanced: Boolean(entries.get(shot.id).enhanced) });
       else store.delete(key);
     });
     transaction.oncomplete = resolve;
@@ -205,8 +205,8 @@ async function openPhotoStudio() {
   try {
     const records = await readAllPhotos();
     if (generation !== studioGeneration) return;
-    records.filter(record => record.vehicleId === vehicleId).forEach(record => studioDraft.set(record.shot, { blob: record.blob, url: URL.createObjectURL(record.blob) }));
-    $("#studioStatus").textContent = "Envie as fotos em cada posição ou capture com o assistente.";
+    records.filter(record => record.vehicleId === vehicleId).forEach(record => studioDraft.set(record.shot, { blob: record.blob, originalBlob: record.originalBlob || null, enhanced: Boolean(record.enhanced), url: URL.createObjectURL(record.blob) }));
+    $("#studioStatus").textContent = "Uma foto já basta. Envie um print, cole com Ctrl+V ou ative o recebimento por F8.";
     $("#savePhotos").disabled = false;
     studioBusy = false;
     renderStudio();
@@ -218,10 +218,12 @@ async function openPhotoStudio() {
 }
 
 function renderStudio() {
-  $("#studioCount").textContent = `${studioDraft.size} de 6 fotos`;
+  $("#studioCount").textContent = `${studioDraft.size} de 6 fotos · opcionais`;
+  $("#savePhotos").disabled = captureRunning || studioBusy;
+  $("#uploadQuickPrint").disabled = captureRunning || studioBusy;
   $("#studioGrid").innerHTML = PHOTO_SHOTS.map(shot => {
     const photo = studioDraft.get(shot.id);
-    return `<section class="studio-shot ${studioCover === shot.id ? "cover" : ""}"><div class="studio-shot-image">${photo ? `<img src="${escapeAttr(photo.url)}" alt="${shot.label}">` : `<span aria-hidden="true">＋</span>`}${studioCover === shot.id ? '<span class="cover-label">CAPA</span>' : ""}</div><div class="studio-shot-body"><h3>${shot.label}</h3><p>${shot.hint}</p><div><button type="button" data-upload-shot="${shot.id}" ${captureRunning || studioBusy ? "disabled" : ""}>${photo ? "Trocar foto" : "Enviar foto"}</button>${photo ? `<button type="button" data-cover-shot="${shot.id}" aria-pressed="${studioCover === shot.id}" ${captureRunning || studioBusy ? "disabled" : ""}>${studioCover === shot.id ? "★ Capa" : "Usar capa"}</button><button type="button" data-remove-shot="${shot.id}" aria-label="Remover ${shot.label}" ${captureRunning || studioBusy ? "disabled" : ""}>×</button>` : ""}</div></div></section>`;
+    return `<section class="studio-shot ${studioCover === shot.id ? "cover" : ""}"><div class="studio-shot-image">${photo ? `<img src="${escapeAttr(photo.url)}" alt="${shot.label}">` : `<span aria-hidden="true">＋</span>`}${studioCover === shot.id ? '<span class="cover-label">CAPA</span>' : ""}</div><div class="studio-shot-body"><h3>${shot.label}</h3><p>${shot.hint}</p><div><button type="button" data-upload-shot="${shot.id}" ${captureRunning || studioBusy ? "disabled" : ""}>${photo ? "Trocar foto" : "Enviar foto"}</button>${photo ? `<button type="button" data-cover-shot="${shot.id}" aria-pressed="${studioCover === shot.id}" ${captureRunning || studioBusy ? "disabled" : ""}>${studioCover === shot.id ? "★ Capa" : "Usar capa"}</button><button type="button" data-enhance-shot="${shot.id}" ${captureRunning || studioBusy ? "disabled" : ""}>${photo.enhanced ? "Ajustar melhoria" : "Melhorar foto"}</button><button type="button" data-remove-shot="${shot.id}" aria-label="Remover ${shot.label}" ${captureRunning || studioBusy ? "disabled" : ""}>×</button>` : ""}</div></div></section>`;
   }).join("");
 }
 
@@ -230,28 +232,30 @@ async function preparePhoto(file) {
   if (file.size > 25 * 1024 * 1024) throw new Error("A imagem deve ter até 25 MB.");
   const bitmap = await createImageBitmap(file);
   try {
-    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    const scale = Math.min(1, 2560 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
     canvas.width = Math.max(1, Math.round(bitmap.width * scale)); canvas.height = Math.max(1, Math.round(bitmap.height * scale));
     canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.88));
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.94));
     if (!blob) throw new Error("Não foi possível preparar a imagem.");
     return { blob, url: URL.createObjectURL(blob) };
   } finally { bitmap.close(); }
 }
 
-async function uploadPhoto(file, shot = uploadShot) {
+async function uploadPhoto(file, shot = uploadShot || nextPrintShot()) {
   if (!file || !shot || captureRunning || studioBusy) return;
   const generation = studioGeneration;
+  studioBusy = true; renderStudio();
   try {
     const prepared = await preparePhoto(file);
     if (generation !== studioGeneration || !$("#photoStudioDialog").open) { URL.revokeObjectURL(prepared.url); return; }
     if (studioDraft.has(shot)) URL.revokeObjectURL(studioDraft.get(shot).url);
     studioDraft.set(shot, prepared);
     if (!studioDraft.has(studioCover)) studioCover = shot;
-    $("#studioStatus").textContent = `${PHOTO_SHOTS.find(item => item.id === shot).label} adicionada. Salve o ensaio para confirmar.`;
+    $("#studioStatus").textContent = `${PHOTO_SHOTS.find(item => item.id === shot).label} adicionada. Salve as fotos para confirmar.`;
     renderStudio();
   } catch (error) { $("#studioStatus").textContent = error.message || "Não foi possível abrir a imagem."; }
+  finally { studioBusy = false; renderStudio(); }
 }
 
 async function saveStudio() {
@@ -279,9 +283,9 @@ async function saveStudio() {
   finally { studioBusy = false; $("#savePhotos").disabled = false; renderStudio(); }
 }
 
-function closePhotoStudio() {
+async function closePhotoStudio() {
   if (studioBusy) return;
-  if (captureRunning) { cancelCaptureSession(); return; }
+  if (captureRunning) await cancelCaptureSession();
   studioGeneration++;
   clearStudioDraft();
   $("#photoStudioDialog").close();
@@ -289,7 +293,7 @@ function closePhotoStudio() {
 
 async function captureRequest(path, options = {}) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), 15000);
   try {
     const response = await fetch(CAPTURE_API + path, { ...options, signal: controller.signal, headers: { "X-Capture-Token": localStorage.getItem("minha-garagem-capture-token") || "", ...(options.headers || {}) } });
     const result = await response.json();
@@ -298,79 +302,110 @@ async function captureRequest(path, options = {}) {
   } finally { clearTimeout(timeout); }
 }
 
+let manualSession = null;
+let lastCapturedId = 0;
 async function checkCaptureConnection() {
   try {
-    const status = await captureRequest("/health");
-    $("#captureStatus").textContent = status.calibrated ? status.armCapture ? "Assistente conectado · painel no GTA pronto. Prepare aqui e inicie com F8 no jogo." : "Assistente conectado · perfil de seis câmeras pronto. Atualize o assistente para usar o painel e F8." : "Assistente conectado. No GTA, use F6 para calibrar e F7 para marcar cada câmera.";
-    $("#captureSession").textContent = status.armCapture ? "Preparar ensaio · iniciar com F8 no GTA" : "Capturar ensaio · 6 fotos";
-    $("#captureSession").disabled = captureRunning || !status.calibrated;
-    $("#connectCapture").textContent = "Verificar conexão";
+    const status = await captureRequest('/health');
+    const supported = status.manualCapture === true;
+    $('#captureStatus').textContent = supported ? 'Conectado. Ative Receber prints e use F8 no GTA. F9 pausa.' : 'Feche o assistente antigo e execute Iniciar captura.cmd para atualizar.';
+    $('#captureSession').disabled = captureRunning || studioBusy || !supported;
+    $('#connectCapture').textContent = 'Verificar conexão';
   } catch {
-    $("#captureStatus").textContent = "Assistente desconectado. Execute Iniciar captura.cmd e abra o organizador pelo assistente.";
-    $("#captureSession").disabled = true;
+    $('#captureStatus').textContent = 'Abra Iniciar captura.cmd e use Abrir site e conectar. Ou envie/cole um print abaixo.';
+    $('#captureSession').disabled = true;
   }
 }
-
 function setCapturing(value) {
   captureRunning = value;
-  $("#cancelCapture").hidden = !value;
-  $("#captureSession").disabled = value;
-  $("#savePhotos").disabled = value;
-  $("#exportPhotos").disabled = value;
+  $('#cancelCapture').hidden = !value;
+  $('#captureSession').disabled = value;
+  $('#savePhotos').disabled = value || studioBusy;
+  $('#exportPhotos').disabled = value || studioBusy;
   renderStudio();
 }
-
+async function persistStudioDraft() {
+  const vehicle = data.vehicles.find(item => item.id === studioVehicleId);
+  if (!vehicle) throw new Error('O carro não está mais na coleção.');
+  if (studioDraft.size && !studioDraft.has(studioCover)) studioCover = studioDraft.keys().next().value;
+  await writeVehiclePhotos(vehicle.id, studioDraft);
+  PHOTO_SHOTS.forEach(shot => {
+    const key = `${vehicle.id}:${shot.id}`;
+    if (photoUrls.has(key)) URL.revokeObjectURL(photoUrls.get(key));
+    photoUrls.delete(key);
+    if (studioDraft.has(shot.id)) photoUrls.set(key, URL.createObjectURL(studioDraft.get(shot.id).blob));
+  });
+  vehicle.coverSlot = studioCover;
+  if (!saveData()) throw new Error('Não foi possível salvar a capa. Confira o espaço do navegador.');
+  renderVehicleDetails();
+}
+function nextPrintShot() {
+  return ['cinematicFront', 'front', 'rear', 'left', 'right', 'cinematicRear'].find(id => !studioDraft.has(id));
+}
 async function startCaptureSession() {
   if (captureRunning || studioBusy) return;
-  captureGeneration++;
-  setCapturing(true);
+  const generation = ++captureGeneration;
+  studioBusy = true; renderStudio();
   try {
-    const assistant = await captureRequest("/health");
-    await captureRequest(assistant.armCapture ? "/arm" : "/capture", { method: "POST" });
-    $("#studioStatus").textContent = assistant.armCapture ? "Ensaio preparado. Volte ao GTA, ajuste a câmera inicial e pressione F8. F9 cancela." : "Ensaio iniciado. Não mova o mouse; F9 interrompe a captura.";
-    pollCaptureSession();
-  } catch (error) { setCapturing(false); $("#studioStatus").textContent = error.message; }
+    const status = await captureRequest('/health');
+    if (!status.manualCapture) throw new Error('Atualize o assistente pelo Iniciar captura.cmd.');
+    if (!nextPrintShot()) throw new Error('A galeria está cheia. Remova uma foto e salve antes de receber novos prints.');
+    await persistStudioDraft();
+    const result = await captureRequest('/arm', { method: 'POST' });
+    if (!result.session) throw new Error('O assistente não informou a sessão de prints.');
+    manualSession = result.session; lastCapturedId = 0;
+    setCapturing(true);
+    $('#studioStatus').textContent = 'Recebendo prints neste carro. Enquadre no GTA e pressione F8. Cada foto será salva automaticamente. F9 pausa.';
+  } catch (error) { $('#studioStatus').textContent = error.message; }
+  finally { studioBusy = false; renderStudio(); }
+  if (captureRunning && generation === captureGeneration) pollCaptureSession();
 }
-
 async function pollCaptureSession() {
-  if (!captureRunning) return;
   const generation = captureGeneration;
+  const vehicleId = studioVehicleId;
   try {
-    const status = await captureRequest("/status");
-    if (generation !== captureGeneration || !captureRunning) return;
-    if (status.state === "error" || status.state === "cancelled") throw new Error(status.error || "Captura interrompida. Suas fotos anteriores foram mantidas.");
-    if (status.state === "complete") {
-      const result = await captureRequest("/photos");
-      if (generation !== captureGeneration || !captureRunning) return;
-      if (result.photos.length !== 6 || !PHOTO_SHOTS.every(shot => result.photos.some(photo => photo.shot === shot.id))) throw new Error("Ensaio incompleto. Suas fotos anteriores foram mantidas.");
-      const prepared = new Map();
-      try {
-        for (const photo of result.photos) {
-          const binary = atob(photo.data);
-          const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
-          prepared.set(photo.shot, await preparePhoto(new Blob([bytes], { type: "image/jpeg" })));
-        }
-      } catch (error) { prepared.forEach(entry => URL.revokeObjectURL(entry.url)); throw error; }
-      if (generation !== captureGeneration || !captureRunning) { prepared.forEach(entry => URL.revokeObjectURL(entry.url)); return; }
-      clearStudioDraft(); studioDraft = prepared; studioCover = "cinematicFront";
-      $("#studioStatus").textContent = "Seis fotos recebidas. Confira o enquadramento e salve o ensaio.";
-      setCapturing(false);
+    const result = await captureRequest('/photos');
+    if (generation !== captureGeneration || !captureRunning || vehicleId !== studioVehicleId) return;
+    if (result.session !== manualSession || !result.enabled) {
+      setCapturing(false); manualSession = null;
+      $('#studioStatus').textContent = result.error || 'Recebimento pausado. Os prints já recebidos estão salvos.';
       return;
     }
-    $("#studioStatus").textContent = status.state === "armed" ? "Ensaio preparado. Volte ao GTA e pressione F8 na câmera inicial. F9 cancela." : `Capturando ${status.progress || 0} de 6 fotos. F9 interrompe.`;
-    capturePoll = setTimeout(pollCaptureSession, 800);
-  } catch (error) { if (generation !== captureGeneration) return; setCapturing(false); $("#studioStatus").textContent = error.message || "A conexão foi interrompida."; }
+    for (const photo of result.photos || []) {
+      if (photo.session !== manualSession || !Number.isSafeInteger(photo.id)) continue;
+      if (photo.id <= lastCapturedId) { await captureRequest(`/ack/${photo.id}`, { method: 'POST' }); continue; }
+      const shot = nextPrintShot();
+      if (!shot) { await cancelCaptureSession(); $('#studioStatus').textContent = 'Galeria completa. Todos os prints recebidos foram salvos. Remova uma foto para adicionar outra.'; return; }
+      const bytes = Uint8Array.from(atob(photo.data), character => character.charCodeAt(0));
+      studioBusy = true; renderStudio();
+      const prepared = await preparePhoto(new Blob([bytes], { type: 'image/png' }));
+      if (generation !== captureGeneration || !captureRunning || vehicleId !== studioVehicleId) { URL.revokeObjectURL(prepared.url); return; }
+      studioDraft.set(shot, prepared);
+      if (studioDraft.size === 1) studioCover = shot;
+      await persistStudioDraft();
+      lastCapturedId = photo.id;
+      await captureRequest(`/ack/${photo.id}`, { method: 'POST' });
+      $('#studioStatus').textContent = `Print salvo em ${data.vehicles.find(item => item.id === vehicleId)?.name}. F8 para outra foto; F9 para pausar.`;
+      studioBusy = false; renderStudio();
+    }
+    if (result.error) $('#studioStatus').textContent = result.error;
+    if (generation === captureGeneration && captureRunning) capturePoll = setTimeout(pollCaptureSession, 1000);
+  } catch (error) {
+    if (generation !== captureGeneration) return;
+    await cancelCaptureSession();
+    $('#studioStatus').textContent = `${error.message} Os prints já salvos foram mantidos. Confira e salve qualquer foto pendente antes de fechar.`;
+  } finally { studioBusy = false; renderStudio(); }
 }
-
 async function cancelCaptureSession() {
   captureGeneration++;
   clearTimeout(capturePoll);
-  try { await captureRequest("/cancel", { method: "POST" }); }
-  catch { /* O atalho F9 permanece disponível no assistente. */ }
+  if (manualSession) {
+    try { await captureRequest('/cancel', { method: 'POST' }); } catch { }
+  }
+  manualSession = null;
   setCapturing(false);
-  $("#studioStatus").textContent = "Captura interrompida. Suas fotos anteriores foram mantidas.";
+  $('#studioStatus').textContent = 'Recebimento pausado. Os prints recebidos já estão salvos.';
 }
-
 $("#detailsEdit").addEventListener("click", () => { closeVehiclePortfolio(); openVehicleDialog(detailVehicleId); });
 $("#detailsPhotos").addEventListener("click", openPhotoStudio);
 $("#detailsFavorite").addEventListener("click", () => {
@@ -405,11 +440,27 @@ $("#studioGrid").addEventListener("click", event => {
   }
 });
 $("#studioFile").addEventListener("change", event => uploadPhoto(event.target.files[0]));
+$("#uploadQuickPrint").addEventListener("click", () => {
+  uploadShot = nextPrintShot();
+  if (!uploadShot) { $("#studioStatus").textContent = "A galeria está cheia. Remova uma foto ou use Trocar foto."; return; }
+  $("#studioFile").value = ""; $("#studioFile").click();
+});
+$("#printDropzone").addEventListener("dragover", event => { event.preventDefault(); });
+$("#printDropzone").addEventListener("drop", async event => {
+  event.preventDefault();
+  if (captureRunning || studioBusy) return;
+  for (const file of [...event.dataTransfer.files]) {
+    const shot = nextPrintShot();
+    if (!shot) { $("#studioStatus").textContent = "Galeria completa. Os arquivos restantes não foram adicionados."; break; }
+    await uploadPhoto(file, shot);
+  }
+});
 $("#photoStudioDialog").addEventListener("paste", event => {
   const file = [...(event.clipboardData?.files || [])].find(item => item.type.startsWith("image/"));
   if (!file || captureRunning) return;
   event.preventDefault();
-  uploadPhoto(file, uploadShot || PHOTO_SHOTS.find(shot => !studioDraft.has(shot.id))?.id || "cinematicFront");
+  const shot = nextPrintShot();
+  if (shot) uploadPhoto(file, shot); else $("#studioStatus").textContent = "A galeria está cheia. Escolha uma foto para trocar.";
 });
 $("#savePhotos").addEventListener("click", saveStudio);
 $("#closeStudio").addEventListener("click", closePhotoStudio);
@@ -418,7 +469,7 @@ $("#photoStudioDialog").addEventListener("cancel", event => { event.preventDefau
 $("#connectCapture").addEventListener("click", checkCaptureConnection);
 setInterval(() => {
   if ($("#photoStudioDialog").open && !captureRunning) checkCaptureConnection();
-}, 5000);
+}, 10000);
 $("#captureSession").addEventListener("click", startCaptureSession);
 $("#cancelCapture").addEventListener("click", cancelCaptureSession);
 $("#importPhotos").addEventListener("click", () => {
@@ -440,6 +491,15 @@ async function importPhotoBackup(file) {
       const mime = photo.image.slice(5, photo.image.indexOf(";"));
       const bytes = Uint8Array.from(atob(photo.image.split(",")[1]), character => character.charCodeAt(0));
       prepared.set(photo.shot, await preparePhoto(new Blob([bytes], { type: mime })));
+      if (photo.originalImage != null) {
+        if (typeof photo.originalImage !== "string" || !/^data:image\/(jpeg|png|webp);base64,/.test(photo.originalImage)) throw new Error("O original no arquivo de ensaio é inválido.");
+        const originalMime = photo.originalImage.slice(5, photo.originalImage.indexOf(";"));
+        const originalBytes = Uint8Array.from(atob(photo.originalImage.split(",")[1]), character => character.charCodeAt(0));
+        const original = await preparePhoto(new Blob([originalBytes], { type: originalMime }));
+        prepared.get(photo.shot).originalBlob = original.blob;
+        prepared.get(photo.shot).enhanced = true;
+        URL.revokeObjectURL(original.url);
+      }
     }
     if (generation !== studioGeneration) { prepared.forEach(entry => URL.revokeObjectURL(entry.url)); return; }
     clearStudioDraft(); studioDraft = prepared;
@@ -458,7 +518,9 @@ $("#exportPhotos").addEventListener("click", async () => {
   const photos = [];
   for (const [shot, entry] of studioDraft) {
     const image = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(entry.blob); });
-    photos.push({ shot, image });
+    const photo = { shot, image };
+    if (entry.originalBlob) photo.originalImage = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(entry.originalBlob); });
+    photos.push(photo);
   }
   const vehicle = data.vehicles.find(item => item.id === studioVehicleId);
   const blob = new Blob([JSON.stringify({ version: 1, vehicle: { ...vehicle, brand: getBrand(vehicle) }, cover: studioCover, photos })], { type: "application/json" });

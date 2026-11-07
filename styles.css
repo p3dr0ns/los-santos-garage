@@ -407,6 +407,20 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .capture-connect button { flex-shrink: 0; font-size: 11px; }
 .capture-help { margin-top: 12px; color: #92aacd; font-size: 11px; }
 .capture-help summary { cursor: pointer; }.capture-help p { padding: 10px; line-height: 1.7; }
+.print-dropzone { padding: 24px; margin-bottom: 18px; border: 1px dashed #527bb6; border-radius: 14px; background: #17263c; text-align: center; }
+.print-dropzone strong { font-size: 17px; }
+.print-dropzone p { margin: 10px auto 16px; max-width: 460px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.capture-help a { color: #a5c8ff; }
+.capture-connect { margin-top: 16px; }
+.enhance-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.enhance-comparison figure { margin: 0; min-width: 0; }
+.enhance-comparison img { width: 100%; aspect-ratio: 16/10; object-fit: contain; background: #070b12; border-radius: 9px; }
+.enhance-comparison figcaption { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.enhance-strength { display: block; margin-top: 26px; font-size: 13px; }
+.enhance-strength output { float: right; }
+.enhance-strength input { display: block; width: 100%; margin-top: 14px; accent-color: var(--accent); }
+.enhance-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin-top: 22px; }
+@media(max-width: 490px) { .enhance-comparison { grid-template-columns: 1fr; } .print-dropzone { padding: 18px; } }
 .studio-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 22px; }
 .studio-toolbar > span { margin-right: auto; font-size: 12px; color: #b5c9e8; }
 .studio-toolbar > button { font-size: 11px; }

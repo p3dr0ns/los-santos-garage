@@ -3,15 +3,17 @@
   const results = [];
   const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
   const originalFetch = window.fetch;
-  let mode = "complete", photoBase64 = "", requests = [], supportsArming = false;
+  let mode = 'receiving', photoBase64 = '', requests = [], pendingPhotos = [], testSession = 'test-session';
   window.fetch = async (url, options = {}) => {
     if (!String(url).startsWith(CAPTURE_API)) return originalFetch(url, options);
     const path = String(url).slice(CAPTURE_API.length); requests.push(path);
-    const content = path === "/health" ? { calibrated: true, version: supportsArming ? 2 : 1, armCapture: supportsArming }
-      : path === "/status" ? { state: mode, progress: mode === "complete" ? 6 : 1 }
-      : path === "/photos" ? { photos: PHOTO_SHOTS.map(shot => ({ shot: shot.id, data: photoBase64 })) }
-      : { ok: true };
-    return new Response(JSON.stringify(content), { status: 200, headers: { "Content-Type": "application/json" } });
+    let content = { ok: true };
+    if (path === '/health') content = { manualCapture: true, version: 3 };
+    if (path === '/arm') { mode = 'receiving'; content = { session: testSession }; }
+    if (path === '/photos') content = { enabled: mode !== 'paused', session: testSession, photos: pendingPhotos.slice() };
+    if (path.startsWith('/ack/')) pendingPhotos = pendingPhotos.filter(photo => photo.id !== Number(path.slice(5)));
+    if (path === '/cancel') { mode = 'paused'; pendingPhotos = []; }
+    return new Response(JSON.stringify(content), { status: 200, headers: { 'Content-Type': 'application/json' } });
   };
   try {
     await photoDatabase;
@@ -80,6 +82,7 @@
     const canvas = document.createElement('canvas'); canvas.width = 600; canvas.height = 338;
     const context = canvas.getContext('2d'); context.fillStyle = '#243b60'; context.fillRect(0, 0, 600, 338); context.fillStyle = '#c7d9f7'; context.font = '28px sans-serif'; context.fillText('FOTO DE TESTE', 180, 175);
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .8));
+    window.galleryTestPhoto = blob;
     photoBase64 = await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result.split(',')[1]); reader.readAsDataURL(blob); });
     await openPhotoStudio();
     check("seis posições distintas", $$('.studio-shot').length === 6 && PHOTO_SHOTS.length === 6);
@@ -104,25 +107,42 @@
     await importPhotoBackup(backup); check("restaura backup no rascunho", studioDraft.size===1 && studioCover==='rear');
     await importPhotoBackup(new Blob(['{"version":1,"photos":[{"shot":"unknown"}]}'])); check("backup inválido preserva rascunho", studioDraft.size===1);
     await startCaptureSession();
-    // Aguarda a conversão assíncrona das seis imagens recebidas pelo protocolo.
-    for(let count=0;captureRunning && count<80;count++) await new Promise(resolve=>setTimeout(resolve,50));
-    check("ponte recebe ensaio completo", !captureRunning && studioDraft.size===6 && requests.includes('/capture') && requests.includes('/photos'));
-    check("captura aguarda confirmação para persistir", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===5);
-    await saveStudio();
-    check("salva ensaio da captura", (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===6);
-    await openPhotoStudio(); supportsArming=true; mode='armed'; await checkCaptureConnection();
-    check("assistente novo informa início por F8", $('#captureSession').textContent.includes('F8'));
-    await startCaptureSession();
-    for(let count=0;!$('#studioStatus').textContent.includes('Ensaio preparado') && count<20;count++) await new Promise(resolve=>setTimeout(resolve,30));
-    check("preparar aguarda F8 sem substituir fotos", captureRunning && requests.includes('/arm') && studioDraft.size===6 && $('#studioStatus').textContent.includes('F8'));
+    await new Promise(resolve => setTimeout(resolve, 0)); clearTimeout(capturePoll);
+    pendingPhotos = [{ id: 1, session: testSession, data: photoBase64 }];
+    await pollCaptureSession(); clearTimeout(capturePoll);
+    check('um print chega e salva automaticamente', studioDraft.size === 2 && (await readAllPhotos()).filter(record => record.vehicleId === 'v1').length === 2 && requests.includes('/ack/1'));
+    const receivedCount = studioDraft.size;
+    pendingPhotos = [{ id: 1, session: testSession, data: photoBase64 }];
+    await pollCaptureSession(); clearTimeout(capturePoll);
+    check('print repetido não duplica a galeria', studioDraft.size === receivedCount);
+    pendingPhotos = [{ id: 2, session: 'other-car-session', data: photoBase64 }];
+    await pollCaptureSession(); clearTimeout(capturePoll);
+    check('print de outra sessão não entra no carro', studioDraft.size === receivedCount);
     await cancelCaptureSession();
-    check("cancelar preparo preserva ensaio salvo", !captureRunning && (await readAllPhotos()).filter(record=>record.vehicleId==='v1').length===6);
-    mode='complete'; await startCaptureSession();
-    for(let count=0;captureRunning && count<80;count++) await new Promise(resolve=>setTimeout(resolve,50));
-    check("ensaio preparado recebe seis fotos após concluir", !captureRunning && studioDraft.size===6);
-    await saveStudio();
-    await openPhotoStudio(); mode='running'; await startCaptureSession(); await cancelCaptureSession();
-    check("cancelamento mantém fotos", !captureRunning && studioDraft.size===6 && requests.includes('/cancel'));
+    check('pausar mantém os prints salvos e remove a macro', !captureRunning && requests.includes('/cancel') && !requests.includes('/capture'));
+    openPhotoEnhancer('cinematicFront');
+    for (let count = 0; $('#applyEnhance').disabled && count < 60; count++) await new Promise(resolve => setTimeout(resolve, 30));
+    check('editor mostra comparação e prévia', $('#enhanceDialog').open && photoPreview?.blob instanceof Blob && $('#enhanceAfter').src.startsWith('blob:'));
+    const originalBlob = studioDraft.get('cinematicFront').blob;
+    applyPhotoPreview();
+    check('melhoria preserva original e não altera o enquadramento', studioDraft.get('cinematicFront').enhanced && studioDraft.get('cinematicFront').originalBlob === originalBlob && !$('#enhanceDialog').open);
+    const enhancedBitmap = await createImageBitmap(studioDraft.get('cinematicFront').blob);
+    const originalBitmap = await createImageBitmap(originalBlob);
+    check('melhoria preserva dimensões', enhancedBitmap.width === originalBitmap.width && enhancedBitmap.height === originalBitmap.height);
+    const pixelCanvas = document.createElement('canvas'); pixelCanvas.width = originalBitmap.width; pixelCanvas.height = originalBitmap.height;
+    const pixelContext = pixelCanvas.getContext('2d'); pixelContext.drawImage(originalBitmap, 0, 0);
+    const beforePixel = pixelContext.getImageData(10, 10, 1, 1).data.slice(); pixelContext.drawImage(enhancedBitmap, 0, 0);
+    const afterPixel = pixelContext.getImageData(10, 10, 1, 1).data;
+    check('tratamento altera pixels da imagem', beforePixel.some((value, index) => index < 3 && value !== afterPixel[index]));
+    enhancedBitmap.close(); originalBitmap.close();
+    await saveStudio(); await openPhotoStudio();
+    check('original e melhoria persistem após reabrir', studioDraft.get('cinematicFront').originalBlob instanceof Blob && studioDraft.get('cinematicFront').enhanced);
+    const treatedImage = await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(studioDraft.get('cinematicFront').blob); });
+    await importPhotoBackup(new Blob([JSON.stringify({ version: 1, cover: 'cinematicFront', photos: [{ shot: 'cinematicFront', image: treatedImage, originalImage: 'data:image/jpeg;base64,' + photoBase64 }] })]));
+    check('backup com tratamento mantém original restaurável', studioDraft.size === 1 && studioDraft.get('cinematicFront').enhanced && studioDraft.get('cinematicFront').originalBlob instanceof Blob);
+    openPhotoEnhancer('cinematicFront'); applyPhotoPreview(true);
+    check('restaurar original remove o tratamento', !studioDraft.get('cinematicFront').enhanced && !studioDraft.get('cinematicFront').originalBlob);
+    await saveStudio(); await openPhotoStudio();
     closePhotoStudio();
     await deleteVehiclePhotos('v1');
     check("limpeza remove apenas fotos do veículo", !(await readAllPhotos()).some(record=>record.vehicleId==='v1') && data.vehicles.length===6);

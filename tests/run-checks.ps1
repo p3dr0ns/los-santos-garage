@@ -59,6 +59,10 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-sentinel',catalogId:'sentinel5',name:'Sentinel GTS',category:'Esportivo',garageId:'g1'}); openVehicleDetails('preview-sentinel'); document.querySelector('#detailsMechanical').scrollIntoView({block:'start'});" } | Out-Null
         $performanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "performance-$tag.png"), [Convert]::FromBase64String($performanceScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "(async () => { await openPhotoStudio(); await uploadPhoto(window.galleryTestPhoto, 'cinematicFront'); openPhotoEnhancer('cinematicFront'); for(let i=0;document.querySelector('#applyEnhance').disabled && i<60;i++) await new Promise(resolve=>setTimeout(resolve,30)); })()"; awaitPromise = $true } | Out-Null
+        $enhanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "enhance-$tag.png"), [Convert]::FromBase64String($enhanceScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closePhotoEnhancer(); closePhotoStudio();" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.pop();" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "closeVehiclePortfolio(); openVehicleDialog(); document.querySelector('#vehicleName').value='sentinel'; document.querySelector('#vehicleName').dispatchEvent(new Event('input')); document.querySelector('#vehicleName').focus();" } | Out-Null
         $catalogScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }

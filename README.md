@@ -1,6 +1,15 @@
 # Los Santos Garage
 
-Organizador de garagens e veículos para GTA Online.
+Organize sua coleção do GTA Online: encontre seus carros, acompanhe o valor
+de cada garagem e escolha propriedades pelo mapa de Los Santos.
+
+**[Abrir o site](https://p3dr0ns.github.io/los-santos-garage/)** ·
+[Garagens](GARAGENS.md) · [Catálogo de carros](CATALOGO.md) · [Mapa](MAPA.md)
+
+![Visão geral do Los Santos Garage com resumo da coleção e fachadas dos imóveis](docs/images/visao-geral.jpg)
+
+> As capturas usam uma coleção de demonstração criada somente para a documentação.
+> O primeiro acesso ao site começa vazio, sem carros ou garagens cadastrados.
 
 Identidade visual inspirada nas oficinas de Los Santos, com letreiro cromado,
 tons de roxo e dourado e referências dos interiores reais do jogo por tipo de
@@ -9,8 +18,6 @@ Flawless, Polished, Concrete Chic, Nostalgia Trip, Route 68, Super Chibi,
 Wildstyle e Race and Chase. A decoração é salva por garagem e altera a foto
 de referência, as cores e o piso do mapa. Pode ser escolhida no cadastro/edição
 ou diretamente na vista de vagas. Referências em `assets/interior-images.js`.
-
-Site: [Los Santos Garage](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
 
 Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 `localStorage` do navegador. O arquivo local e o site possuem armazenamento separado.
@@ -53,7 +60,30 @@ Cadastros já salvos são preservados nas atualizações.
 - Remover uma garagem mantém seus veículos como **Sem garagem**, para realocação posterior.
 - Layout responsivo para computador e celular.
 
-## Imagens
+## Conheça o site
+
+### Cada carro no seu lugar
+
+Abra uma garagem para ver apenas os veículos guardados nela. As vagas têm
+posições salvas, e as oficinas permitem escolher entre nove estilos de decoração.
+
+![Garagem com decoração Super Chibi e veículos distribuídos nas vagas](docs/images/garagem.jpg)
+
+### Suas propriedades no mapa
+
+Encontre locais com armazenamento permanente, filtre por tipo de propriedade
+e veja quais imóveis já fazem parte da sua coleção.
+
+![Mapa do GTA com localizações de propriedades e detalhes do Eclipse Towers](docs/images/mapa.jpg)
+
+### Escolha um imóvel pelo Eyefind
+
+Cadastre garagens pelos sites inspirados no jogo. Cada endereço tem sua própria
+fachada; ao escolher um imóvel, o formulário já recebe o local e a capacidade.
+
+![Eyefind com o catálogo de oficinas do Maze Bank Foreclosures](docs/images/eyefind.jpg)
+
+## Fontes das imagens
 
 As imagens são obtidas das páginas individuais do
 [catálogo do GTA Base](https://www.gtabase.com/grand-theft-auto-v/vehicles/).
@@ -68,6 +98,11 @@ arquivos locais, sem depender dos HTMLs de consulta. Imagens idênticas
 compartilham um único arquivo. Novas imagens são baixadas com concorrência
 limitada e interrupção ao receber 403 ou 429.
 
+As fachadas dos 141 endereços e os interiores vêm do [GTA Wiki](https://gta.wiki/).
+As origens estão em `assets/property-images.js` e `assets/interior-images.js`.
+Imagens e marcas do GTA pertencem aos seus respectivos titulares. Este projeto
+é uma ferramenta de fãs, sem vínculo com a Rockstar Games.
+
 ## Validação e publicação
 
 Execute `tests/run-checks.ps1` para validar catálogos, navegação, cadastros,
@@ -80,3 +115,7 @@ recursos publicados e é executado pelo workflow antes do deploy.
 
 Cada alteração deve ser publicada. O push em `main` aciona
 `.github/workflows/pages.yml`, que publica `dist/` no GitHub Pages.
+
+Para atualizar as capturas do README, execute `./tests/run-checks.ps1 -Documentation`.
+Elas são geradas pelo Chrome em `docs/images/`, com dados de teste em um perfil
+descartável. Os arquivos de documentação não entram no pacote publicado do site.

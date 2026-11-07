@@ -1,4 +1,4 @@
-param([string]$SiteRoot = (Split-Path -Parent $PSScriptRoot))
+param([string]$SiteRoot = (Split-Path -Parent $PSScriptRoot), [switch]$Documentation)
 $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'project-check.ps1') -SiteRoot $SiteRoot
 & (Join-Path $PSScriptRoot 'reference-check.ps1')
@@ -40,6 +40,14 @@ function Send-Cdp($socket, $method, $parameters) {
     return $response.result
 }
 $viewportIndex = 0
+function Save-DocumentationScreenshot([string]$name) {
+    if (!$Documentation -or $tag -ne '1440-1100') { return }
+    $directory = Join-Path $PSScriptRoot '../docs/images'
+    New-Item -ItemType Directory -Path $directory -Force | Out-Null
+    Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.race([Promise.all(Array.from(document.querySelectorAll('img')).filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.top<innerHeight&&r.bottom>0;}).map(img=>img.decode().catch(()=>{}))),new Promise(resolve=>setTimeout(resolve,5000))])"; awaitPromise = $true } | Out-Null
+    $picture = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'jpeg'; quality = 82 }
+    [IO.File]::WriteAllBytes((Join-Path $directory "$name.jpg"), [Convert]::FromBase64String($picture.data))
+}
 foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
     $tag = $viewport.Replace(',', '-')
     $port = 47841 + $viewportIndex
@@ -65,6 +73,8 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         $dom = Send-Cdp $socket 'Runtime.evaluate' @{ expression = 'document.documentElement.outerHTML'; returnByValue = $true }
         [IO.File]::WriteAllText((Join-Path $runDirectory "$tag.html"), $dom.result.value)
         if ($value -notlike 'PASS:*') { throw "App tests failed. Inspect $runDirectory" }
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "dismissToast(); window.scrollTo(0,0);" } | Out-Null
+        Save-DocumentationScreenshot 'visao-geral'
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "data.vehicles.push({id:'preview-sentinel',catalogId:'sentinel5',name:'Sentinel GTS',category:'Esportivo',garageId:'g1'}); openVehicleDetails('preview-sentinel'); document.querySelector('#detailsMechanical').scrollIntoView({block:'start'});" } | Out-Null
         $performanceScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "performance-$tag.png"), [Convert]::FromBase64String($performanceScreenshot.data))
@@ -93,6 +103,7 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageRoom img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
         $chibiScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "super-chibi-$tag.png"), [Convert]::FromBase64String($chibiScreenshot.data))
+        Save-DocumentationScreenshot 'garagem'
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "openGarageDialog('interior-preview'); document.querySelector('#garageInteriorField').scrollIntoView({block:'start'});" } | Out-Null
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageInteriorPicker img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
         $pickerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
@@ -101,12 +112,14 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))"; awaitPromise = $true } | Out-Null
         $propertyScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "property-map-$tag.png"), [Convert]::FromBase64String($propertyScreenshot.data))
+        Save-DocumentationScreenshot 'mapa'
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "openEyefind();" } | Out-Null
         $eyefindScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-$tag.png"), [Convert]::FromBase64String($eyefindScreenshot.data))
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('[data-eyefind-dealer=foreclosures]').click(); document.querySelector('[data-eyefind-type=auto_shop_property]').click();" } | Out-Null
         $dealerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-properties-$tag.png"), [Convert]::FromBase64String($dealerScreenshot.data))
+        Save-DocumentationScreenshot 'eyefind'
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

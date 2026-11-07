@@ -2,7 +2,7 @@
 
 Organizador local de garagens e veículos para GTA Online.
 
-Versão hospedada privada: [Minha Garagem](https://minha-garagem-gta-p3dr0ns.pedrolucasgelitati.chatgpt.site).
+Hospedagem preparada para GitHub Pages: `https://p3dr0ns.github.io/organizador-garagem-gta-v/`. A ativação está pendente: o plano atual da conta recusou Pages para este repositório privado.
 O endereço online tem armazenamento separado do arquivo local; os dados não são transferidos automaticamente entre os dois.
 
 ## Como usar
@@ -30,6 +30,8 @@ Para a captura, abra `Iniciar captura.cmd`. A macro exige calibração e o mesmo
 
 ## Publicação
 
-`scripts/prepare-deploy.ps1` copia apenas HTML, CSS, JavaScript e os recursos usados pelo navegador para `dist/`. A configuração da hospedagem fica em `.openai/hosting.json`. O assistente Windows continua sendo executado no computador do usuário; não é um processo executado pelo servidor.
+`scripts/prepare-deploy.ps1` copia apenas HTML, CSS, JavaScript e os recursos usados pelo navegador para `dist/`. O workflow `.github/workflows/pages.yml` publica esse diretório usando GitHub Actions. Depois de habilitar Pages com origem GitHub Actions, configure a variável de repositório `ENABLE_GITHUB_PAGES=true` e execute o workflow. Os próximos pushes para `main` também serão publicados. Até a ativação, o job permanece desativado.
+
+O GitHub Pages exige um repositório público no plano gratuito ou um plano compatível para repositórios privados. A visibilidade do repositório não foi alterada automaticamente. O assistente Windows continua sendo executado no computador do usuário; não é um processo executado pelo servidor.
 
 As imagens dos seis modelos iniciais vêm da [RAGE Multiplayer Wiki](https://wiki.rage.mp/wiki/Vehicles) e ficam em `assets/vehicles`, funcionando também offline. São aplicadas pelo nome, inclusive nos veículos já salvos. Uma URL personalizada tem prioridade sobre a imagem automática.

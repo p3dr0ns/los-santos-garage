@@ -1,4 +1,4 @@
-// Executado somente pelo run-checks.ps1, em um perfil descartável do Chrome.
+// Validação completa em um perfil descartável do Chrome.
 (async () => {
   const results = [];
   const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
@@ -306,9 +306,27 @@
     check('bunkers continuam no catálogo sem receber vagas comuns', $$('#eyefindContent .eyefind-property').length===11 && $('#eyefindContent').textContent.includes('Sem vagas comuns'));
     $('#eyefindDialog').close();
     data.garages=explorerGarages; Object.assign(propertyMapState,{query:'',type:'all',owned:false,selectedId:null}); $('[data-filter="all"]').click(); saveData();
+    const beforeFailure=JSON.stringify(data.vehicles);
+    const originalSetItem=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){ if(key===STORAGE_KEY) throw new DOMException('Storage full','QuotaExceededError'); return originalSetItem.call(this,key,value); };
+    try {
+      openVehicleDialog(); $('#vehicleName').value='Teste de gravação'; $('#vehicleCategory').value='Super'; $('#vehicleForm').requestSubmit();
+      check('falha de gravação mantém cadastro aberto e coleção intacta', $('#vehicleDialog').open && JSON.stringify(data.vehicles)===beforeFailure);
+      $('#vehicleDialog').close(); openVehicleDialog(data.vehicles[0].id); $('#vehicleNotes').value='Rascunho não salvo'; $('#vehicleForm').requestSubmit();
+      check('falha ao editar preserva dados e rascunho', $('#vehicleDialog').open && $('#vehicleNotes').value==='Rascunho não salvo' && JSON.stringify(data.vehicles)===beforeFailure);
+      $('#deleteVehicleButton').click(); $('#confirmDeleteVehicle').click();
+      check('falha ao excluir mantém confirmação e veículo', $('#deleteVehicleDialog').open && JSON.stringify(data.vehicles)===beforeFailure);
+      $('#cancelDeleteVehicle').click(); $('#vehicleDialog').close();
+      const favorite=data.vehicles[0].favorite; $(`[data-favorite-id="${data.vehicles[0].id}"]`).click();
+      check('falha ao favoritar restaura o estado anterior', data.vehicles[0].favorite===favorite);
+    } finally { Storage.prototype.setItem=originalSetItem; }
+    check('não existem IDs duplicados', new Set($$('[id]').map(element=>element.id)).size===$$('[id]').length);
+    check('referências internas de SVG existem', $$('use[href^="#"]').every(element=>document.getElementById(element.getAttribute('href').slice(1))));
+    check('rótulos e controles acessíveis têm destinos válidos', $$('[aria-labelledby],[aria-describedby],[aria-controls]').every(element=>['aria-labelledby','aria-describedby','aria-controls'].every(attribute=>!(element.getAttribute(attribute)||'').split(/\s+/).filter(Boolean).some(id=>!document.getElementById(id)))));
+    check('sem erros JavaScript ou promessas rejeitadas', window.projectRuntimeErrors?.length===0);
   } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }
 
-  const output=document.createElement('pre'); output.id='gallery-check-result'; output.hidden=true;
+  const output=document.createElement('pre'); output.id='app-check-result'; output.hidden=true;
   output.textContent=results.every(result=>result.pass)?'PASS: '+results.length+' verificações':JSON.stringify(results);
   document.body.append(output);
 })();

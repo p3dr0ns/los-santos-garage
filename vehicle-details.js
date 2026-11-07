@@ -108,8 +108,7 @@ function renderVehicleStatistics(stats) {
 
 $("#detailsEdit").addEventListener("click", () => { closeVehiclePortfolio(); openVehicleDialog(detailVehicleId); });
 $("#detailsFavorite").addEventListener("click", () => {
-  const vehicle = data.vehicles.find(item => item.id === detailVehicleId);
-  vehicle.favorite = !vehicle.favorite; saveData(); renderVehicleDetails();
+  toggleVehicleFavorite(detailVehicleId); renderVehicleDetails();
 });
 $("#detailsPhoto").addEventListener("error", () => { $("#detailsPhoto").hidden = true; $("#detailsPhotoLabel").textContent = "Imagem indisponível"; });
 if (location.hash.startsWith("#carro/")) restoreVehicleRoute();

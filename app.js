@@ -355,14 +355,19 @@ function renderVehicles() {
   }));
   $$(".favorite-button").forEach(button => button.addEventListener("click", event => {
     event.stopPropagation();
-    const vehicle = data.vehicles.find(item => item.id === button.dataset.favoriteId);
-    vehicle.favorite = !vehicle.favorite;
-    saveData(vehicle.favorite ? "Adicionado aos favoritos" : "Removido dos favoritos");
+    toggleVehicleFavorite(button.dataset.favoriteId);
   }));
   if (typeof renderGarageView === "function") renderGarageView(vehicles);
 }
 
 function getGarage(id) { return data.garages.find(garage => garage.id === id); }
+function toggleVehicleFavorite(id) {
+  const vehicle = data.vehicles.find(item => item.id === id);
+  if (!vehicle) return;
+  const previous = vehicle.favorite;
+  vehicle.favorite = !previous;
+  if (!saveData(vehicle.favorite ? "Adicionado aos favoritos" : "Removido dos favoritos")) vehicle.favorite = previous;
+}
 function getVehicleValuation(vehicles) {
   let total = 0, priced = 0;
   vehicles.forEach(vehicle => {
@@ -554,9 +559,10 @@ $("#vehicleForm").addEventListener("submit", event => {
     catalogId: findCatalogVehicle($("#vehicleName").value, selectedCatalogModelId)?.id || null,
     color: data.vehicles.find(vehicle => vehicle.id === id)?.color || carColors[data.vehicles.length % carColors.length]
   };
-  if (id) data.vehicles[data.vehicles.findIndex(vehicle => vehicle.id === id)] = payload; else data.vehicles.push(payload);
+  const previous = data.vehicles;
+  data.vehicles = id ? data.vehicles.map(vehicle => vehicle.id === id ? payload : vehicle) : [...data.vehicles, payload];
+  if (!saveData(id ? "Veículo atualizado" : "Veículo adicionado")) { data.vehicles = previous; return; }
   $("#vehicleDialog").close();
-  saveData(id ? "Veículo atualizado" : "Veículo adicionado");
   openVehicleDetails(payload.id);
 });
 
@@ -574,11 +580,12 @@ $("#deleteVehicleDialog").addEventListener("close", () => { pendingDeleteVehicle
 $("#confirmDeleteVehicle").addEventListener("click", () => {
   const id = pendingDeleteVehicleId;
   if (!id || !data.vehicles.some(vehicle => vehicle.id === id)) return;
-  pendingDeleteVehicleId = null;
+  const previous = data.vehicles;
   data.vehicles = data.vehicles.filter(vehicle => vehicle.id !== id);
+  if (!saveData("Veículo excluído")) { data.vehicles = previous; return; }
+  pendingDeleteVehicleId = null;
   $("#deleteVehicleDialog").close();
   $("#vehicleDialog").close();
-  saveData("Veículo excluído");
 });
 
 $("#garageForm").addEventListener("submit", event => {

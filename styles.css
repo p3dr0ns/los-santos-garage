@@ -66,7 +66,7 @@ button:hover { opacity: .9; }
 .garage-card h3 { margin: 37px 0 5px; font-size: 17px; }
 .garage-card p { color: var(--muted); font-size: 12px; }
 .garage-card p strong { color: var(--text); }
-.garage-card .garage-capacity-note { margin-top: 9px; font-size: 11px; line-height: 1.5; }
+
 .progress { height: 5px; margin-top: 16px; overflow: hidden; border-radius: 99px; background: #ffffff10; }
 .progress span { display: block; height: 100%; border-radius: inherit; background: var(--card-color); }
 .garage-symbol { color: var(--card-color); font-size: 24px; }
@@ -115,11 +115,8 @@ dialog::backdrop { background: #04060abd; backdrop-filter: blur(4px); }
 .dialog-form input, .dialog-form select { width: 100%; padding: 12px 13px; outline: none; color: var(--text); background: #0b0f16; border: 1px solid var(--line); border-radius: 9px; }
 .dialog-form input:focus, .dialog-form select:focus { border-color: var(--accent); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.check-row { display: flex; gap: 22px; margin: 6px 0 25px; }
-.image-help { margin: -6px 0 20px; color: var(--muted); font-size: 12px; line-height: 1.6; }
-.check-row label { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; }
-.check-row input { width: auto; accent-color: var(--accent); }
-.dialog-actions { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; }
+
+
 .toast { --toast-color: #79aaff; position: fixed; z-index: 100; inset: auto 20px 20px auto; margin: 0; display: flex; align-items: flex-start; gap: 12px; width: min(420px, calc(100vw - 32px)); padding: 18px; color: var(--text); background: linear-gradient(135deg, #1b2535, #111620); border: 1px solid #35435a; border-left: 3px solid var(--toast-color); border-radius: 14px; box-shadow: 0 16px 48px #0008; opacity: 0; transform: translateY(12px); transition: opacity .2s, transform .2s; }
 .toast[hidden] { display: none; }
 .toast.show { opacity: 1; transform: translateY(0); }
@@ -230,7 +227,9 @@ dialog::backdrop { background: #04060abd; backdrop-filter: blur(4px); }
 
 @media (max-width: 1050px) { .vehicle-grid { grid-template-columns: repeat(3, 1fr); } .sidebar { width: 78px; padding-inline: 12px; } .app-shell { grid-template-columns: 78px 1fr; } .brand span:last-child, .nav-item:not(.active)::after, .nav-item { font-size: 0; } .nav-item span { font-size: 20px; width: auto; } .nav-item { text-align: center; } .sidebar-card { display: none; } .brand { padding-inline: 5px; } }
 @media (max-width: 760px) { .app-shell { display: block; } .sidebar { position: fixed; z-index: 4; top: auto; bottom: 0; width: 100%; height: 68px; padding: 8px 12px; border: 0; border-top: 1px solid var(--line); } .brand, .sidebar-card { display: none; } .nav { grid-template-columns: repeat(4, 1fr); } .nav-item { padding: 12px 5px; } .main-content { padding: 26px 18px 95px; } .topbar { align-items: start; } .top-actions { width: 100%; } .search { width: 100%; } .topbar { flex-direction: column; } .stats { grid-template-columns: 1fr; gap: 10px; } .stat-card { min-height: 86px; padding: 16px; } .vehicle-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 490px) { .primary-button { white-space: nowrap; padding-inline: 12px; } .top-actions { flex-direction: column; } .vehicle-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; gap: 0; } .dialog-actions { grid-template-columns: 1fr 1fr; } .dialog-actions span { display: none; } }
+@media (max-width: 490px) { .primary-button { white-space: nowrap; padding-inline: 12px; } .top-actions { flex-direction: column; } .vehicle-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; gap: 0; }
+
+ }
 
 /* Interface principal — mesma linguagem visual dos cadastros. */
 :root { --bg: #0b0e14; --surface: #121722; --surface-2: #1a2130; --line: #263043; --muted: #98a5ba; --accent: #6098ff; }
@@ -421,8 +420,8 @@ button:disabled { cursor: not-allowed; opacity: .45; }
   .detail-body { padding: 18px; }
   .detail-actions > .primary-button { margin-left: 0; }
   .vehicle-specs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .capture-connect { align-items: stretch; flex-direction: column; gap: 10px; }
-  .studio-toolbar > .primary-button { padding: 10px; }
+
+
 }
 .reference-source { grid-column: 1 / -1; }
 .reference-source small { display: block; margin-top: 6px; line-height: 1.5; opacity: .7; }
@@ -533,9 +532,8 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .parking-moving strong { font-size: 12px; }
 .parking-moving p { font-size: 11px; color: #bed4ef; line-height: 1.7; margin: 10px 0; }
 .garage-map-area { min-width: 0; background: #aab1b8; }
-.garage-map-wall { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 22px 18px; background: linear-gradient(#303c49, #536170 60%, #293746); border-bottom: 7px solid #1c2835; }
-.garage-map-wall strong { color: #eaf2fa; text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; overflow-wrap: anywhere; }
-.garage-map-wall > span { width: 65px; height: 4px; flex-shrink: 0; background: #f0f9ff; box-shadow: 0 0 15px #c7e5ff, 0 8px 20px #f0f9ff88; }
+
+
 .garage-floor { position: relative; padding: 24px 24px 64px; background: linear-gradient(90deg, #0002, transparent 8%, transparent 92%, #0002), repeating-linear-gradient(0deg, transparent 0 81px, #56616b1a 82px 83px), repeating-linear-gradient(90deg, #aab2ba 0 112px, #b1bac2 113px 226px); }
 .garage-drive-lane { position: absolute; inset: 0 40%; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; border-left: 1px dashed #e7eced88; border-right: 1px dashed #e7eced88; color: #e4e9eb; }
 .garage-drive-lane span { font-size: 34px; opacity: .7; }
@@ -587,8 +585,8 @@ button:disabled { cursor: not-allowed; opacity: .45; }
   .parking-bay { min-height: 96px; }
   .parking-car-name { font-size: 10px; }
   .parking-car-name small { font-size: 8px; }
-  .garage-map-wall { gap: 12px; }
-  .garage-map-wall > span { width: 28px; }
+
+
   .garage-room-note { padding: 12px 16px; }
 }
 .stats { grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)); }

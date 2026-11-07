@@ -56,15 +56,21 @@ Variantes Drift sem ficha específica compartilham a imagem do modelo base, com
 essa identificação na ficha. Modelos personalizados sem correspondência no
 catálogo exibem uma ilustração padrão, sem solicitar imagem ao usuário.
 
-`scripts/update-vehicle-images.ps1` extrai as URLs dos metadados das páginas
-armazenadas em `.cache/gtabase`, baixa as imagens com concorrência limitada e
-interrompe novas solicitações caso a fonte retorne 403 ou 429.
+`scripts/update-vehicle-images.ps1` usa os metadados das páginas em cache ou
+as URLs já registradas no catálogo. `-Offline` reconstrói o índice usando os
+arquivos locais, sem depender dos HTMLs de consulta. Imagens idênticas
+compartilham um único arquivo. Novas imagens são baixadas com concorrência
+limitada e interrupção ao receber 403 ou 429.
 
 ## Validação e publicação
 
-Execute `tests/run-checks.ps1` para validar o catálogo, navegação, cadastros e garagens
-no Chrome para computador e celular. `scripts/prepare-deploy.ps1` prepara os arquivos
-em `dist/`, removendo artefatos antigos.
+Execute `tests/run-checks.ps1` para validar catálogos, navegação, cadastros,
+garagens, mapa, Eyefind e falhas de armazenamento no Chrome em 360, 900 e
+1440 pixels. `scripts/prepare-deploy.ps1` prepara `dist/` apenas com arquivos
+usados pelo site, sem documentação e metadados de manutenção das imagens.
+`tests/run-checks.ps1 -SiteRoot ./dist` valida esse pacote no navegador;
+`tests/project-check.ps1 -SiteRoot ./dist -Published` também verifica os
+recursos publicados e é executado pelo workflow antes do deploy.
 
 Cada alteração deve ser publicada. O push em `main` aciona
 `.github/workflows/pages.yml`, que publica `dist/` no GitHub Pages.

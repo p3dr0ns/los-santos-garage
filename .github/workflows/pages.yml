@@ -28,6 +28,9 @@ jobs:
       - name: Preparar arquivos estaticos
         shell: pwsh
         run: ./scripts/prepare-deploy.ps1
+      - name: Validar pacote de publicacao
+        shell: pwsh
+        run: ./tests/project-check.ps1 -SiteRoot ./dist -Published
       - name: Configurar Pages
         uses: actions/configure-pages@v5
       - name: Enviar arquivos

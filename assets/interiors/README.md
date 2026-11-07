@@ -10,7 +10,8 @@ noturno, motoclube, cassino, hangar, bunker, desmanche, depósito, LS Car Meet,
 Eclipse Boulevard, Clube Vinewood, Complexo e Moon Pool do Kosatka.
 
 As imagens são capturas do jogo, utilizadas como referência visual nos
-cartões, no formulário e no mapa. O mapa de vagas continua sendo uma
+formulário e no mapa. Os cartões usam as fachadas em `../property-images.js`.
+O mapa de vagas continua sendo uma
 representação 2D, com cores e padrões inspirados nesses interiores.
 
 As garagens de apartamentos e as garagens residenciais usam as referências

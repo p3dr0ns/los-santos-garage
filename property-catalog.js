@@ -5,6 +5,24 @@ const PROPERTY_DEALERS = [
   { id: "special", name: "Outros sites", address: "www.eyefind.info/imoveis-especiais", tagline: "Warstock, Arena War, Casino e Clube Vinewood", types: ["kosatka", "arena_workshop", "casino", "vinewood_garage", "warehouse_vehicle"] }
 ];
 function getPropertyLocation(id) { return PROPERTY_MAP.locations.find(location => location.id === id) || null; }
+function propertyImageKey(value) {
+  return normalizeVehicleText(String(value)).replace(/,?\s*(apt\.?|apartment|penthouse|suite)\s*.*$/, "").replace(/[^a-z0-9]/g, "");
+}
+function getGarageCover(garage) {
+  const type = getGarageType(garage);
+  const linked = getPropertyLocation(garage.locationId);
+  // A saved location takes precedence over a custom garage name.
+  if (linked?.type === type && PROPERTY_IMAGES[linked.id]) return PROPERTY_IMAGES[linked.id];
+  if (!garage.locationId) {
+    const name = propertyImageKey(garage.name);
+    const location = PROPERTY_MAP.locations.find(item => item.type === type && propertyImageKey(item.name) === name);
+    if (location && PROPERTY_IMAGES[location.id]) return PROPERTY_IMAGES[location.id];
+    const single = PROPERTY_MAP.locations.filter(item => item.type === type);
+    if (single.length === 1 && PROPERTY_IMAGES[single[0].id]) return PROPERTY_IMAGES[single[0].id];
+    if (PROPERTY_IMAGES[`type-${type}`]) return PROPERTY_IMAGES[`type-${type}`];
+  }
+  return { image: "", label: PROPERTY_MAP.locations.some(item => item.type === type) ? "Selecione a localização do imóvel" : "Fachada indisponível" };
+}
 function propertyCapacityLabel(location) { return location.capacity ? `${location.capacityMode === "max" ? "Até " : ""}${location.capacity} ${location.type === "hangar" ? "aeronaves" : location.type === "biker_clubhouse" ? "motos" : "vagas"}` : "Sem vagas comuns de veículos"; }
 function renderGarageLocationOptions() {
   const type = getGarageType({ name: $("#garageName").value, type: $("#garageType").value });

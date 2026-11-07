@@ -22,7 +22,7 @@ foreach ($match in [regex]::Matches($html,'<(?:script|link)\b[^>]*(?:src|href)="
         Assert-LocalFile ([regex]::Split($path,'[?#]')[0])
     }
 }
-foreach ($manifest in @('vehicle-images.js','interior-images.js')) {
+foreach ($manifest in @('vehicle-images.js','interior-images.js','property-images.js')) {
     $raw = [IO.File]::ReadAllText((Join-Path $SiteRoot "assets/$manifest"))
     $records = $raw.Substring($raw.IndexOf('{')).Trim().TrimEnd(';') | ConvertFrom-Json
     foreach ($entry in $records.PSObject.Properties) { Assert-LocalFile $entry.Value.image }

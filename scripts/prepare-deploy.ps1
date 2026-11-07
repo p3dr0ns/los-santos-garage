@@ -6,7 +6,7 @@ if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination
 New-Item -ItemType Directory -Path (Join-Path $destination 'assets') -Force | Out-Null
 $webFiles = @('index.html','styles.css','los-santos.css','property-explorer.css','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js')
 foreach ($file in $webFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $destination $file) }
-foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js')) {
+foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js','property-images.js')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot "assets/$file") -Destination (Join-Path $destination "assets/$file")
 }
 # Source URLs remain in the repository manifest; the browser only needs these fields.
@@ -25,6 +25,12 @@ foreach ($directory in @('blips','vehicles-gtabase','interiors','map')) {
     Get-ChildItem -LiteralPath (Join-Path $projectRoot "assets/$directory") -File |
         Where-Object { $_.Extension -in @('.png','.jpg','.jpeg','.webp','.svg') } |
         ForEach-Object { Copy-Item -LiteralPath $_.FullName -Destination $assetDestination }
+}
+$propertySource = [IO.File]::ReadAllText((Join-Path $projectRoot 'assets/property-images.js'))
+$propertyImages = $propertySource.Substring($propertySource.IndexOf('{')).Trim().TrimEnd(';') | ConvertFrom-Json
+New-Item -ItemType Directory -Path (Join-Path $destination 'assets/properties') -Force | Out-Null
+foreach ($path in @($propertyImages.PSObject.Properties | ForEach-Object { $_.Value.image } | Sort-Object -Unique)) {
+    Copy-Item -LiteralPath (Join-Path $projectRoot $path) -Destination (Join-Path $destination $path)
 }
 # Version scripts and styles so a new manifest cannot be paired with cached old code.
 $entrypoint = Join-Path $destination 'index.html'

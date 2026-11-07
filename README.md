@@ -34,6 +34,10 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
   Towers tem 10 vagas, sem exigir número do apartamento. Use o nome da garagem
   para diferenciar as unidades, se quiser.
 - Ao abrir uma garagem, aparecem apenas os veículos guardados nela.
+- Cards das garagens e imóveis do Eyefind mostram a fachada de cada endereço,
+  com fotos locais do GTA Wiki. O interior e a decoração ficam na vista de vagas.
+  Cadastros antigos reconhecem nomes como Eclipse Towers; nomes personalizados
+  usam a localização vinculada. Sem endereço identificado, o card convida a selecioná-lo.
 - Mapa do GTA no menu, apenas com locais de armazenamento permanente, zoom,
   busca e filtro das garagens vinculadas. **Adicionar garagem** abre um Eyefind
   com os sites de imóveis; escolher um local preenche o cadastro e o endereço.

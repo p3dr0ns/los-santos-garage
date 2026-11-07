@@ -5,6 +5,7 @@ $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'image-check.ps1')
 & (Join-Path $PSScriptRoot 'interior-check.ps1')
 & (Join-Path $PSScriptRoot 'property-map-check.ps1')
+& (Join-Path $PSScriptRoot 'property-image-check.ps1') -SiteRoot $SiteRoot
 $browserPath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 if (!(Test-Path -LiteralPath $browserPath)) { throw 'Google Chrome not found at its default path.' }
 $sitePath = (Resolve-Path -LiteralPath $SiteRoot).Path

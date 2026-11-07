@@ -221,6 +221,14 @@
     check('nome Los Santos Garage e identidade visual presentes', document.title==='Los Santos Garage' && $('.brand').getAttribute('aria-label')==='Los Santos Garage' && !$('#lsgBrandBanner').hidden);
     const themeGarages=data.garages;
     const themeVehicles=JSON.stringify(data.vehicles);
+    const exteriorEclipse = PROPERTY_MAP.locations.find(location=>location.name==='Eclipse Towers');
+    const exteriorShops = PROPERTY_MAP.locations.filter(location=>location.type==='auto_shop_property');
+    check('fachadas cobrem todos os imóveis do catálogo', PROPERTY_MAP.locations.every(location=>PROPERTY_IMAGES[location.id]?.image.startsWith('assets/properties/')));
+    check('garagens antigas reconhecem prédio mesmo com número do apartamento', getGarageCover({name:'Eclipse Towers, Apt 31',type:'safehouse'}).image===PROPERTY_IMAGES[exteriorEclipse.id].image);
+    check('endereço vinculado prevalece sobre nome personalizado', getGarageCover({name:'Minha coleção favorita',type:'safehouse',locationId:exteriorEclipse.id}).image===PROPERTY_IMAGES[exteriorEclipse.id].image);
+    check('fachadas distinguem as cinco oficinas de tuning', new Set(exteriorShops.map(location=>getGarageCover({name:location.name,type:location.type,locationId:location.id}).image)).size===5);
+    check('oficina mantém fachada ao trocar decoração', getGarageCover({name:'Oficina',type:'auto_shop_property',locationId:exteriorShops[0].id,interiorStyle:'wildstyle'}).image===getGarageCover({name:'Oficina',type:'auto_shop_property',locationId:exteriorShops[0].id,interiorStyle:'flawless'}).image);
+    check('sem endereço não atribui fachada de outro imóvel', !getGarageCover({name:'Coleção',type:'agency'}).image && !getGarageCover({name:'Coleção',type:'agency',locationId:exteriorEclipse.id}).image);
     data.garages=[...data.garages,{id:'theme-a',name:'Oficina LS',type:'auto_shop_property',capacity:10},{id:'theme-b',name:'Outra oficina',type:'auto_shop_property',capacity:10,interiorStyle:'flawless'}];
     openGarageDialog('theme-a');
     check('oficina oferece os nove estilos com foto e padrão inicial', !$('#garageInteriorField').hidden && $$('#garageInteriorPicker [data-interior-style]').length===9 && $('#garageInteriorStyle').value==='undressed' && $('#garageInteriorPreview img').src.includes('undressed.png'));
@@ -233,7 +241,7 @@
     check('troca rápida oferece os nove estilos', $('#garageDecoration').options.length===9);
     $('#garageDecoration').value='super-chibi'; $('#garageDecoration').dispatchEvent(new Event('change',{bubbles:true}));
     check('troca rápida aplica Super Chibi e persiste', $('#garageRoom').dataset.interior==='super-chibi' && $('#garageRoom .garage-interior-caption strong').textContent==='Super Chibi' && JSON.parse(localStorage.getItem(STORAGE_KEY)).garages.find(garage=>garage.id==='theme-a').interiorStyle==='super-chibi');
-    check('tema altera cartão sem afetar outras oficinas', $('.garage-card[data-garage-id="theme-a"] .garage-card-cover img').src.includes('super-chibi.png') && getGarage('theme-b').interiorStyle==='flawless' && JSON.stringify(data.vehicles)===themeVehicles);
+    check('decoração mantém fachada independente e preserva outras oficinas', !$('.garage-card[data-garage-id="theme-a"] .garage-card-cover > img') && getGarage('theme-b').interiorStyle==='flawless' && JSON.stringify(data.vehicles)===themeVehicles);
     openGarageDialog('theme-a');
     check('reabrir restaura decoração escolhida', $('#garageInteriorStyle').value==='super-chibi' && $('#garageInteriorPicker .selected').dataset.interiorStyle==='super-chibi');
     $('#garageInteriorPicker [data-interior-style="wildstyle"]').click(); $('#garageDialog').close();

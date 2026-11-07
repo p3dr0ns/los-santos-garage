@@ -276,8 +276,9 @@ function renderGarages() {
     const free = Math.max(0, garage.capacity - used);
     const value = getVehicleValuation(data.vehicles.filter(vehicle => vehicle.garageId === garage.id));
     const theme = getGarageTheme(garage);
+    const cover = getGarageCover(garage);
     return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" data-garage-id="${garage.id}" style="--card-color:${theme.accent}"><button type="button" class="garage-open" aria-label="Ver veículos: ${escapeHtml(garageLabel(garage)).replaceAll('"', '&quot;')}">
-      <span class="garage-card-cover"><img src="${theme.image}" alt="" loading="lazy"><span>${theme.label}</span></span><div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
+      <span class="garage-card-cover">${cover.image ? `<img src="${escapeHtml(cover.image)}" alt="Fachada: ${escapeHtml(cover.label)}" loading="lazy">` : `<span class="garage-cover-placeholder" aria-hidden="true">${garageIcon(garage)}</span>`}<span>${escapeHtml(cover.label)}</span></span><div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
       <h3>${escapeHtml(garageLabel(garage))}</h3>${garageTagMarkup(garage)}
       <p class="garage-kind" title="${escapeHtml(getGarageProfile(garage).note).replaceAll('"', '&quot;')}">${garageTypes[getGarageType(garage)].label}</p>
       <div class="garage-card-value"><span>Valor dos veículos</span><strong>${valuationAmount(value)}</strong>${value.missing ? `<small>${valuationCoverage(value)}</small>` : ""}</div>

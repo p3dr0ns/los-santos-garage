@@ -1,8 +1,16 @@
-# Minha Garagem
+# Los Santos Garage
 
 Organizador de garagens e veículos para GTA Online.
 
-Site: [Minha Garagem](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
+Identidade visual inspirada nas oficinas de Los Santos, com letreiro cromado,
+tons de roxo e dourado e referências dos interiores reais do jogo por tipo de
+propriedade. Na **Oficina de Tuning**, escolha entre os nove estilos Undressed,
+Flawless, Polished, Concrete Chic, Nostalgia Trip, Route 68, Super Chibi,
+Wildstyle e Race and Chase. A decoração é salva por garagem e altera a foto
+de referência, as cores e o piso do mapa. Pode ser escolhida no cadastro/edição
+ou diretamente na vista de vagas. Referências em `assets/interior-images.js`.
+
+Site: [Los Santos Garage](https://p3dr0ns.github.io/organizador-garagem-gta-v/).
 
 Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 `localStorage` do navegador. O arquivo local e o site possuem armazenamento separado.

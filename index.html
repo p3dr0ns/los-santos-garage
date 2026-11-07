@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0a0d14">
-  <title>Minha Garagem</title>
+  <meta name="theme-color" content="#171424">
+  <title>Los Santos Garage</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&family=Mr+Dafoe&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="los-santos.css">
 </head>
 <body>
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -24,9 +25,9 @@
   </defs></svg>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="#" aria-label="Minha Garagem">
-        <span class="brand-mark">MG</span>
-        <span class="brand-name">Minha Garagem<small>GTA ONLINE</small></span>
+      <a class="brand" href="#" aria-label="Los Santos Garage">
+        <span class="brand-mark">LS</span>
+        <span class="brand-name"><span class="lsg-script">Los Santos</span><small>GARAGE</small></span>
       </a>
       <p class="nav-caption">SEU ESPAÇO</p>
       <nav class="nav" aria-label="Navegação principal">
@@ -49,7 +50,7 @@
     <main class="main-content">
       <header class="topbar">
         <div>
-          <p class="eyebrow page-breadcrumb">MINHA GARAGEM <span>/</span> GTA ONLINE</p>
+          <p class="eyebrow page-breadcrumb">LOS SANTOS GARAGE <span>/</span> GTA ONLINE</p>
           <h1 id="pageTitle" tabindex="-1">Visão geral</h1>
           <p class="page-description" id="pageDescription">Sua coleção, organizada do seu jeito.</p>
         </div>
@@ -62,6 +63,7 @@
         </div>
       </header>
 
+      <section id="lsgBrandBanner" class="lsg-brand-banner" aria-label="Los Santos Garage"><div class="lsg-wordmark"><span class="lsg-script">Los Santos</span><strong>GARAGE</strong></div><div class="lsg-brand-caption"><span>LOS SANTOS · SAN ANDREAS</span><h2>Sua coleção.<br>Cada carro no seu lugar.</h2><small>Garagens, projetos e cultura automotiva.</small></div><span class="lsg-banner-stripe" aria-hidden="true"></span></section>
       <section class="stats" aria-label="Resumo">
         <article class="stat-card collection-value-card"><span class="stat-icon green" aria-hidden="true">$</span><div><span class="stat-label">Valor da coleção</span><strong id="collectionValue">GTA$ 0</strong><span id="collectionValueNote">Preços normais · GTA Base</span></div></article>
         <article class="stat-card">
@@ -166,6 +168,7 @@
         <div class="property-picker" id="propertyPicker"></div>
       </fieldset>
       <select id="garageType" hidden aria-label="Tipo de propriedade"><option value="auto">Automático pelo nome</option></select>
+      <input type="hidden" id="garageInteriorStyle" value="undressed">
       <section class="property-preview" aria-label="Resumo da garagem">
         <div class="property-preview-top">
           <span class="property-preview-icon" id="garagePreviewIcon"></span>
@@ -175,7 +178,9 @@
         <div class="capacity-config" id="garageCapacityConfig" hidden><span>Configuração da garagem</span><div id="garageCapacityOptions" class="capacity-options" role="group" aria-label="Capacidade da garagem"></div></div>
         <select id="garageCapacity" hidden aria-label="Vagas da propriedade"><option value="10">10 vagas</option></select>
         <p id="garageCapacityNote" class="capacity-note"></p>
+        <div id="garageInteriorPreview" class="garage-interior-preview"><img alt="" loading="lazy"><span id="garageInteriorPreviewLabel"></span></div>
       </section>
+      <fieldset id="garageInteriorField" class="property-fieldset" hidden><legend>Decoração da oficina <span>9 estilos do GTA Online</span></legend><p class="interior-picker-intro">Escolha o interior da sua Oficina de Tuning. A escolha muda a referência e o visual do mapa desta garagem.</p><div id="garageInteriorPicker" class="interior-picker"></div><a class="interior-source" href="https://gta.wiki/w/Auto_Shops/Indoor_Decorations" target="_blank" rel="noopener noreferrer">Estilos e decorações no GTA Wiki ↗</a></fieldset>
       <label class="garage-name-label" for="garageName">Nome da garagem <span>opcional</span><input id="garageName" maxlength="80" placeholder="Ex.: Minha agência de Rockford Hills" autocomplete="off"><small>Deixe em branco para usar o nome da propriedade.</small></label>
       <label>Tags / tema<input id="garageTags" maxlength="300" placeholder="Ex.: JDM, Drift, Coleção azul" autocomplete="off"><small>Separe as tags por vírgula. Até 10 temas por garagem.</small></label>
       <div class="garage-dialog-footer">
@@ -209,7 +214,7 @@
     <button type="button" class="toast-close" id="closeToast" aria-label="Fechar notificação">×</button>
   </div>
   <section id="vehicleDetailsDialog" class="vehicle-portfolio" aria-labelledby="detailsName" hidden>
-    <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>MINHA GARAGEM / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
+    <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>LOS SANTOS GARAGE / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span></div>
     <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
   </section>
@@ -217,6 +222,8 @@
   <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>
   <script src="assets/vehicle-images.js"></script>
+  <script src="assets/interior-images.js"></script>
+  <script src="garage-themes.js"></script>
   <script src="app.js"></script>
   <script src="catalog-ui.js"></script>
   <script src="wheels-ui.js"></script>

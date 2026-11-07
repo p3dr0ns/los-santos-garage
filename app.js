@@ -1,6 +1,5 @@
 const STORAGE_KEY = "minha-garagem-v1";
 
-const garageColors = ["#4388ff", "#795cff", "#35bde8", "#ef7c5c", "#db67bd", "#f1a94b"];
 const carColors = ["#397ce5", "#d84856", "#8b62da", "#e38643", "#4b9b91", "#bfc6d3"];
 
 const garageTypes = {
@@ -82,6 +81,7 @@ function renderGaragePreview() {
     button.classList.toggle("selected", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
+  renderGarageInteriorPicker();
 }
 
 function renderPropertyPicker() {
@@ -212,6 +212,7 @@ function saveData(message) {
 
 function render() {
   document.body.dataset.view = currentFilter;
+  $("#lsgBrandBanner").hidden = currentFilter !== "all";
   $(".stats").hidden = currentFilter !== "all";
   $("#garageSection").hidden = !!selectedGarage || (currentFilter !== "all" && currentFilter !== "garages");
   $("#vehicleSection").hidden = currentFilter === "garages" && !selectedGarage;
@@ -259,13 +260,14 @@ function render() {
 }
 
 function renderGarages() {
-  $("#garageList").innerHTML = data.garages.map((garage, index) => {
+  $("#garageList").innerHTML = data.garages.map(garage => {
     const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
     const percent = garage.capacity > 0 ? Math.min(100, used / garage.capacity * 100) : 0;
     const free = Math.max(0, garage.capacity - used);
     const value = getVehicleValuation(data.vehicles.filter(vehicle => vehicle.garageId === garage.id));
-    return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" data-garage-id="${garage.id}" style="--card-color:${garageColors[index % garageColors.length]}"><button type="button" class="garage-open" aria-label="Ver veículos: ${escapeHtml(garageLabel(garage)).replaceAll('"', '&quot;')}">
-      <div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
+    const theme = getGarageTheme(garage);
+    return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" data-garage-id="${garage.id}" style="--card-color:${theme.accent}"><button type="button" class="garage-open" aria-label="Ver veículos: ${escapeHtml(garageLabel(garage)).replaceAll('"', '&quot;')}">
+      <span class="garage-card-cover"><img src="${theme.image}" alt="" loading="lazy"><span>${theme.label}</span></span><div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
       <h3>${escapeHtml(garageLabel(garage))}</h3>${garageTagMarkup(garage)}
       <p class="garage-kind" title="${escapeHtml(getGarageProfile(garage).note).replaceAll('"', '&quot;')}">${garageTypes[getGarageType(garage)].label}</p>
       <div class="garage-card-value"><span>Valor dos veículos</span><strong>${valuationAmount(value)}</strong>${value.missing ? `<small>${valuationCoverage(value)}</small>` : ""}</div>
@@ -493,6 +495,15 @@ $("#garageCapacityOptions").addEventListener("click", event => {
 });
 $("#garageName").addEventListener("input", updateGarageCapacity);
 $("#garageType").addEventListener("change", updateGarageCapacity);
+$("#garageInteriorPicker").addEventListener("click", event => {
+  const button = event.target.closest("[data-interior-style]");
+  if (!button) return;
+  $("#garageInteriorStyle").value = button.dataset.interiorStyle;
+  const scroll = $("#garageInteriorPicker").scrollTop;
+  renderGarageInteriorPicker();
+  $("#garageInteriorPicker").scrollTop = scroll;
+  $("#garageInteriorPicker").querySelector(`[data-interior-style="${button.dataset.interiorStyle}"]`)?.focus({ preventScroll: true });
+});
 $("#searchInput").addEventListener("input", renderVehicles);
 $("#clearGarageFilter").addEventListener("click", returnToGarages);
 $("#backToGarages").addEventListener("click", returnToGarages);
@@ -561,6 +572,7 @@ $("#garageForm").addEventListener("submit", event => {
   const id = $("#garageId").value;
   const garage = { ...(getGarage(id) || {}), id: id || crypto.randomUUID(), name: $("#garageName").value.trim() || garageTypes[type].label, type, capacity: Number($("#garageCapacity").value), tags: [...new Set($("#garageTags").value.split(",").map(tag => tag.trim()).filter(Boolean))].slice(0, 10) };
   const profile = getGarageProfile(garage);
+  if (type === "auto_shop_property") garage.interiorStyle = AUTO_SHOP_STYLES.some(style => style.id === $("#garageInteriorStyle").value) ? $("#garageInteriorStyle").value : "undressed";
   if (!profile.capacities.includes(garage.capacity)) return showToast("Selecione uma capacidade válida para esta propriedade.", "warning");
   const used = data.vehicles.filter(vehicle => vehicle.garageId === id).length;
   if (id && garage.capacity < used) return showToast(`Esta garagem tem ${used} veículos. Mova os carros antes de reduzir as vagas.`, "warning");
@@ -585,6 +597,7 @@ function openGarageDialog(id = null) {
   $("#garageName").value = garage?.name || "";
   $("#garageType").value = garage ? getGarageType(garage) : "garage";
   $("#garageTags").value = (garage?.tags || []).join(", ");
+  $("#garageInteriorStyle").value = AUTO_SHOP_STYLES.some(style => style.id === garage?.interiorStyle) ? garage.interiorStyle : "undressed";
   $("#garageDialogTitle").textContent = garage ? "Editar garagem" : "Adicionar garagem";
   $("#saveGarageButton").textContent = garage ? "Salvar alterações" : "＋ Criar garagem";
   $("#deleteGarageButton").hidden = !garage;

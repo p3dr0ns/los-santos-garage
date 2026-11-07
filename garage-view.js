@@ -12,12 +12,13 @@ function renderGarageView(matches) {
   room.hidden = !active;
   $("#vehicleGrid").hidden = active;
   if (!active) return;
+  const theme = applyGarageTheme(room, garage);
   $("#activeGarageFilter").hidden = true;
   $("#emptyState").hidden = true;
   $$("[data-garage-view]").forEach(button => button.setAttribute("aria-pressed", String(button.dataset.garageView === garageRoomState.view)));
   const slots = getGarageParking(garage, data.vehicles);
   if (!slots.length) {
-    room.innerHTML = '<div class="garage-room-unavailable"><h3>Esta propriedade não tem vagas permanentes.</h3><p>Escolha uma garagem com vagas para posicionar seus veículos.</p></div>';
+    room.innerHTML = garageInteriorBanner(theme) + '<div class="garage-room-unavailable"><h3>Esta propriedade não tem vagas permanentes.</h3><p>Escolha uma garagem com vagas para posicionar seus veículos.</p></div>';
     return;
   }
   const floors = Math.ceil(slots.length / 10);
@@ -47,7 +48,7 @@ function renderGarageView(matches) {
   if (selectedSlot != null && selectedSlot < slots.length) {
     selection = `<div class="parking-selection"><span class="eyebrow">VAGA ${parkingNumber(selectedSlot)}</span><strong>${chosen ? escapeHtml(chosen.name) : "Vaga livre"}</strong>${chosen ? '<button type="button" class="primary-button" data-parking-action="details">Abrir ficha ↗</button><button type="button" class="secondary-button" data-parking-action="move">Trocar posição</button>' : selectedSlot < garage.capacity ? '<button type="button" class="primary-button" data-parking-action="add">Adicionar nesta vaga</button>' : ""}</div>`;
   }
-  room.innerHTML = `<div class="garage-room-bar"><div><span class="eyebrow">SUA GARAGEM, VAGA POR VAGA</span><h3>Gerenciar veículos</h3></div><div class="garage-room-occupancy"><strong>${used}<span> / ${garage.capacity}</span></strong><small>${free} ${free === 1 ? "vaga livre" : "vagas livres"}</small></div></div><div class="garage-room-layout"><aside class="parking-manager"><label class="parking-floor-label">Setor<select id="parkingFloor" aria-label="Escolher setor da garagem">${Array.from({ length: floors }, (_, floor) => `<option value="${floor}" ${floor === garageRoomState.floor ? "selected" : ""}>Setor ${floor + 1} · vagas ${parkingNumber(floor * 10)}–${parkingNumber(Math.min(slots.length, floor * 10 + 10) - 1)}</option>`).join("")}</select></label>${moving ? `<div class="parking-moving" role="status"><strong>Movendo ${escapeHtml(moving.name)}</strong><p>Escolha a vaga de destino. Se estiver ocupada, os dois carros trocam de posição. Você pode mudar de setor.</p><button type="button" class="secondary-button" data-parking-action="cancel">Cancelar</button></div>` : selection}<div class="parking-menu" aria-label="Vagas deste setor">${menu}</div></aside><div class="garage-map-area"><div class="garage-map-wall" aria-hidden="true"><span></span><strong>${escapeHtml(garageLabel(garage))}</strong><span></span></div><div class="garage-floor" style="--bay-rows:${Math.ceil(visible.length / 2)}"><div class="garage-drive-lane" aria-hidden="true"><span>↑</span><span>↑</span><span>↑</span></div><div class="parking-bays">${mapSlots}</div><div class="garage-entry" aria-hidden="true"><span>ENTRADA / SAÍDA</span></div></div><div class="garage-map-legend"><span><i class="occupied"></i> Ocupada</span><span><i></i> Livre</span><span>Mapa 2D · fotos de referência</span></div></div></div><p class="garage-room-note" role="status">${matches.length !== used ? `${matches.length} veículos correspondem aos filtros. Os demais continuam nas suas posições. ` : ""}As posições são salvas neste navegador. A disposição é ilustrativa e não altera o GTA.</p>`;
+  room.innerHTML = `<div class="garage-room-bar"><div><span class="eyebrow">SUA GARAGEM, VAGA POR VAGA</span><h3>Gerenciar veículos</h3></div><div class="garage-room-occupancy"><strong>${used}<span> / ${garage.capacity}</span></strong><small>${free} ${free === 1 ? "vaga livre" : "vagas livres"}</small></div></div><div class="garage-room-layout"><aside class="parking-manager"><label class="parking-floor-label">Setor<select id="parkingFloor" aria-label="Escolher setor da garagem">${Array.from({ length: floors }, (_, floor) => `<option value="${floor}" ${floor === garageRoomState.floor ? "selected" : ""}>Setor ${floor + 1} · vagas ${parkingNumber(floor * 10)}–${parkingNumber(Math.min(slots.length, floor * 10 + 10) - 1)}</option>`).join("")}</select></label>${moving ? `<div class="parking-moving" role="status"><strong>Movendo ${escapeHtml(moving.name)}</strong><p>Escolha a vaga de destino. Se estiver ocupada, os dois carros trocam de posição. Você pode mudar de setor.</p><button type="button" class="secondary-button" data-parking-action="cancel">Cancelar</button></div>` : selection}<div class="parking-menu" aria-label="Vagas deste setor">${menu}</div></aside><div class="garage-map-area">${garageInteriorBanner(theme)}<div class="garage-floor" style="--bay-rows:${Math.ceil(visible.length / 2)}"><div class="garage-drive-lane" aria-hidden="true"><span>↑</span><span>↑</span><span>↑</span></div><div class="parking-bays">${mapSlots}</div><div class="garage-entry" aria-hidden="true"><span>ENTRADA / SAÍDA</span></div></div><div class="garage-map-legend"><span><i class="occupied"></i> Ocupada</span><span><i></i> Livre</span><span>Mapa 2D · fotos de referência</span></div></div></div><p class="garage-room-note" role="status">${matches.length !== used ? `${matches.length} veículos correspondem aos filtros. Os demais continuam nas suas posições. ` : ""}As posições são salvas neste navegador. A disposição é ilustrativa e não altera o GTA.</p>`;
   room.querySelectorAll("img").forEach(img => img.addEventListener("error", () => { img.hidden = true; }));
 }
 
@@ -96,6 +97,17 @@ $("#garageViewToggle").addEventListener("click", event => {
   renderVehicles();
 });
 $("#garageRoom").addEventListener("change", event => {
+  if (event.target.id === "garageDecoration") {
+    const style = event.target.value;
+    if (!AUTO_SHOP_STYLES.some(item => item.id === style)) return;
+    const garage = getGarage(selectedGarage);
+    if (!garage || getGarageType(garage) !== "auto_shop_property") return;
+    const previous = data.garages;
+    data.garages = data.garages.map(item => item.id === garage.id ? { ...item, interiorStyle: style } : item);
+    if (!saveData("Decoração da oficina atualizada.")) { data.garages = previous; render(); }
+    $("#garageDecoration")?.focus({ preventScroll: true });
+    return;
+  }
   if (event.target.id !== "parkingFloor") return;
   garageRoomState.floor = Number(event.target.value);
   renderVehicles();

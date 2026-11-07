@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 & (Join-Path $PSScriptRoot 'reference-check.ps1')
 & (Join-Path $PSScriptRoot 'image-check.ps1')
+& (Join-Path $PSScriptRoot 'interior-check.ps1')
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $browserPath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
 if (!(Test-Path -LiteralPath $browserPath)) { throw 'Google Chrome not found at its default path.' }
@@ -77,6 +78,18 @@ foreach ($viewport in @('1440,1100', '500,1000')) {
         Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageRoom img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
         $mapScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "garage-map-$tag.png"), [Convert]::FromBase64String($mapScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "dismissToast(); data.garages.push({id:'interior-preview',name:'Oficina de Tuning',type:'auto_shop_property',capacity:10,interiorStyle:'route-68'}); data.vehicles.push({id:'interior-car-a',name:'Jester RR',catalogId:'jester4',category:'Esportivo',garageId:'interior-preview'},{id:'interior-car-b',name:'Sultan RS',catalogId:'sultanrs',category:'Super',garageId:'interior-preview'}); document.querySelector('[data-filter=garages]').click(); document.querySelector('.garage-card[data-garage-id=interior-preview] .garage-open').click(); document.querySelector('#garageRoom').scrollIntoView({block:'start'});" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageRoom img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
+        $routeScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "route-68-$tag.png"), [Convert]::FromBase64String($routeScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#garageDecoration').value='super-chibi'; document.querySelector('#garageDecoration').dispatchEvent(new Event('change',{bubbles:true})); dismissToast();" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageRoom img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
+        $chibiScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "super-chibi-$tag.png"), [Convert]::FromBase64String($chibiScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "openGarageDialog('interior-preview'); document.querySelector('#garageInteriorField').scrollIntoView({block:'start'});" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "Promise.all(Array.from(document.querySelectorAll('#garageInteriorPicker img'),img=>img.decode().catch(()=>{})))"; awaitPromise = $true } | Out-Null
+        $pickerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "decoration-picker-$tag.png"), [Convert]::FromBase64String($pickerScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

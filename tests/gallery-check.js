@@ -72,7 +72,7 @@
     $('.vehicle-card[data-vehicle-id="v1"]').click();
     check("cartão abre portfólio, sem edição", !$('#vehicleDetailsDialog').hidden && !$('#vehicleDialog').open && $('#detailsName').textContent === 'Zentorno');
     check("marca do catálogo", $('#detailsBrand').textContent === 'Pegassi');
-    check("portfólio ocupa página e tem endereço do carro", $('.app-shell').hidden && location.hash === '#carro/v1' && document.title === 'Zentorno · Minha Garagem');
+    check("portfólio ocupa página e tem endereço do carro", $('.app-shell').hidden && location.hash === '#carro/v1' && document.title === 'Zentorno · Los Santos Garage');
     $('#backToCollection').click();
     check("voltar preserva coleção", $('#vehicleDetailsDialog').hidden && !$('.app-shell').hidden && !location.hash && data.vehicles.length === 6);
     openVehicleDetails('v1');
@@ -218,6 +218,34 @@
     openVehicleDialog('value-2'); $('#deleteVehicleButton').click(); $('#confirmDeleteVehicle').click();
     check('excluir carro reduz total imediatamente', $('#collectionValue').textContent==='GTA$ 1.725.000');
     data.vehicles=valueVehicles; data.garages=valueGarages; $('#searchInput').value=''; $('[data-filter="all"]').click(); saveData();
+    check('nome Los Santos Garage e identidade visual presentes', document.title==='Los Santos Garage' && $('.brand').getAttribute('aria-label')==='Los Santos Garage' && !$('#lsgBrandBanner').hidden);
+    const themeGarages=data.garages;
+    const themeVehicles=JSON.stringify(data.vehicles);
+    data.garages=[...data.garages,{id:'theme-a',name:'Oficina LS',type:'auto_shop_property',capacity:10},{id:'theme-b',name:'Outra oficina',type:'auto_shop_property',capacity:10,interiorStyle:'flawless'}];
+    openGarageDialog('theme-a');
+    check('oficina oferece os nove estilos com foto e padrão inicial', !$('#garageInteriorField').hidden && $$('#garageInteriorPicker [data-interior-style]').length===9 && $('#garageInteriorStyle').value==='undressed' && $('#garageInteriorPreview img').src.includes('undressed.png'));
+    $('#garageInteriorPicker [data-interior-style="route-68"]').click();
+    check('escolher decoração atualiza prévia e mantém foco', $('#garageInteriorStyle').value==='route-68' && $('#garageInteriorPreviewLabel').textContent==='Route 68' && document.activeElement.dataset.interiorStyle==='route-68');
+    $('#garageForm').requestSubmit();
+    check('decoração salva somente na garagem editada', getGarage('theme-a').interiorStyle==='route-68' && getGarage('theme-b').interiorStyle==='flawless' && JSON.stringify(data.vehicles)===themeVehicles);
+    $('[data-filter="garages"]').click(); $('.garage-card[data-garage-id="theme-a"] .garage-open').click();
+    check('mapa usa foto e piso quadriculado do Route 68', $('#garageRoom').dataset.interior==='route-68' && $('#garageRoom .garage-interior-banner img').src.includes('route-68.png') && getComputedStyle($('.garage-floor')).backgroundImage.includes('conic-gradient'));
+    check('troca rápida oferece os nove estilos', $('#garageDecoration').options.length===9);
+    $('#garageDecoration').value='super-chibi'; $('#garageDecoration').dispatchEvent(new Event('change',{bubbles:true}));
+    check('troca rápida aplica Super Chibi e persiste', $('#garageRoom').dataset.interior==='super-chibi' && $('#garageRoom .garage-interior-caption strong').textContent==='Super Chibi' && JSON.parse(localStorage.getItem(STORAGE_KEY)).garages.find(garage=>garage.id==='theme-a').interiorStyle==='super-chibi');
+    check('tema altera cartão sem afetar outras oficinas', $('.garage-card[data-garage-id="theme-a"] .garage-card-cover img').src.includes('super-chibi.png') && getGarage('theme-b').interiorStyle==='flawless' && JSON.stringify(data.vehicles)===themeVehicles);
+    openGarageDialog('theme-a');
+    check('reabrir restaura decoração escolhida', $('#garageInteriorStyle').value==='super-chibi' && $('#garageInteriorPicker .selected').dataset.interiorStyle==='super-chibi');
+    $('#garageInteriorPicker [data-interior-style="wildstyle"]').click(); $('#garageDialog').close();
+    check('cancelar prévia não altera decoração salva', getGarage('theme-a').interiorStyle==='super-chibi');
+    openGarageDialog('theme-a'); $('#garageType').value='agency'; $('#garageType').dispatchEvent(new Event('change'));
+    check('outros tipos usam interior próprio e ocultam estilos de tuning', $('#garageInteriorField').hidden && $('#garageInteriorPreview img').src.includes('agency.png'));
+    $('#garageForm').requestSubmit();
+    check('trocar tipo remove seletor de oficina do mapa', $('#garageRoom').dataset.garageType==='agency' && !$('#garageDecoration') && $('#garageRoom .garage-interior-banner img').src.includes('agency.png'));
+    check('todos os tipos têm referência e estilos inválidos recebem padrão', Object.keys(garageTypes).every(type=>Boolean(getGarageTheme({name:'Teste',type,capacity:10}).image)) && getGarageTheme({name:'Oficina',type:'auto_shop_property',interiorStyle:'invalid'}).id==='undressed');
+    check('referências distinguem apartamento, agência e Arena', new Set(['safehouse','agency','arena_workshop'].map(type=>getGarageTheme({name:'Teste',type,capacity:10}).image)).size===3);
+    check('tema e decoração cabem na tela', document.documentElement.scrollWidth<=innerWidth && $('#garageRoom').scrollWidth<=$('#garageRoom').clientWidth);
+    data.garages=themeGarages; $('[data-filter="all"]').click(); saveData();
   } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }
 
   const output=document.createElement('pre'); output.id='gallery-check-result'; output.hidden=true;

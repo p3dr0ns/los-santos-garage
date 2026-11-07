@@ -6,6 +6,7 @@ if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination
 New-Item -ItemType Directory -Path (Join-Path $destination 'assets') -Force | Out-Null
 $webFiles = @('index.html','favicon.svg','styles.css','los-santos.css','property-explorer.css','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js')
 foreach ($file in $webFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $destination $file) }
+Copy-Item -LiteralPath (Join-Path $projectRoot 'assets/logo-los-santos-customs.png') -Destination (Join-Path $destination 'assets/logo-los-santos-customs.png')
 foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js','property-images.js')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot "assets/$file") -Destination (Join-Path $destination "assets/$file")
 }

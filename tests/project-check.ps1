@@ -15,7 +15,7 @@ function Assert-LocalFile([string]$relative) {
     if (!(Test-Path -LiteralPath $target -PathType Leaf) -or (Get-Item -LiteralPath $target).Length -eq 0) { throw "Missing or empty runtime file: $relative" }
 }
 $html = [IO.File]::ReadAllText((Join-Path $SiteRoot 'index.html'))
-foreach ($match in [regex]::Matches($html,'<(?:script|link)\b[^>]*(?:src|href)="([^"]+)"')) {
+foreach ($match in [regex]::Matches($html,'<(?:script|link|img)\b[^>]*(?:src|href)="([^"]+)"')) {
     $path = $match.Groups[1].Value
     if ($path -notmatch '^(https?:|//|#)') {
         if ($Published -and $path -match '\.(js|css)' -and $path -notmatch '\?v=[a-f0-9]{12}$') { throw "Unversioned runtime resource: $path" }

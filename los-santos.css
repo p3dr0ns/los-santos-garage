@@ -28,7 +28,10 @@ h1, h2, h3 { font-family: "Barlow Condensed", Inter, sans-serif; }
 .search:focus-within { border-color: #bfc3ce; }
 .lsg-brand-banner { position: relative; isolation: isolate; display: flex; align-items: center; justify-content: space-between; gap: 32px; overflow: hidden; min-height: 175px; padding: 28px 42px; margin-bottom: 26px; background: radial-gradient(ellipse at 25% 50%, #59558b55, transparent 65%), linear-gradient(105deg, #35345f, #17171f 65%, #35345f); border: 1px solid #747b91; border-radius: 16px; box-shadow: inset 0 0 0 5px #13131e88; }
 .lsg-brand-banner::before { content: ""; position: absolute; inset: 8px; z-index: -1; border: 1px solid #bfc3ce38; border-radius: 10px; background: repeating-linear-gradient(120deg, #ffffff02 0 2px, transparent 2px 13px); }
-.lsg-wordmark { display: grid; justify-items: center; min-width: 0; transform: rotate(-3deg); }
+.lsg-wordmark { display: grid; justify-items: center; min-width: 0; }
+.brand { justify-content: center; padding-inline: 0; }
+.brand-logo { display: block; width: 100%; max-width: 200px; height: auto; }
+.lsg-banner-logo { display: block; width: clamp(240px, 30vw, 420px); max-width: 100%; height: auto; }
 .lsg-wordmark .lsg-script { font-size: clamp(54px, 5.4vw, 87px); line-height: 1.1; white-space: nowrap; }
 .lsg-wordmark > strong { padding: 1px 22px; margin-top: 0; color: #bfc3ce; border-block: 1px solid #bfc3ce77; font-family: "Barlow Condensed", sans-serif; font-size: 18px; letter-spacing: 8px; text-indent: 8px; }
 .lsg-brand-caption { border-left: 1px solid #bfc3ce55; padding-left: 32px; min-width: 0; }
@@ -113,6 +116,6 @@ dialog, #garageDialog, #vehicleDialog { background: linear-gradient(140deg, #292
 .garage-room[data-floor-pattern=industrial] .garage-floor { border-inline: 7px solid #c4a546; background: repeating-linear-gradient(0deg, transparent 0 80px, #25261f19 80px 82px), var(--interior-floor); }
 .garage-room[data-floor-pattern=nightclub] .garage-floor { background: linear-gradient(90deg, #9876d344, transparent 25% 75%, #9876d344), var(--interior-floor); }
 .garage-room[data-floor-pattern=clean] .garage-floor { background: repeating-linear-gradient(0deg, transparent 0 81px, #fff3 82px 83px), repeating-linear-gradient(90deg, transparent 0 113px, #fff2 114px 115px), var(--interior-floor); }
-@media (max-width: 1050px) { .brand { padding-inline: 4px; } .brand-mark { flex-shrink: 0; width: 44px; } }
+@media (max-width: 1050px) { .brand { padding-inline: 4px; } .brand-mark { flex-shrink: 0; width: 44px; } .brand-logo { width: 100%; max-width: 200px; } }
 @media (max-width: 760px) { .lsg-brand-banner { min-height: 150px; padding: 24px; gap: 20px; } .lsg-wordmark .lsg-script { font-size: 57px; } .lsg-wordmark > strong { font-size: 14px; } .lsg-brand-caption { padding-left: 18px; } .lsg-brand-caption h2 { font-size: 25px; } .lsg-brand-caption > span { font-size: 8px; letter-spacing: 1px; } .topbar h1 { font-size: 38px; } .garage-interior-banner { height: 185px; } }
 @media (max-width: 560px) { .lsg-brand-banner { flex-direction: column; align-items: center; gap: 18px; padding: 28px 20px; } .lsg-wordmark .lsg-script { font-size: 72px; } .lsg-brand-caption { border-left: 0; border-top: 1px solid #bfc3ce55; padding: 14px 0 0; width: 100%; text-align: center; } .lsg-brand-caption h2 { font-size: 27px; } .lsg-brand-caption h2 br { display: none; } .lsg-brand-caption small { font-size: 9px; } .interior-picker { grid-template-columns: repeat(2, minmax(0,1fr)); max-height: 430px; } .garage-interior-caption { left: 16px; bottom: 16px; } .garage-interior-caption strong { font-size: 22px; } .garage-interior-banner { height: 210px; } }

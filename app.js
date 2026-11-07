@@ -227,6 +227,16 @@ function render() {
     $("#pageDescription").textContent = garage.tags?.length ? `Tema: ${garage.tags.join(" · ")}` : "Os veículos guardados nesta garagem.";
   }
   $("#garageDetailActions").hidden = !selectedGarage;
+  const collectionValue = getVehicleValuation(data.vehicles);
+  $("#collectionValue").textContent = valuationAmount(collectionValue);
+  $("#collectionValueNote").textContent = valuationCoverage(collectionValue);
+  const selected = getGarage(selectedGarage);
+  $("#garageValuation").hidden = !selected;
+  if (selected) {
+    const value = getVehicleValuation(data.vehicles.filter(vehicle => vehicle.garageId === selected.id));
+    $("#garageValue").textContent = valuationAmount(value);
+    $("#garageValueCoverage").textContent = valuationCoverage(value);
+  }
   const free = data.garages.reduce((sum, garage) => sum + Math.max(0, garage.capacity - data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length), 0);
   $("#vehicleCount").textContent = data.vehicles.length;
   $("#garageCount").textContent = data.garages.length;
@@ -251,14 +261,19 @@ function renderGarages() {
     const used = data.vehicles.filter(vehicle => vehicle.garageId === garage.id).length;
     const percent = garage.capacity > 0 ? Math.min(100, used / garage.capacity * 100) : 0;
     const free = Math.max(0, garage.capacity - used);
+    const value = getVehicleValuation(data.vehicles.filter(vehicle => vehicle.garageId === garage.id));
     return `<article class="garage-card ${selectedGarage === garage.id ? "selected" : ""}" data-garage-id="${garage.id}" style="--card-color:${garageColors[index % garageColors.length]}"><button type="button" class="garage-open" aria-label="Ver veículos: ${escapeHtml(garageLabel(garage)).replaceAll('"', '&quot;')}">
       <div class="garage-card-top"><span class="garage-symbol">${garageIcon(garage)}</span><span class="garage-availability ${free === 0 ? "full" : ""}">${garage.capacity === 0 ? "Sem vagas" : free === 0 ? "Completa" : `${free} livres`}</span></div>
       <h3>${escapeHtml(garageLabel(garage))}</h3>${garageTagMarkup(garage)}
       <p class="garage-kind" title="${escapeHtml(getGarageProfile(garage).note).replaceAll('"', '&quot;')}">${garageTypes[getGarageType(garage)].label}</p>
+      <div class="garage-card-value"><span>Valor dos veículos</span><strong>${valuationAmount(value)}</strong>${value.missing ? `<small>${valuationCoverage(value)}</small>` : ""}</div>
       <div class="progress"><span style="width:${percent}%"></span></div>
       <div class="garage-card-bottom"><p><strong>${used}</strong> de ${garage.capacity} ocupadas</p><svg class="ui-icon"><use href="#ui-arrow"/></svg></div>
     </button><div class="garage-card-tools"><button type="button" data-edit-garage="${garage.id}">Editar garagem</button></div></article>`;
   }).join("");
+  const unassigned = data.vehicles.filter(vehicle => !getGarage(vehicle.garageId));
+  $("#unassignedValue").hidden = !unassigned.length;
+  $("#unassignedValue").textContent = unassigned.length ? `Sem garagem · ${unassigned.length} ${unassigned.length === 1 ? "veículo" : "veículos"} · ${valuationAmount(getVehicleValuation(unassigned))} · ${valuationCoverage(getVehicleValuation(unassigned))}` : "";
   $$(".garage-card").forEach(card => card.addEventListener("click", event => {
     if (event.target.closest("[data-edit-garage]")) { openGarageDialog(card.dataset.garageId); return; }
     selectedGarage = card.dataset.garageId;
@@ -334,6 +349,17 @@ function renderVehicles() {
 }
 
 function getGarage(id) { return data.garages.find(garage => garage.id === id); }
+function getVehicleValuation(vehicles) {
+  let total = 0, priced = 0;
+  vehicles.forEach(vehicle => {
+    const model = findCatalogVehicle(vehicle.name, vehicle.catalogId);
+    const price = model ? VEHICLE_REFERENCE[model.id]?.price : null;
+    if (typeof price === "number" && Number.isFinite(price) && price >= 0) { total += price; priced++; }
+  });
+  return { total, priced, missing: vehicles.length - priced, count: vehicles.length };
+}
+function valuationAmount(value) { return value.count && !value.priced ? "Não informado" : `GTA$ ${value.total.toLocaleString("pt-BR")}`; }
+function valuationCoverage(value) { return value.missing ? `${value.missing} ${value.missing === 1 ? "veículo sem preço" : "veículos sem preço"} · total parcial` : "Preços normais · GTA Base"; }
 function getGarageParking(garage, vehicles) {
   const members = vehicles.filter(vehicle => vehicle.garageId === garage.id);
   const slots = Array(Math.max(garage.capacity, members.length)).fill(null);

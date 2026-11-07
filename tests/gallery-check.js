@@ -3,6 +3,17 @@
   const results = [];
   const check = (label, condition) => results.push({ label, pass: Boolean(condition) });
   try {
+    const valuationFixture = [{name:'Zentorno',catalogId:'zentorno'}, {name:'Adder',catalogId:'adder'}, {name:'Zentorno',catalogId:'zentorno'}, {name:'Modelo personalizado sem preço'}];
+    const assessed = getVehicleValuation(valuationFixture);
+    check('valor soma cada carro incluindo repetidos e sinaliza preço ausente', assessed.total===2450000 && assessed.priced===3 && assessed.missing===1 && valuationCoverage(assessed).includes('total parcial'));
+    check('garagem vazia vale zero e carro sem preço fica não informado', valuationAmount(getVehicleValuation([]))==='GTA$ 0' && valuationAmount(getVehicleValuation([{name:'Modelo sem referência'}]))==='Não informado');
+    const originalPrice = VEHICLE_REFERENCE.zentorno.price;
+    try {
+      VEHICLE_REFERENCE.zentorno.price = 0;
+      check('preço gratuito é válido e não ausente', getVehicleValuation([{catalogId:'zentorno'}]).priced===1 && getVehicleValuation([{catalogId:'zentorno'}]).missing===0);
+      VEHICLE_REFERENCE.zentorno.price = null;
+      check('preço nulo não vira zero', getVehicleValuation([{catalogId:'zentorno'}]).missing===1);
+    } finally { VEHICLE_REFERENCE.zentorno.price = originalPrice; }
     check('fotos pessoais e editor visual removidos', !document.querySelector('input[type="file"]') && !$('#photoStudioDialog') && !$('#configDialog') && !$('#enhanceDialog') && !$('#detailsPhotos') && !$('#detailsThumbnails'));
     const image = getVehicleImage(data.vehicles[0]);
     data.vehicles[0].image = 'https://example.invalid/legacy-photo.jpg';
@@ -184,6 +195,25 @@
     $('[data-filter="garages"]').click(); $('.garage-card[data-garage-id="zero-test"] .garage-open').click();
     check('propriedade sem vagas não inventa posições', !$('.parking-bay') && $('#garageRoom').textContent.includes('não tem vagas permanentes'));
     data.vehicles=parkingVehicles; data.garages=parkingGarages; $('[data-filter="all"]').click(); saveData();
+    const valueVehicles = data.vehicles, valueGarages = data.garages;
+    data.garages=[{id:'value-a',name:'Garagem A',type:'garage',capacity:10},{id:'value-b',name:'Garagem B',type:'garage',capacity:10}];
+    data.vehicles=valuationFixture.map((vehicle,index)=>({...vehicle,id:`value-${index}`,category:'Super',garageId:['value-a','value-a',null,'value-b'][index]}));
+    $('[data-filter="all"]').click();
+    check('resumo mostra total da coleção e cobertura', $('#collectionValue').textContent==='GTA$ 2.450.000' && $('#collectionValueNote').textContent.includes('1 veículo sem preço'));
+    check('cartão da garagem soma apenas seus veículos', $('.garage-card[data-garage-id="value-a"] .garage-card-value strong').textContent==='GTA$ 1.725.000' && $('.garage-card[data-garage-id="value-b"] .garage-card-value strong').textContent==='Não informado');
+    check('sem garagem tem subtotal próprio e entra no total geral', !$('#unassignedValue').hidden && $('#unassignedValue').textContent.includes('GTA$ 725.000'));
+    $('.garage-card[data-garage-id="value-b"] .garage-open').click();
+    check('abrir garagem mostra total e preços ausentes', !$('#garageValuation').hidden && $('#garageValue').textContent==='Não informado' && $('#garageValueCoverage').textContent.includes('1 veículo sem preço'));
+    openVehicleDialog('value-1'); $('#vehicleGarage').value='value-b'; $('#vehicleForm').requestSubmit();
+    check('mover carro atualiza total da garagem sem alterar coleção', $('#garageValue').textContent==='GTA$ 1.000.000' && $('#collectionValue').textContent==='GTA$ 2.450.000');
+    $('#backToCollection').click();
+    $('#searchInput').value='nome que não existe'; $('#searchInput').dispatchEvent(new Event('input'));
+    check('filtros não alteram valor total da garagem', $('#garageValue').textContent==='GTA$ 1.000.000');
+    openGarageDialog('value-a'); $('#deleteGarageButton').click(); $('#confirmDeleteGarage').click();
+    check('excluir garagem preserva valor e atualiza sem garagem', $('#collectionValue').textContent==='GTA$ 2.450.000' && $('#unassignedValue').textContent.includes('GTA$ 1.450.000'));
+    openVehicleDialog('value-2'); $('#deleteVehicleButton').click(); $('#confirmDeleteVehicle').click();
+    check('excluir carro reduz total imediatamente', $('#collectionValue').textContent==='GTA$ 1.725.000');
+    data.vehicles=valueVehicles; data.garages=valueGarages; $('#searchInput').value=''; $('[data-filter="all"]').click(); saveData();
   } catch(error) { results.push({label:'Exceção: '+error.message,pass:false,stack:error.stack}); }
 
   const output=document.createElement('pre'); output.id='gallery-check-result'; output.hidden=true;

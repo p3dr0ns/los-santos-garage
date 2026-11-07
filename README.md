@@ -15,6 +15,10 @@ Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
   locais para uso offline. Fotos pessoais e URLs antigas não são utilizadas.
 - Ficha com preços, desempenho, inspiração real e especificações técnicas;
   veja [GTABASE.md](GTABASE.md).
+- Valor total da coleção e dos veículos de cada garagem, pelo preço normal do
+  catálogo GTA Base. Inclui carros repetidos e veículos sem garagem no total
+  geral. Não inclui modificações ou descontos. Preços ausentes são sinalizados
+  como total parcial; não são tratados como veículos gratuitos.
 - Registro textual de pintura, rodas, placa e observações. Não há editor visual,
   upload de fotos, captura de prints ou galeria pessoal.
 - Catálogo de rodas por tipo e modelo; veja [RODAS.md](RODAS.md).

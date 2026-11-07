@@ -63,6 +63,7 @@
       </header>
 
       <section class="stats" aria-label="Resumo">
+        <article class="stat-card collection-value-card"><span class="stat-icon green" aria-hidden="true">$</span><div><span class="stat-label">Valor da coleção</span><strong id="collectionValue">GTA$ 0</strong><span id="collectionValueNote">Preços normais · GTA Base</span></div></article>
         <article class="stat-card">
           <span class="stat-icon blue"><svg class="ui-icon"><use href="#ui-car"/></svg></span>
           <div><span class="stat-label">Sua coleção</span><strong id="vehicleCount">0</strong><span>veículos cadastrados</span></div>
@@ -83,9 +84,12 @@
           <button class="text-button" id="addGarageButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Adicionar garagem</button>
         </div>
         <div class="garage-list" id="garageList"></div>
+        <p id="unassignedValue" class="unassigned-value" hidden></p>
+        <p class="valuation-source-note">Valores de catálogo do GTA Base. Não incluem modificações, promoções ou descontos de negociação.</p>
       </section>
 
       <div id="garageDetailActions" class="garage-detail-actions" hidden><button type="button" class="secondary-button" id="backToGarages">← Todas as garagens</button><button type="button" class="secondary-button" id="editSelectedGarage">Editar garagem</button></div>
+      <section id="garageValuation" class="garage-valuation" aria-label="Valor dos veículos desta garagem" hidden><div><span class="eyebrow">VALOR DOS VEÍCULOS NESTA GARAGEM</span><strong id="garageValue">GTA$ 0</strong><span id="garageValueCoverage"></span></div><p>Preços normais do GTA Base, sem modificações ou descontos. O total considera todos os carros desta garagem, mesmo com filtros ativos.</p></section>
       <section class="vehicle-section" id="vehicleSection">
         <div class="section-heading vehicle-heading">
           <div>

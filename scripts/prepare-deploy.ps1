@@ -4,7 +4,7 @@ $destination = [IO.Path]::GetFullPath((Join-Path $projectRoot 'dist'))
 if ((Split-Path -Parent $destination) -ne [IO.Path]::GetFullPath($projectRoot) -or (Split-Path -Leaf $destination) -ne 'dist') { throw 'Invalid deployment directory.' }
 if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination -Recurse -Force }
 New-Item -ItemType Directory -Path (Join-Path $destination 'assets') -Force | Out-Null
-$webFiles = @('index.html','favicon.svg','app-icon.svg','manifest.webmanifest','sw.js','styles.css','los-santos.css','property-explorer.css','collection-tools.css','collection-plus.css','collection-storage.js','collection-plus.js','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js','collection-tools.js')
+$webFiles = @('index.html','favicon.svg','app-icon.svg','manifest.webmanifest','sw.js','styles.css','los-santos.css','property-explorer.css','collection-tools.css','collection-plus.css','workshop-themes.css','workshop-themes.js','collection-storage.js','collection-plus.js','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js','collection-tools.js')
 foreach ($file in $webFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $destination $file) }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'assets/logo-los-santos-customs.png') -Destination (Join-Path $destination 'assets/logo-los-santos-customs.png')
 foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js','property-images.js')) {

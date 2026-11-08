@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="property-explorer.css">
   <link rel="stylesheet" href="collection-tools.css">
   <link rel="stylesheet" href="collection-plus.css">
+  <link rel="stylesheet" href="workshop-themes.css">
+  <script src="workshop-themes.js"></script>
 </head>
 <body>
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -129,6 +131,12 @@
       </section>
       <section id="mapSection" class="property-map-section" aria-label="Mapa de propriedades com garagem" hidden></section>
       <section id="settingsSection" class="settings-page" aria-label="Configuração" hidden>
+        <section class="settings-card workshop-theme-settings" aria-labelledby="workshopThemeTitle">
+          <p class="eyebrow">A IDENTIDADE DA SUA GARAGEM</p><h2 id="workshopThemeTitle">Tema da oficina</h2>
+          <p class="tool-hint">Escolha qual oficina assina sua garagem. Cada tema tem letreiro, cores e acabamento próprios. A escolha vale para este navegador.</p>
+          <div id="workshopThemeChoices" class="workshop-theme-choices" role="group" aria-label="Escolher tema da oficina"></div>
+          <p id="workshopThemeStatus" class="tool-hint" role="status"></p>
+        </section>
         <div class="settings-grid">
           <section class="settings-card" aria-labelledby="settingsProfilesTitle">
             <p class="eyebrow">SUA COLEÇÃO</p><h2 id="settingsProfilesTitle">Perfis e personagens</h2>

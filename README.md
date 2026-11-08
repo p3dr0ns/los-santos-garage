@@ -37,6 +37,12 @@ Cadastros já salvos são preservados nas atualizações.
   Os lembretes de backup ficam nessa página; os atalhos de desejos, comparação e
   metas aparecem apenas na aba **Veículos**. O botão **Desfazer** fica junto aos
   controles dos veículos.
+- **Tema da oficina:** em **Configuração → Tema da oficina**, escolha Los Santos Customs,
+  Benny’s Original Motor Works, Beeker’s Garage ou Hao’s Special Works. Cada uma assina
+  a garagem com letreiro, cores, acabamentos e textos próprios. A seleção é aplicada
+  na hora, fica salva neste navegador e funciona offline. Perfis, veículos, garagens
+  e decorações de interiores são preservados; o tema visual é uma preferência do
+  navegador, separada dos backups das coleções. Los Santos Customs é o padrão.
 - **Perfis por personagem/plataforma:** selecione a coleção ativa ou crie e renomeie
   perfis independentes. Os dados existentes ficam em **Minha coleção**, sem migração
   destrutiva. Cada backup JSON contém apenas o perfil ativo.
@@ -119,6 +125,15 @@ Cadastros já salvos são preservados nas atualizações.
 - Layout responsivo para computador e celular.
 
 ## Conheça o site
+
+### Uma garagem com a identidade da sua oficina
+
+Escolha o tema em **Configuração**. Veja as versões
+[Los Santos Customs](docs/images/tema-lsc.jpg),
+[Benny’s](docs/images/tema-bennys.jpg), [Beeker’s](docs/images/tema-beekers.jpg)
+e [Hao’s](docs/images/tema-haos.jpg).
+
+![Garagem com a identidade visual da Benny’s Original Motor Works](docs/images/tema-bennys.jpg)
 
 ### Cada carro no seu lugar
 

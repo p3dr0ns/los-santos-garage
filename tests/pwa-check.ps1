@@ -88,6 +88,7 @@ try {
     $check = Send-Cdp $socket 'Runtime.evaluate' @{expression="(async()=>{data={garages:[{id:'http-g',name:'Fotos offline',type:'garage',capacity:10}],vehicles:[{id:'http-v',name:'Zentorno',catalogId:'zentorno',category:'Super',garageId:'http-g'}]};saveData();const image=await createGarageImage('http-g');const pixels=image.canvas.getContext('2d').getImageData(60,220,230,110).data;let photoPixels=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i]!==39||pixels[i+1]!==39||pixels[i+2]!==52)photoPixels++;const cache=await caches.open('lsg-images-v1');await cache.add('assets/map/0-0.png');return image.blob.size>10000 && image.canvas.width===1200 && photoPixels>1000;})()";awaitPromise=$true;returnByValue=$true}
     if (!$check.result.value) { throw ('PNG export with vehicle photos failed: ' + ($check | ConvertTo-Json -Depth 8 -Compress)) }
     Write-Output 'PASS: PNG export with same-origin vehicle photos.'
+    Send-Cdp $socket 'Runtime.evaluate' @{expression="applyWorkshopTheme('bennys');";returnByValue=$true} | Out-Null
     Send-Cdp $socket 'Runtime.evaluate' @{expression="navigator.serviceWorker.register('__legacy-sw.js',{scope:'./',updateViaCache:'none'}).then(()=>true)";awaitPromise=$true;returnByValue=$true} | Out-Null
     Wait-BrowserCondition $socket "!!navigator.serviceWorker.controller?.scriptURL.endsWith('/__legacy-sw.js')"
     Send-Cdp $socket 'Page.reload' @{} | Out-Null
@@ -97,7 +98,7 @@ try {
     $draft = Send-Cdp $socket 'Runtime.evaluate' @{expression="document.querySelector('#legacyDraft')?.value==='rascunho preservado'";returnByValue=$true}
     if (!$draft.result.value) { throw 'Worker migration unexpectedly reloaded an open form.' }
     Send-Cdp $socket 'Page.reload' @{} | Out-Null
-    Wait-BrowserCondition $socket "!!document.querySelector('[data-filter=settings]') && typeof data !== 'undefined' && data.vehicles[0]?.id==='http-v'"
+    Wait-BrowserCondition $socket "!!document.querySelector('[data-filter=settings]') && typeof data !== 'undefined' && data.vehicles[0]?.id==='http-v' && document.documentElement.dataset.workshopTheme==='bennys'"
     Write-Output 'PASS: an older offline worker is replaced with an open tab, preserving forms and collection data.'
     # Navigation must prefer the deployed HTML even if a stale cached copy exists.
     Send-Cdp $socket 'Runtime.evaluate' @{expression="(async()=>{const keys=await caches.keys();const key=keys.find(k=>k.startsWith('lsg-app-'));const cache=await caches.open(key);const stale=new Response('<html><body id=staleShell>Versao antiga</body></html>',{headers:{'Content-Type':'text/html'}});await cache.put('index.html',stale.clone());await cache.put('./',stale);window.pwaReloadMarker='stale';return true;})()";awaitPromise=$true;returnByValue=$true} | Out-Null
@@ -111,11 +112,12 @@ try {
     Send-Cdp $socket 'Network.emulateNetworkConditions' @{offline=$true;latency=0;downloadThroughput=-1;uploadThroughput=-1} | Out-Null
     Send-Cdp $socket 'Runtime.evaluate' @{expression="window.pwaReloadMarker = 'offline';"} | Out-Null
     Send-Cdp $socket 'Page.reload' @{ignoreCache=$true} | Out-Null
-    Wait-BrowserCondition $socket "window.pwaReloadMarker !== 'offline' && !!document.querySelector('#collectionProfile') && typeof data !== 'undefined' && data.vehicles.length===1 && data.vehicles[0].id==='http-v' && !!navigator.serviceWorker.controller"
+    Wait-BrowserCondition $socket "window.pwaReloadMarker !== 'offline' && !!document.querySelector('#collectionProfile') && typeof data !== 'undefined' && data.vehicles.length===1 && data.vehicles[0].id==='http-v' && !!navigator.serviceWorker.controller && document.documentElement.dataset.workshopTheme==='bennys'"
     $map = Send-Cdp $socket 'Runtime.evaluate' @{expression="(async()=>{const img=new Image();img.src='assets/map/0-0.png';try{await img.decode();return img.naturalWidth>0;}catch{return false;}})()";awaitPromise=$true;returnByValue=$true}
     if (!$map.result.value) { throw 'Downloaded map image unavailable offline.' }
     Write-Output 'PASS: service worker under /los-santos-garage/, offline reload and collection persistence.'
     Write-Output 'PASS: downloaded map image decodes without a network connection.'
+    Write-Output 'PASS: workshop theme persists across worker migration and offline reload.'
 } finally {
     if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {try {Send-Cdp $socket 'Browser.close' @{} | Out-Null} catch {}}
     $socket.Dispose()

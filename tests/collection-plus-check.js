@@ -2,6 +2,7 @@ async function checkCollectionPlus(check) {
   const snapshot=structuredClone(data),key=STORAGE_KEY,stored=localStorage.getItem(key),profilesRaw=localStorage.getItem(PROFILE_KEY),originalProfileId=sessionProfileId;
   const recoveryRaw=localStorage.getItem(`${key}-recovery`),known=new Map(storageSession.known),undo=[...storageSession.undo];
   const rejects=value=>{try{parseCollectionBackup(JSON.stringify(value));return false;}catch{return true;}};
+  const previousTheme=localStorage.getItem(WORKSHOP_THEME_KEY);
   try {
     // Other tests restore localStorage directly; establish the known baseline explicitly.
     storageSession.known.set(key,stored);storageSession.blocked=false;storageSession.undo=[];
@@ -15,6 +16,19 @@ async function checkCollectionPlus(check) {
     $('[data-filter="settings"]').click();
     check("configurações reúnem perfis aplicativo e backup",!$('#settingsSection').hidden && $('#settingsSection').contains($('#collectionProfile')) && $('#settingsSection').contains($('#installApp')) && $('#settingsSection').contains($('#backupPanel')) && $('.collection-toolbar').hidden && $('.top-actions').hidden && $('#vehicleSection').hidden && document.activeElement.id==='pageTitle');
     check("configurações cabem na tela",document.documentElement.scrollWidth<=innerWidth+1 && $('#settingsSection').scrollWidth<=$('#settingsSection').clientWidth+1);
+    const collectionBeforeTheme=JSON.stringify(data);
+    for(const theme of WORKSHOP_THEMES) {
+      $(`[data-workshop-choice="${theme.id}"]`).click();
+      check(`tema ${theme.id} muda identidade e persiste`,document.documentElement.dataset.workshopTheme===theme.id && localStorage.getItem(WORKSHOP_THEME_KEY)===theme.id && $('#lsgBrandBanner').getAttribute('aria-label').includes(theme.name) && $$('[data-workshop-choice][aria-pressed=true]').length===1);
+      check(`seletor ${theme.id} cabe no celular`,document.documentElement.scrollWidth<=innerWidth+1 && $('#workshopThemeChoices').scrollWidth<=$('#workshopThemeChoices').clientWidth+1);
+    }
+    check("trocar tema preserva coleção e decorações",JSON.stringify(data)===collectionBeforeTheme);
+    const themeBeforeInvalid=document.documentElement.dataset.workshopTheme;
+    check("tema desconhecido não é aplicado",!applyWorkshopTheme('invalid') && document.documentElement.dataset.workshopTheme===themeBeforeInvalid);
+    const originalThemeSet=Storage.prototype.setItem;
+    try {Storage.prototype.setItem=function(){throw new Error('Full');};check("falha ao salvar tema mantém preferência anterior",!applyWorkshopTheme('bennys') && document.documentElement.dataset.workshopTheme===themeBeforeInvalid);}finally{Storage.prototype.setItem=originalThemeSet;}
+    localStorage.setItem(WORKSHOP_THEME_KEY,'invalid');check("preferência desconhecida usa tema padrão",readWorkshopTheme().id==='lsc');
+    localStorage.setItem(WORKSHOP_THEME_KEY,'lsc');applyWorkshopTheme('lsc',false);
     const stalePreview=previewBackupFile({name:'anterior.json',size:10,text:()=>new Promise(resolve=>setTimeout(()=>resolve(JSON.stringify(makeCollectionBackup())),30))});
     $('[data-filter="vehicles"]').click();await stalePreview;
     check("sair das configurações invalida restauração pendente",pendingCollectionBackup===null && $('#restoreBackup').disabled && $('#settingsSection').hidden && !$('.top-actions').hidden);
@@ -78,6 +92,8 @@ async function checkCollectionPlus(check) {
     switchProfile(active);localStorage.removeItem(profileStorageKey(created));localStorage.removeItem(`${profileStorageKey(created)}-recovery`);
     check("perfil e ferramentas cabem em celular",document.documentElement.scrollWidth<=innerWidth+1);
   } finally {
+    if(previousTheme===null)localStorage.removeItem(WORKSHOP_THEME_KEY);else localStorage.setItem(WORKSHOP_THEME_KEY,previousTheme);
+    applyWorkshopTheme(readWorkshopTheme().id,false);
     document.querySelectorAll('dialog[open]').forEach(d=>d.close());
     if(profilesRaw===null)localStorage.removeItem(PROFILE_KEY);else localStorage.setItem(PROFILE_KEY,profilesRaw);
     STORAGE_KEY=key;

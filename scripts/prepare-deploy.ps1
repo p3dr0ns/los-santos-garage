@@ -4,7 +4,7 @@ $destination = [IO.Path]::GetFullPath((Join-Path $projectRoot 'dist'))
 if ((Split-Path -Parent $destination) -ne [IO.Path]::GetFullPath($projectRoot) -or (Split-Path -Leaf $destination) -ne 'dist') { throw 'Invalid deployment directory.' }
 if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination -Recurse -Force }
 New-Item -ItemType Directory -Path (Join-Path $destination 'assets') -Force | Out-Null
-$webFiles = @('index.html','favicon.svg','styles.css','los-santos.css','property-explorer.css','collection-tools.css','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js','collection-tools.js')
+$webFiles = @('index.html','favicon.svg','app-icon.svg','manifest.webmanifest','sw.js','styles.css','los-santos.css','property-explorer.css','collection-tools.css','collection-plus.css','collection-storage.js','collection-plus.js','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js','collection-tools.js')
 foreach ($file in $webFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $destination $file) }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'assets/logo-los-santos-customs.png') -Destination (Join-Path $destination 'assets/logo-los-santos-customs.png')
 foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js','property-images.js')) {
@@ -42,4 +42,13 @@ $html = [regex]::Replace($html, '(<(?:script|link)\b[^>]*(?:src|href)=")((?!http
     $match.Groups[1].Value + $match.Groups[2].Value + '?v=' + $hash + $match.Groups[3].Value
 })
 [IO.File]::WriteAllText($entrypoint, $html, (New-Object Text.UTF8Encoding($false)))
+# Cache the exact script/style versions used by this release, including offline navigation.
+$shell = @('./','index.html','favicon.svg','app-icon.svg','manifest.webmanifest','assets/logo-los-santos-customs.png')
+$shell += @([regex]::Matches($html,'<(?:script|link)\b[^>]*(?:src|href)="((?!https?:|//)[^"]+\.(?:js|css)\?v=[a-f0-9]{12})"') | ForEach-Object { $_.Groups[1].Value })
+$workerPath = Join-Path $destination 'sw.js'
+$worker = [IO.File]::ReadAllText($workerPath)
+$releaseHash = (Get-FileHash -LiteralPath $entrypoint -Algorithm SHA256).Hash.Substring(0,16).ToLowerInvariant()
+$worker = $worker.Replace('const VERSION = "development";', 'const VERSION = "' + $releaseHash + '";')
+$worker = [regex]::Replace($worker, 'const SHELL = \[[^;]+\];', 'const SHELL = ' + (ConvertTo-Json -InputObject @($shell) -Compress) + ';')
+[IO.File]::WriteAllText($workerPath, $worker, (New-Object Text.UTF8Encoding($false)))
 Write-Output 'Static site ready in dist.'

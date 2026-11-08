@@ -353,6 +353,7 @@
       check('falha ao favoritar restaura o estado anterior', data.vehicles[0].favorite===favorite);
     } finally { Storage.prototype.setItem=originalSetItem; }
     await checkCollectionTools(check);
+    await checkCollectionPlus(check);
     check('não existem IDs duplicados', new Set($$('[id]').map(element=>element.id)).size===$$('[id]').length);
     check('referências internas de SVG existem', $$('use[href^="#"]').every(element=>document.getElementById(element.getAttribute('href').slice(1))));
     check('rótulos e controles acessíveis têm destinos válidos', $$('[aria-labelledby],[aria-describedby],[aria-controls]').every(element=>['aria-labelledby','aria-describedby','aria-controls'].every(attribute=>!(element.getAttribute(attribute)||'').split(/\s+/).filter(Boolean).some(id=>!document.getElementById(id)))));

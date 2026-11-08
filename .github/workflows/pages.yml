@@ -15,7 +15,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Obter codigo
+        uses: actions/checkout@v6
+      - name: Preparar pacote
+        shell: pwsh
+        run: ./scripts/prepare-deploy.ps1
+      - name: Validar funcionalidades e layout no Chrome
+        shell: pwsh
+        run: ./tests/run-checks.ps1 -SiteRoot ./dist
   deploy:
+    needs: validate
     # Ativar depois de habilitar Pages no repositorio.
     if: vars.ENABLE_GITHUB_PAGES == 'true'
     runs-on: ubuntu-latest

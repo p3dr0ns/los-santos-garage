@@ -1,0 +1,25 @@
+.plus-bar,.plus-filters,.plus-actions { display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0; }
+.plus-bar label,.plus-filters label { display:grid;gap:5px;font-size:.8rem;min-width:0; }
+.plus-bar select,.plus-filters select { max-width:100%;min-width:140px; }
+.plus-bar select,.plus-filters select { background:#22222f;color:#ecedeb;border:1px solid #4a485f;border-radius:8px;padding:10px;font:inherit; }
+.plus-notice { border:1px solid #aaa2da;background:#242237;padding:16px;border-radius:12px;margin:16px 0;line-height:1.6; }
+.plus-notice p { margin:0 0 8px; }
+.plus-notice[hidden],.plus-actions[hidden] { display:none; }
+.plus-cost { margin:12px 0;color:var(--text-muted,#bfc3ce);font-size:.85rem;line-height:1.7; }
+.plus-dialog { width:min(760px,calc(100% - 24px));max-height:90dvh; }
+.plus-dialog .dialog-form { min-width:0; }
+.plus-dialog label { display:grid;gap:6px;margin:10px 0; }
+.plus-dialog input,.plus-dialog select { width:100%;min-width:0; }
+.plus-dialog input[type=checkbox] { width:auto; }
+.plus-dialog h3 { margin-top:20px; }
+.plus-dialog progress { width:100%;accent-color:#aaa2da;height:14px; }
+.plus-task,.plus-goal { padding:12px 0;border-bottom:1px solid #444353; }
+.plus-task { display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
+.plus-task label { display:flex;gap:8px;flex:1;overflow-wrap:anywhere; }
+.plus-task small { color:#bfc3ce; }
+.plus-goal-title { display:flex;justify-content:space-between;gap:12px;align-items:center;overflow-wrap:anywhere; }
+.plus-goal p { color:#bfc3ce;font-size:.85rem; }
+.plus-dialog canvas { width:100%;height:auto;border-radius:12px; }
+.plus-error { color:#ffb1b9;min-height:1.4em; }
+.plus-dialog .tool-hint { line-height:1.6; }
+@media(max-width:600px) { .plus-filters { align-items:stretch; } .plus-filters label { flex:1 1 130px; } .plus-bar { align-items:stretch; } .plus-bar label { flex:1 1 100%; } .plus-bar>button { flex:1 1 120px;font-size:.8rem;padding:10px; } .plus-actions button { flex:1 1 120px; } .collection-toolbar { display:grid;grid-template-columns:repeat(2,minmax(0,1fr)); } .collection-toolbar>button { width:100%;font-size:.75rem;white-space:normal;padding:10px;min-height:46px; } }

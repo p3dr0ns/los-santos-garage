@@ -87,6 +87,10 @@ function renderVehicleDetails() {
   }
   $("#detailsNotes").hidden = !vehicle.notes;
   $("#detailsNotes p").textContent = vehicle.notes || "";
+  if ($("#vehicleProjectSummary")) {
+    const tasks=vehicle.tuning||[];
+    $("#vehicleProjectSummary").textContent=`Preço pago: ${vehicle.purchasePrice==null?"não informado":plusMoney(vehicle.purchasePrice)} · Gasto total registrado: ${plusMoney(getActualCost(vehicle))} · ${tasks.filter(t=>t.done).length}/${tasks.length} modificações concluídas.`;
+  }
   const photo = getVehicleImage(vehicle);
   const image = $("#detailsPhoto");
   image.hidden = !photo;

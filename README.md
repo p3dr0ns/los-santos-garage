@@ -32,6 +32,36 @@ Cadastros já salvos são preservados nas atualizações.
 
 ## Recursos
 
+- **Perfis por personagem/plataforma:** selecione a coleção ativa ou crie e renomeie
+  perfis independentes. Os dados existentes ficam em **Minha coleção**, sem migração
+  destrutiva. Cada backup JSON contém apenas o perfil ativo.
+- **Filtros e ordenação:** filtre por marca, veículos sem garagem, modelos repetidos
+  ou projetos de tuning. Ordene por nome, marca, preço de catálogo ou gasto registrado.
+  A busca da coleção aceita palavras sem acento.
+- **Desfazer e recuperação:** desfaça até 20 alterações na sessão atual, incluindo
+  exclusões e transferências. A versão anterior à última gravação também fica salva
+  localmente para recuperação após reabrir. Dados danificados não são substituídos
+  silenciosamente. Alterações de outra aba bloqueiam a gravação até resolver o aviso.
+- **Compra e tuning:** abra a ficha do veículo para informar o preço pago, gastos
+  anteriores e tarefas de modificação com orçamento e conclusão. O gasto real soma
+  compra, gastos anteriores e tarefas concluídas; o orçamento pendente aparece à parte.
+  O valor de catálogo mantém sua definição original. Custos não informados são
+  sinalizados e não representam o valor completo da coleção.
+- **Metas:** acompanhe marcas, categorias ou ocupação de garagens, com quantidade
+  personalizada opcional. Metas de marcas/categorias contam modelos distintos do
+  catálogo; veículos repetidos não aumentam o progresso.
+- **Compartilhar garagem:** baixe uma imagem PNG com nome, tema e veículos da garagem.
+  O compartilhamento direto aparece quando suportado pelo dispositivo. Ao abrir o
+  HTML como arquivo local, a imagem é gerada sem fotos por restrição do navegador.
+- **Aplicativo e offline:** no site publicado, instale pelo botão oferecido pelo
+  navegador ou pelo menu do dispositivo. Após a primeira carga completa, a interface
+  funciona sem internet e mantém os cadastros locais. Imagens visitadas são guardadas;
+  em **Backup e restauração**, baixe também todas as imagens e o mapa para uso offline.
+  Fontes externas usam as alternativas locais quando indisponíveis. Atualizações do
+  aplicativo são ativadas depois de fechar as abas da versão anterior.
+- **Lembrete de backup:** coleções com veículos recebem um lembrete quando não houve
+  exportação nos últimos sete dias. Histórico e cache também podem ser apagados pelo
+  navegador; exporte o JSON de cada perfil para manter cópias independentes.
 - **Transferência em lote:** selecione carros de uma ou várias garagens e confirme
   o destino. Vagas e restrições de propriedades são conferidas antes de salvar;
   cada carro mantém favoritos, rodas, pintura e observações.
@@ -147,6 +177,12 @@ usados pelo site, sem documentação e metadados de manutenção das imagens.
 `tests/run-checks.ps1 -SiteRoot ./dist` valida esse pacote no navegador;
 `tests/project-check.ps1 -SiteRoot ./dist -Published` também verifica os
 recursos publicados e é executado pelo workflow antes do deploy.
+
+A suíte também valida os novos perfis, filtros, desfazer, recuperação, conflitos,
+custos, tuning e metas. `tests/pwa-check.ps1` abre um servidor HTTP descartável para
+verificar instalação, exportação de PNG com fotos e recarga sem internet no mesmo
+subdiretório do GitHub Pages. O workflow executa a suíte completa no Windows antes
+de liberar a publicação; uma falha bloqueia o deploy.
 
 Cada alteração deve ser publicada. O push em `main` aciona
 `.github/workflows/pages.yml`, que publica `dist/` no GitHub Pages.

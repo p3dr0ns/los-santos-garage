@@ -13,33 +13,14 @@ $baseUri = ([Uri]($sitePath + '\')).AbsoluteUri
 $html = [IO.File]::ReadAllText((Join-Path $sitePath 'index.html')).Replace('<head>', '<head><base href="' + $baseUri + '"><script>window.projectRuntimeErrors=[];addEventListener("error",event=>{if(event.message)projectRuntimeErrors.push(event.message)});addEventListener("unhandledrejection",event=>projectRuntimeErrors.push(String(event.reason)));</script>')
 $testScript = ([Uri](Join-Path $PSScriptRoot 'app-check.js')).AbsoluteUri
 $collectionScript = ([Uri](Join-Path $PSScriptRoot 'collection-check.js')).AbsoluteUri
-$html = $html.Replace('</body>', '<script src="' + $collectionScript + '"></script><script src="' + $testScript + '"></script></body>')
+$plusScript = ([Uri](Join-Path $PSScriptRoot 'collection-plus-check.js')).AbsoluteUri
+$html = $html.Replace('</body>', '<script src="' + $collectionScript + '"></script><script src="' + $plusScript + '"></script><script src="' + $testScript + '"></script></body>')
 $runDirectory = Join-Path $env:TEMP ('lsg-check-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $runDirectory | Out-Null
 $testPage = Join-Path $runDirectory 'check.html'
 [IO.File]::WriteAllText($testPage, $html, (New-Object Text.UTF8Encoding($false)))
 $script:messageId = 0
-function Send-Cdp($socket, $method, $parameters) {
-    $script:messageId++
-    $messageId = $script:messageId
-    $json = @{ id = $messageId; method = $method; params = $parameters } | ConvertTo-Json -Depth 15 -Compress
-    $bytes = [Text.Encoding]::UTF8.GetBytes($json)
-    $socket.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList @(,$bytes)), [Net.WebSockets.WebSocketMessageType]::Text, $true, [Threading.CancellationToken]::None).GetAwaiter().GetResult() | Out-Null
-    do {
-        $stream = New-Object IO.MemoryStream
-        do {
-            $buffer = New-Object byte[] 65536
-            $cancellation = New-Object Threading.CancellationTokenSource(35000)
-            try { $part = $socket.ReceiveAsync((New-Object 'ArraySegment[byte]' -ArgumentList @(,$buffer)), $cancellation.Token).GetAwaiter().GetResult() }
-            finally { $cancellation.Dispose() }
-            $stream.Write($buffer, 0, $part.Count)
-        } while (!$part.EndOfMessage)
-        $response = [Text.Encoding]::UTF8.GetString($stream.ToArray()) | ConvertFrom-Json
-        $stream.Dispose()
-    } while ($response.id -ne $messageId)
-    if ($response.error) { throw ($response.error | ConvertTo-Json -Compress) }
-    return $response.result
-}
+. (Join-Path $PSScriptRoot 'browser-helper.ps1')
 $viewportIndex = 0
 function Save-DocumentationScreenshot([string]$name) {
     if (!$Documentation -or $tag -ne '1440-1100') { return }
@@ -150,3 +131,4 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
     }
 }
 Write-Output "Artifacts: $runDirectory"
+& (Join-Path $PSScriptRoot 'pwa-check.ps1') -SiteRoot $SiteRoot

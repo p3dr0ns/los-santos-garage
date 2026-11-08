@@ -1,0 +1,13 @@
+{
+  "id": "./",
+  "name": "Los Santos Garage",
+  "short_name": "LS Garage",
+  "description": "Sua coleção GTA Online, cada carro no seu lugar.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17171f",
+  "theme_color": "#17171f",
+  "icons": [{"src":"app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
+}

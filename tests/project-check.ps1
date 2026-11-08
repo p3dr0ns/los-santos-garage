@@ -29,7 +29,10 @@ foreach ($manifest in @('vehicle-images.js','interior-images.js','property-image
 }
 foreach ($x in 0..10) { foreach ($y in 0..10) { Assert-LocalFile "assets/map/$x-$y.png" } }
 if ($Published) {
-    $unnecessary = @(Get-ChildItem -LiteralPath $SiteRoot -Recurse -File | Where-Object {$_.Extension -notin @('.html','.css','.js','.png','.jpg','.jpeg','.webp','.svg')})
+    $unnecessary = @(Get-ChildItem -LiteralPath $SiteRoot -Recurse -File | Where-Object {$_.Extension -notin @('.html','.css','.js','.png','.jpg','.jpeg','.webp','.svg','.webmanifest')})
     if ($unnecessary.Count) { throw "Non-runtime files in publication: $($unnecessary.Name -join ', ')" }
 }
+$appManifest = [IO.File]::ReadAllText((Join-Path $SiteRoot 'manifest.webmanifest')) | ConvertFrom-Json
+foreach ($icon in $appManifest.icons) { Assert-LocalFile $icon.src }
+Assert-LocalFile 'sw.js'
 Write-Output 'PASS: PowerShell syntax, entrypoint resources, image manifests and map assets.'

@@ -260,6 +260,17 @@ function parseCollectionBackup(text) {
       vehicle[key] = raw[key];
     }
     if (vehicle.color && !/^#[a-f0-9]{3,8}$/i.test(vehicle.color)) delete vehicle.color;
+    for (const key of ["purchasePrice","modificationCost"]) {
+      if(raw[key]!=null){if(!moneyValue(raw[key]) || raw[key]>10000000000)throw new Error("Custo de veículo inválido.");vehicle[key]=raw[key];}
+    }
+    if(raw.tuning!=null){
+      if(!Array.isArray(raw.tuning)||raw.tuning.length>100)throw new Error("Projeto de tuning inválido.");
+      const ids=new Set();
+      vehicle.tuning=raw.tuning.map(t=>{
+        if(!t||!identifier(t.id)||ids.has(t.id)||!string(t.name,150)||!t.name.trim()||!moneyValue(t.cost)||t.cost>10000000000||typeof t.done!=="boolean")throw new Error("Modificação de tuning inválida.");
+        ids.add(t.id);return {id:t.id,name:t.name,cost:t.cost,done:t.done};
+      });
+    }
     if (vehicle.garageId && raw.parking?.garageId === vehicle.garageId && Number.isInteger(raw.parking.slot) && raw.parking.slot >= 0 && raw.parking.slot < 20000) vehicle.parking={garageId:vehicle.garageId,slot:raw.parking.slot};
     vehicleIds.add(raw.id);
     return vehicle;
@@ -268,7 +279,16 @@ function parseCollectionBackup(text) {
   const wishlist = [...new Set(source.wishlist || [])];
   // Repair duplicate/missing parking positions without losing vehicles or changing valid positions.
   garages.forEach(garage=>getGarageParking(garage,vehicles).forEach((vehicle,slot)=>{if(vehicle)vehicle.parking={garageId:garage.id,slot};}));
-  return {garages,vehicles,wishlist};
+  const result={garages,vehicles,wishlist};
+  if(source.goals!=null){
+    if(!Array.isArray(source.goals)||source.goals.length>100)throw new Error("Lista de metas inválida.");
+    const ids=new Set();
+    result.goals=source.goals.map(g=>{
+      if(!g||!identifier(g.id)||ids.has(g.id)||!string(g.name,150)||!g.name.trim()||!["brand","category","garage"].includes(g.type)||!string(g.value,200)||!g.value.trim()||(g.target!=null&&(!Number.isInteger(g.target)||g.target<1||g.target>20000)))throw new Error("Meta de coleção inválida.");
+      ids.add(g.id);return {id:g.id,name:g.name,type:g.type,value:g.value,target:g.target??null};
+    });
+  }
+  return result;
 }
 let pendingCollectionBackup = null;
 let backupReadSequence = 0;
@@ -296,8 +316,12 @@ function restoreCollectionBackup() {
   if (!pendingCollectionBackup || !$("#confirmBackupReplace").checked) return false;
   const previous=data,previousGarage=selectedGarage,previousFilter=currentFilter;
   data=structuredClone(pendingCollectionBackup);selectedGarage=null;currentFilter="all";
-  if(!saveData("Coleção restaurada com sucesso.")){data=previous;selectedGarage=previousGarage;currentFilter=previousFilter;return false;}
+  // Explicit restore is also the recovery path for damaged storage. Preserve it first.
+  const wasBlocked=storageSession.blocked;
+  if(wasBlocked){try{const original=localStorage.getItem(STORAGE_KEY);if(original!==null)localStorage.setItem(`${STORAGE_KEY}-preserved`,original);persistCollection(STORAGE_KEY,data,{resolve:true});}catch{data=previous;selectedGarage=previousGarage;currentFilter=previousFilter;showToast("Não foi possível preservar e restaurar os dados.","error");return false;}}
+  else if(!saveData("Coleção restaurada com sucesso.")){data=previous;selectedGarage=previousGarage;currentFilter=previousFilter;return false;}
   $("#searchInput").value="";$("#categoryFilter").value="all";$("#garageThemeFilter").value="all";
+  for(const id of ["vehicleScope","vehicleBrandFilter"])if($("#"+id))$("#"+id).value="all";
   setActiveNav("all");render();
   $("#backupDialog").close();resetBackupPreview();
   return true;

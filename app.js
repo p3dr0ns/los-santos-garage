@@ -1,4 +1,4 @@
-const STORAGE_KEY = "minha-garagem-v1";
+let STORAGE_KEY = collectionStorageKey();
 
 const carColors = ["#397ce5", "#d84856", "#8b62da", "#e38643", "#4b9b91", "#bfc6d3"];
 
@@ -184,9 +184,7 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 function loadData() {
-  let saved;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || structuredClone(initialData); }
-  catch { saved = structuredClone(initialData); }
+  let saved = readStoredCollection(STORAGE_KEY, initialData);
   // Atualiza cadastros antigos sem remover ou deslocar veículos existentes.
   saved.garages.forEach(garage => {
     const profile = getGarageProfile(garage);
@@ -200,8 +198,8 @@ function loadData() {
 }
 
 function saveData(message) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-  catch { showToast("Não foi possível salvar. Verifique o espaço disponível no navegador.", "error"); return false; }
+  try { persistCollection(STORAGE_KEY, data); }
+  catch(error) { showToast(storageSession.blocked ? error.message : "Não foi possível salvar. Verifique o espaço disponível no navegador.", "error"); return false; }
   render();
   if (message) showToast(message, "success");
   return true;
@@ -255,6 +253,7 @@ function render() {
   $("#searchInput").disabled = currentFilter === "map" || (currentFilter === "garages" && !selectedGarage);
   renderGarages();
   renderCategories();
+  if (typeof renderEnhancements === "function") renderEnhancements();
   renderVehicles();
   if (currentFilter === "map" && typeof renderPropertyMap === "function") renderPropertyMap();
   if (typeof renderCollectionTools === "function") renderCollectionTools();
@@ -304,17 +303,18 @@ function renderCategories() {
 }
 
 function renderVehicles() {
-  const query = $("#searchInput").value.trim().toLowerCase();
+  const query = normalizeVehicleText($("#searchInput").value);
   const category = $("#categoryFilter").value;
   let vehicles = data.vehicles.filter(vehicle => {
     const garage = getGarage(vehicle.garageId);
-    const matchesQuery = `${vehicle.name} ${vehicle.brand || ""} ${vehicle.category} ${vehicle.plate || ""} ${garageLabel(garage)} ${(garage?.tags || []).join(" ")}`.toLowerCase().includes(query);
+    const matchesQuery = normalizeVehicleText(`${vehicle.name} ${vehicle.brand || ""} ${vehicle.category} ${vehicle.plate || ""} ${garageLabel(garage)} ${(garage?.tags || []).join(" ")}`).includes(query);
     const matchesCategory = category === "all" || vehicle.category === category;
     const matchesGarage = !selectedGarage || vehicle.garageId === selectedGarage;
     const matchesMode = currentFilter !== "favorites" || vehicle.favorite;
     return matchesQuery && matchesCategory && matchesGarage && matchesMode;
   });
 
+  if (typeof organizeVehicles === "function") vehicles = organizeVehicles(vehicles);
   const titles = { favorites: "Veículos favoritos" };
   $("#vehicleTitle").textContent = selectedGarage ? garageLabel(getGarage(selectedGarage)) : (titles[currentFilter] || "Todos os veículos");
   $("#vehicleResultCount").textContent = vehicles.length;

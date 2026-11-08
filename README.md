@@ -32,6 +32,10 @@ Cadastros já salvos são preservados nas atualizações.
 
 ## Recursos
 
+- **Configurações:** abra pelo menu lateral ou pela navegação inferior no celular.
+  A página reúne perfis, instalação do aplicativo, imagens offline, backup e recuperação.
+  Os lembretes de backup ficam nessa página; a coleção mantém os atalhos de desejos,
+  comparação e metas. O botão **Desfazer** fica junto aos controles dos veículos.
 - **Perfis por personagem/plataforma:** selecione a coleção ativa ou crie e renomeie
   perfis independentes. Os dados existentes ficam em **Minha coleção**, sem migração
   destrutiva. Cada backup JSON contém apenas o perfil ativo.
@@ -56,7 +60,8 @@ Cadastros já salvos são preservados nas atualizações.
 - **Aplicativo e offline:** no site publicado, instale pelo botão oferecido pelo
   navegador ou pelo menu do dispositivo. Após a primeira carga completa, a interface
   funciona sem internet e mantém os cadastros locais. Imagens visitadas são guardadas;
-  em **Backup e restauração**, baixe também todas as imagens e o mapa para uso offline.
+  em **Configurações → Aplicativo e acesso offline**, baixe também todas as imagens
+  e o mapa para uso offline.
   Fontes externas usam as alternativas locais quando indisponíveis. Atualizações do
   aplicativo são ativadas depois de fechar as abas da versão anterior.
 - **Lembrete de backup:** coleções com veículos recebem um lembrete quando não houve
@@ -143,10 +148,12 @@ Veja também as telas de [lista de desejos](docs/images/desejos.jpg) e
 
 ### Leve sua coleção para outro navegador
 
-Em **Backup e restauração**, baixe o JSON da coleção ou escolha um arquivo
+Em **Configurações → Backup e restauração**, baixe o JSON da coleção ou escolha um arquivo
 para conferir o resumo. A restauração substitui os dados atuais após confirmação.
 
 ![Backup com prévia da coleção antes de restaurar os dados](docs/images/backup.jpg)
+
+![Página de configurações com perfis, aplicativo e opções de backup](docs/images/configuracoes.jpg)
 
 ## Fontes das imagens
 

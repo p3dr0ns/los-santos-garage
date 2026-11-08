@@ -298,6 +298,12 @@ function resetBackupPreview() {
   $("#confirmBackupReplace").disabled=true;
   $("#restoreBackup").disabled=true;
 }
+function clearBackupSelection() {
+  backupReadSequence++;
+  resetBackupPreview();
+  $("#backupFile").value="";
+  $("#backupPreview").textContent="Escolha um arquivo para conferir os dados antes de restaurar.";
+}
 async function previewBackupFile(file) {
   const sequence=++backupReadSequence;
   resetBackupPreview();
@@ -323,10 +329,9 @@ function restoreCollectionBackup() {
   $("#searchInput").value="";$("#categoryFilter").value="all";$("#garageThemeFilter").value="all";
   for(const id of ["vehicleScope","vehicleBrandFilter"])if($("#"+id))$("#"+id).value="all";
   setActiveNav("all");render();
-  $("#backupDialog").close();resetBackupPreview();
+  clearBackupSelection();
   return true;
 }
-$("#openBackup").addEventListener("click",()=>{$("#backupFile").value="";backupReadSequence++;resetBackupPreview();$("#backupPreview").textContent="Escolha um arquivo para conferir os dados antes de restaurar.";$("#backupDialog").showModal();});
 $("#exportBackup").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify(makeCollectionBackup(),null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob),link=document.createElement("a");
@@ -339,5 +344,4 @@ $("#exportBackup").addEventListener("click",()=>{
 $("#backupFile").addEventListener("change",event=>previewBackupFile(event.target.files[0]));
 $("#confirmBackupReplace").addEventListener("change",()=>{$("#restoreBackup").disabled=!pendingCollectionBackup || !$("#confirmBackupReplace").checked;});
 $("#restoreBackup").addEventListener("click",restoreCollectionBackup);
-$("#backupDialog").addEventListener("close",()=>{backupReadSequence++;resetBackupPreview();});
 render();

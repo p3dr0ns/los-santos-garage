@@ -11,6 +11,13 @@ async function checkCollectionPlus(check) {
       {id:"plus-v3",name:"Adder",catalogId:"adder",brand:"Truffade",category:"Super",garageId:"plus-a"},
       {id:"plus-v4",name:"Sedã customizado",brand:"Minha marca",category:"Sedã",garageId:null}
     ]};selectedGarage=null;currentFilter="vehicles";saveData();
+    check("coleção sem controles de configuração no cabeçalho",!$('.collection-toolbar #collectionProfile') && !$('.topbar #installApp') && $('#settingsSection').hidden && !$('#backupPanel').getClientRects().length && !$('#backupReminder').getClientRects().length);
+    $('[data-filter="settings"]').click();
+    check("configurações reúnem perfis aplicativo e backup",!$('#settingsSection').hidden && $('#settingsSection').contains($('#collectionProfile')) && $('#settingsSection').contains($('#installApp')) && $('#settingsSection').contains($('#backupPanel')) && $('.collection-toolbar').hidden && $('.top-actions').hidden && $('#vehicleSection').hidden && document.activeElement.id==='pageTitle');
+    check("configurações cabem na tela",document.documentElement.scrollWidth<=innerWidth+1 && $('#settingsSection').scrollWidth<=$('#settingsSection').clientWidth+1);
+    const stalePreview=previewBackupFile({name:'anterior.json',size:10,text:()=>new Promise(resolve=>setTimeout(()=>resolve(JSON.stringify(makeCollectionBackup())),30))});
+    $('[data-filter="vehicles"]').click();await stalePreview;
+    check("sair das configurações invalida restauração pendente",pendingCollectionBackup===null && $('#restoreBackup').disabled && $('#settingsSection').hidden && !$('.top-actions').hidden);
     $("#searchInput").value="seda";renderVehicles();check("busca ignora acentos",$("#vehicleResultCount").textContent==="1");$("#searchInput").value="";
     $("#vehicleScope").value="unassigned";renderVehicles();check("filtro sem garagem",$$('.vehicle-card').length===2);
     $("#vehicleScope").value="duplicates";renderVehicles();check("filtro de modelos repetidos",$$('.vehicle-card').length===2 && $$('.vehicle-card').every(c=>c.getAttribute('aria-label').includes('Zentorno')));
@@ -44,9 +51,9 @@ async function checkCollectionPlus(check) {
     window.dispatchEvent(new StorageEvent('storage',{key,newValue:foreignRaw}));
     check("outra aba bloqueia gravação",!saveData() && localStorage.getItem(key)===foreignRaw && !$('#storageNotice').hidden);
     $('#loadOtherTab').click();check("carregar outra aba resolve conflito",data.vehicles[0].name==='Versão da outra aba' && !storageSession.blocked);
-    $('#openBackup').click();$('#previewRecovery').click();
+    $('[data-filter="settings"]').click();$('#previewRecovery').click();
     const previewDeadline=Date.now()+5000;while(!pendingCollectionBackup && Date.now()<previewDeadline)await new Promise(resolve=>setTimeout(resolve,20));
-    check("versão anterior pode ser conferida sem substituir coleção",pendingCollectionBackup && $('#restoreBackup').disabled && data.vehicles[0].name==='Versão da outra aba');$('#backupDialog').close();
+    check("versão anterior pode ser conferida sem substituir coleção",pendingCollectionBackup && $('#restoreBackup').disabled && data.vehicles[0].name==='Versão da outra aba');$('[data-filter="vehicles"]').click();
     // Malformed stored data never silently replaces a collection.
     localStorage.setItem(`${key}-recovery`,JSON.stringify(data));localStorage.setItem(key,'{"garages":{}}');
     const recovered=loadData();check("armazenamento malformado não quebra inicialização",recovered.vehicles.length===4 && storageSession.blocked);

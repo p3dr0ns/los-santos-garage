@@ -29,6 +29,7 @@
     <symbol id="ui-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="ui-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
     <symbol id="ui-map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Zm6-2v16m6-14v16"/></symbol>
+    <symbol id="ui-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
   </defs></svg>
   <div class="app-shell">
     <aside class="sidebar">
@@ -42,6 +43,7 @@
         <button class="nav-item" data-filter="garages" aria-label="Garagens"><svg class="ui-icon"><use href="#ui-garage"/></svg><span class="nav-label">Garagens</span><span class="nav-count" id="navGarageCount">0</span></button>
         <button class="nav-item" data-filter="map" aria-label="Mapa de garagens"><svg class="ui-icon"><use href="#ui-map"/></svg><span class="nav-label">Mapa</span></button>
         <button class="nav-item" data-filter="favorites" aria-label="Favoritos"><svg class="ui-icon"><use href="#ui-star"/></svg><span class="nav-label">Favoritos</span><span class="nav-count" id="navFavoriteCount">0</span></button>
+        <button class="nav-item" data-filter="settings" aria-label="Configurações"><svg class="ui-icon"><use href="#ui-settings"/></svg><span class="nav-label">Configurações</span></button>
       </nav>
 
       <div class="sidebar-card">
@@ -72,7 +74,6 @@
       <div class="collection-toolbar" role="group" aria-label="Ferramentas da coleção">
         <button type="button" class="secondary-button" id="openWishlist">Lista de desejos <span id="wishlistCount">0</span></button>
         <button type="button" class="secondary-button" id="openCompare">Comparar carros</button>
-        <button type="button" class="secondary-button" id="openBackup">Backup e restauração</button>
       </div>
 
       <section id="lsgBrandBanner" class="lsg-brand-banner" aria-label="Los Santos Garage"><div class="lsg-wordmark"><img class="lsg-banner-logo" src="assets/logo-los-santos-customs.png" alt="Los Santos Customs Garage" width="1536" height="1024"></div><div class="lsg-brand-caption"><span>LOS SANTOS · SAN ANDREAS</span><h2>Sua coleção.<br>Cada carro no seu lugar.</h2><small>Garagens, projetos e cultura automotiva.</small></div><span class="lsg-banner-stripe" aria-hidden="true"></span></section>
@@ -127,6 +128,21 @@
         </div>
       </section>
       <section id="mapSection" class="property-map-section" aria-label="Mapa de propriedades com garagem" hidden></section>
+      <section id="settingsSection" class="settings-page" aria-label="Configurações" hidden>
+        <div class="settings-grid">
+          <section class="settings-card" aria-labelledby="settingsProfilesTitle">
+            <p class="eyebrow">SUA COLEÇÃO</p><h2 id="settingsProfilesTitle">Perfis e personagens</h2>
+            <p class="tool-hint">Separe suas garagens por personagem ou plataforma. Cada perfil mantém sua própria coleção.</p>
+            <div id="settingsProfileControls" class="plus-bar"></div>
+          </section>
+          <section class="settings-card" aria-labelledby="settingsAppTitle">
+            <p class="eyebrow">NO SEU DISPOSITIVO</p><h2 id="settingsAppTitle">Aplicativo e acesso offline</h2>
+            <p class="tool-hint">Instale para abrir direto pela tela inicial. Você também pode usar a opção de instalação no menu do navegador.</p>
+            <div id="settingsAppControls" class="plus-actions"></div>
+            <div id="settingsOfflineControls"></div>
+          </section>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -262,12 +278,12 @@
       <button type="submit" id="confirmBatchMove" class="primary-button" disabled>Confirmar transferência</button>
     </form>
   </dialog>
-  <dialog id="backupDialog" class="collection-dialog" aria-labelledby="backupTitle">
-    <div class="dialog-form"><div class="dialog-heading"><div><p class="eyebrow">SUA COLEÇÃO COM VOCÊ</p><h2 id="backupTitle">Backup e restauração</h2></div><button type="button" class="icon-button" data-close="backupDialog" aria-label="Fechar backup">×</button></div>
+  <section id="backupPanel" class="settings-card settings-backup" aria-labelledby="backupTitle" hidden>
+    <div class="dialog-form"><div><p class="eyebrow">SUA COLEÇÃO COM VOCÊ</p><h2 id="backupTitle">Backup e restauração</h2></div>
       <section class="backup-panel"><h3>Salvar uma cópia</h3><p class="tool-hint">Baixe garagens, tags, veículos, posições, favoritos, personalizações e lista de desejos em um arquivo JSON.</p><button type="button" class="primary-button" id="exportBackup">Baixar backup</button></section>
       <section class="backup-panel"><h3>Restaurar uma cópia</h3><p class="tool-hint">A restauração substitui a coleção deste navegador. Baixe um backup atual antes de continuar. Escolha um JSON de até 10 MB; o arquivo é lido apenas no seu dispositivo.</p><label>Arquivo de backup<input id="backupFile" type="file" accept=".json,application/json"></label><p id="backupPreview" class="tool-hint" role="status">Escolha um arquivo para conferir os dados antes de restaurar.</p><label class="backup-confirm"><input id="confirmBackupReplace" type="checkbox" disabled> Entendo que os dados atuais serão substituídos.</label><button type="button" id="restoreBackup" class="primary-button" disabled>Restaurar coleção</button></section>
     </div>
-  </dialog>
+  </section>
   <script src="assets/vehicle-catalog.js"></script>
   <script src="assets/vehicle-reference.js"></script>
   <script src="assets/wheel-catalog.js"></script>

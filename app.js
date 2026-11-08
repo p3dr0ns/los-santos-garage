@@ -210,14 +210,18 @@ function render() {
   $("#lsgBrandBanner").hidden = currentFilter !== "all";
   $(".stats").hidden = currentFilter !== "all";
   $("#garageSection").hidden = !!selectedGarage || (currentFilter !== "all" && currentFilter !== "garages");
-  $("#vehicleSection").hidden = currentFilter === "map" || (currentFilter === "garages" && !selectedGarage);
+  $("#vehicleSection").hidden = ["map","settings"].includes(currentFilter) || (currentFilter === "garages" && !selectedGarage);
   $("#mapSection").hidden = currentFilter !== "map";
+  $("#settingsSection").hidden = currentFilter !== "settings";
+  $(".collection-toolbar").hidden = ["map","settings"].includes(currentFilter);
+  $(".top-actions").hidden = currentFilter === "settings";
   const pages = {
     all: ["Visão geral", "Sua coleção, organizada do seu jeito."],
     vehicles: ["Seus veículos", "Encontre cada carro e o lugar que ele chama de casa."],
     garages: ["Suas garagens", "Todas as propriedades. Cada vaga sob controle."],
     favorites: ["Favoritos", "Os que merecem um lugar especial na coleção."],
-    map: ["Mapa de garagens", "Localize imóveis com armazenamento permanente em Los Santos e Blaine County."]
+    map: ["Mapa de garagens", "Localize imóveis com armazenamento permanente em Los Santos e Blaine County."],
+    settings: ["Configurações", "Gerencie seus perfis, proteja sua coleção e prepare o acesso offline."]
   };
   $("#pageTitle").textContent = pages[currentFilter][0];
   $("#pageDescription").textContent = pages[currentFilter][1];
@@ -527,10 +531,12 @@ $("#categoryFilter").addEventListener("change", renderVehicles);
 $$('[data-close]').forEach(button => button.addEventListener("click", () => $("#" + button.dataset.close).close()));
 
 $$('.nav-item').forEach(item => item.addEventListener("click", () => {
+  if(currentFilter === "settings" && item.dataset.filter !== "settings") clearBackupSelection();
   currentFilter = item.dataset.filter;
   selectedGarage = null;
   setActiveNav(currentFilter);
   render();
+  if(currentFilter === "settings") { window.scrollTo(0,0); $("#pageTitle").focus({preventScroll:true}); }
   if (currentFilter === "vehicles" || currentFilter === "favorites") $("#vehicleSection").scrollIntoView({ behavior: "smooth", block: "start" });
 }));
 

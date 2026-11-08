@@ -110,7 +110,7 @@ async function checkCollectionTools(check) {
     const collided=structuredClone(backup);collided.data.vehicles[1].parking=collided.data.vehicles[0].parking;
     const repaired=parseCollectionBackup(JSON.stringify(collided));
     check('restauração resolve colisão de vagas sem perder veículos',repaired.vehicles.length===data.vehicles.length && new Set(repaired.vehicles.filter(vehicle=>vehicle.garageId==='tools-c').map(vehicle=>vehicle.parking.slot)).size===2);
-    $('#openBackup').click();
+    $('[data-filter="settings"]').click();
     const beforeImport=JSON.stringify(data);
     await previewBackupFile(new File([JSON.stringify(backup)],'colecao.json',{type:'application/json'}));
     check('prévia de arquivo válido não altera dados',JSON.stringify(data)===beforeImport && pendingCollectionBackup && !$('#confirmBackupReplace').disabled && $('#restoreBackup').disabled);
@@ -124,14 +124,14 @@ async function checkCollectionTools(check) {
     await previewBackupFile(new File([JSON.stringify(backup)],'colecao.json',{type:'application/json'}));
     $('#confirmBackupReplace').checked=true;$('#confirmBackupReplace').dispatchEvent(new Event('change'));
     Storage.prototype.setItem=function(key,value){if(key===STORAGE_KEY)throw new DOMException('Full','QuotaExceededError');return originalSetItem.call(this,key,value);};
-    try {check('falha de armazenamento na restauração preserva coleção e prévia',!restoreCollectionBackup() && JSON.stringify(data)===beforeImport && $('#backupDialog').open && pendingCollectionBackup);}finally{Storage.prototype.setItem=originalSetItem;}
-    check('backup cabe na tela',fits('#backupDialog'));
-    check('restaurar confirmação válida aplica dados e fecha diálogo',restoreCollectionBackup() && !$('#backupDialog').open && JSON.parse(localStorage.getItem(STORAGE_KEY)).vehicles.length===backup.data.vehicles.length);
+    try {check('falha de armazenamento na restauração preserva coleção e prévia',!restoreCollectionBackup() && JSON.stringify(data)===beforeImport && !$('#settingsSection').hidden && pendingCollectionBackup);}finally{Storage.prototype.setItem=originalSetItem;}
+    check('backup nas configurações cabe na tela',fits('#backupPanel'));
+    check('restaurar confirmação válida aplica dados e retorna à coleção',restoreCollectionBackup() && $('#settingsSection').hidden && JSON.parse(localStorage.getItem(STORAGE_KEY)).vehicles.length===backup.data.vehicles.length);
     const exported=[];const createUrl=URL.createObjectURL, revokeUrl=URL.revokeObjectURL, click=HTMLAnchorElement.prototype.click;
     URL.createObjectURL=function(blob){exported.push(blob);return createUrl.call(URL,blob);};HTMLAnchorElement.prototype.click=function(){exported.push(this.download);};
     try {$('#exportBackup').click();check('exportação cria JSON baixável com a coleção completa',exported[0] instanceof Blob && exported[1].startsWith('los-santos-garage-') && JSON.parse(await exported[0].text()).data.vehicles.length===data.vehicles.length);}finally{URL.createObjectURL=createUrl;URL.revokeObjectURL=revokeUrl;HTMLAnchorElement.prototype.click=click;}
   } finally {
-    for(const id of ['wishlistDialog','compareDialog','batchMoveDialog','backupDialog','vehicleDialog']) if($("#"+id).open)$("#"+id).close();
+    for(const id of ['wishlistDialog','compareDialog','batchMoveDialog','vehicleDialog']) if($("#"+id).open)$("#"+id).close();
     if(!$('#vehicleDetailsDialog').hidden)closeVehiclePortfolio();
     data=previous;selectedGarage=previousGarage;currentFilter=previousFilter;batchSelection.clear();
     $('#garageThemeFilter').value='all';$('#searchInput').value='';$('#categoryFilter').value='all';

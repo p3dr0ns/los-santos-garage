@@ -119,10 +119,14 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         Save-DocumentationScreenshot 'transferencia'
         $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "batch-move-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#batchMoveDialog').close(); document.querySelector('#openBackup').click(); const previewFile=new File([JSON.stringify(makeCollectionBackup())],'minha-colecao.json',{type:'application/json'}); const previewTransfer=new DataTransfer(); previewTransfer.items.add(previewFile); document.querySelector('#backupFile').files=previewTransfer.files; previewBackupFile(previewFile);"; awaitPromise = $true } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#batchMoveDialog').close(); document.querySelector('[data-filter=settings]').click(); const previewFile=new File([JSON.stringify(makeCollectionBackup())],'minha-colecao.json',{type:'application/json'}); const previewTransfer=new DataTransfer(); previewTransfer.items.add(previewFile); document.querySelector('#backupFile').files=previewTransfer.files; previewBackupFile(previewFile); document.querySelector('#backupPanel').scrollIntoView({block:'start'});"; awaitPromise = $true } | Out-Null
         Save-DocumentationScreenshot 'backup'
         $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "backup-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "window.scrollTo(0,0);" } | Out-Null
+        Save-DocumentationScreenshot 'configuracoes'
+        $settingsScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
+        [IO.File]::WriteAllBytes((Join-Path $runDirectory "settings-$tag.png"), [Convert]::FromBase64String($settingsScreenshot.data))
     } finally {
         if ($socket.State -eq [Net.WebSockets.WebSocketState]::Open) {
             try { Send-Cdp $socket 'Browser.close' @{} | Out-Null } catch { }

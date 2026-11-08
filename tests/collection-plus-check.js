@@ -44,7 +44,8 @@ async function checkCollectionPlus(check) {
     window.dispatchEvent(new StorageEvent('storage',{key,newValue:foreignRaw}));
     check("outra aba bloqueia gravação",!saveData() && localStorage.getItem(key)===foreignRaw && !$('#storageNotice').hidden);
     $('#loadOtherTab').click();check("carregar outra aba resolve conflito",data.vehicles[0].name==='Versão da outra aba' && !storageSession.blocked);
-    $('#openBackup').click();$('#previewRecovery').click();await new Promise(resolve=>setTimeout(resolve,20));
+    $('#openBackup').click();$('#previewRecovery').click();
+    const previewDeadline=Date.now()+5000;while(!pendingCollectionBackup && Date.now()<previewDeadline)await new Promise(resolve=>setTimeout(resolve,20));
     check("versão anterior pode ser conferida sem substituir coleção",pendingCollectionBackup && $('#restoreBackup').disabled && data.vehicles[0].name==='Versão da outra aba');$('#backupDialog').close();
     // Malformed stored data never silently replaces a collection.
     localStorage.setItem(`${key}-recovery`,JSON.stringify(data));localStorage.setItem(key,'{"garages":{}}');

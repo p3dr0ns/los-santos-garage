@@ -3,7 +3,7 @@ const VERSION = "development";
 const CACHE = `lsg-app-${VERSION}`;
 const SHELL = ["./", "index.html", "styles.css", "los-santos.css", "property-explorer.css", "collection-tools.css", "collection-plus.css", "app.js", "collection-storage.js", "collection-plus.js", "collection-tools.js", "catalog-ui.js", "wheels-ui.js", "vehicle-details.js", "garage-view.js", "garage-themes.js", "property-catalog.js", "property-explorer.js", "manifest.webmanifest", "app-icon.svg", "favicon.svg", "assets/vehicle-catalog.js", "assets/vehicle-reference.js", "assets/wheel-catalog.js", "assets/vehicle-images.js", "assets/interior-images.js", "assets/property-locations.js", "assets/property-images.js", "assets/logo-los-santos-customs.png"];
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL.map(path => new Request(path,{cache:"reload"})))).then(() => self.skipWaiting()));
   // Activate the complete new shell even when an older tab is still open.
   // Existing pages keep their forms intact; navigation loads the new release.
 });

@@ -1,4 +1,4 @@
-# Los Santos Garage
+# Garage V
 
 Organize sua coleção do GTA Online: encontre seus carros, acompanhe o valor
 de cada garagem e escolha propriedades pelo mapa de Los Santos.
@@ -6,24 +6,26 @@ de cada garagem e escolha propriedades pelo mapa de Los Santos.
 **[Abrir o site](https://p3dr0ns.github.io/los-santos-garage/)** ·
 [Garagens](GARAGENS.md) · [Catálogo de carros](CATALOGO.md) · [Mapa](MAPA.md)
 
-![Visão geral do Los Santos Garage com resumo da coleção e fachadas dos imóveis](docs/images/visao-geral.jpg)
+![Visão geral do Garage V com resumo da coleção e fachadas dos imóveis](docs/images/visao-geral.jpg)
 
 > As capturas usam uma coleção de demonstração criada somente para a documentação.
 > O primeiro acesso ao site começa vazio, sem carros ou garagens cadastrados.
 
-Identidade visual inspirada nas oficinas de Los Santos, com letreiro cromado,
-azul índigo, grafite e prata cromado e referências dos interiores reais do jogo por tipo de
-propriedade. Na **Oficina de Tuning**, escolha entre os nove estilos Undressed,
+Garage V tem identidade própria inspirada na referência visual do GTA V: letras
+brancas com contornos fortes, um V verde gravado e uma faixa Online. A logo vetorial
+fica em `assets/garage-v-logo.svg`; favicon e ícone do aplicativo acompanham a marca.
+O tema padrão combina preto tinta `#0E1211`, branco papel `#F5F3ED` e verde cédula
+`#8CDA91`. Os temas de oficinas continuam disponíveis como alternativas.
+
+Os interiores mantêm referências do jogo por tipo de propriedade.
+Na **Oficina de Tuning**, escolha entre os nove estilos Undressed,
 Flawless, Polished, Concrete Chic, Nostalgia Trip, Route 68, Super Chibi,
 Wildstyle e Race and Chase. A decoração é salva por garagem e altera a foto
 de referência, as cores e o piso do mapa. Pode ser escolhida no cadastro/edição
 ou diretamente na vista de vagas. Referências em `assets/interior-images.js`.
 
-A paleta usa grafite `#17171F`, índigo `#35345F`, prata `#BFC3CE`, branco gelo
-`#ECEDEB` e roxo azulado `#59558B`. Letras com degradê metálico e destaques
-discretos remetem às oficinas californianas da Los Santos Customs.
-A logo fornecida é usada no menu lateral e no destaque da página inicial,
-preservando a imagem original em `assets/logo-los-santos-customs.png`.
+A identidade anterior da Los Santos Customs, com sua logo original em
+`assets/logo-los-santos-customs.png`, é preservada no tema correspondente.
 
 Abra `index.html` no navegador ou acesse o site publicado. Os cadastros ficam no
 `localStorage` do navegador. O arquivo local e o site possuem armazenamento separado.
@@ -37,12 +39,13 @@ Cadastros já salvos são preservados nas atualizações.
   Os lembretes de backup ficam nessa página; os atalhos de desejos, comparação e
   metas aparecem apenas na aba **Veículos**. O botão **Desfazer** fica junto aos
   controles dos veículos.
-- **Tema da oficina:** em **Configuração → Tema da oficina**, escolha Los Santos Customs,
+- **Tema da garagem:** em **Configuração → Tema da garagem**, use Garage V ou escolha Los Santos Customs,
   Benny’s Original Motor Works, Beeker’s Garage ou Hao’s Special Works. Cada uma assina
   a garagem com letreiro, cores, acabamentos e textos próprios. A seleção é aplicada
   na hora, fica salva neste navegador e funciona offline. Perfis, veículos, garagens
   e decorações de interiores são preservados; o tema visual é uma preferência do
-  navegador, separada dos backups das coleções. Los Santos Customs é o padrão.
+  navegador, separada dos backups das coleções. Garage V é o padrão para novos acessos
+  e preferências inválidas; escolhas de oficinas já salvas continuam preservadas.
 - **Perfis por personagem/plataforma:** selecione a coleção ativa ou crie e renomeie
   perfis independentes. Os dados existentes ficam em **Minha coleção**, sem migração
   destrutiva. Cada backup JSON contém apenas o perfil ativo.
@@ -128,7 +131,8 @@ Cadastros já salvos são preservados nas atualizações.
 
 ### Uma garagem com a identidade da sua oficina
 
-Escolha o tema em **Configuração**. Veja as versões
+Escolha o tema em **Configuração**. Veja a identidade padrão
+[Garage V](docs/images/tema-garage-v.jpg) e as versões
 [Los Santos Customs](docs/images/tema-lsc.jpg),
 [Benny’s](docs/images/tema-bennys.jpg), [Beeker’s](docs/images/tema-beekers.jpg)
 e [Hao’s](docs/images/tema-haos.jpg).

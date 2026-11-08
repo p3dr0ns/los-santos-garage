@@ -7,6 +7,7 @@ New-Item -ItemType Directory -Path (Join-Path $destination 'assets') -Force | Ou
 $webFiles = @('index.html','favicon.svg','app-icon.svg','manifest.webmanifest','sw.js','styles.css','los-santos.css','property-explorer.css','collection-tools.css','collection-plus.css','workshop-themes.css','workshop-themes.js','collection-storage.js','collection-plus.js','app.js','catalog-ui.js','wheels-ui.js','vehicle-details.js','garage-view.js','garage-themes.js','property-catalog.js','property-explorer.js','collection-tools.js')
 foreach ($file in $webFiles) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $destination $file) }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'assets/logo-los-santos-customs.png') -Destination (Join-Path $destination 'assets/logo-los-santos-customs.png')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'assets/garage-v-logo.svg') -Destination (Join-Path $destination 'assets/garage-v-logo.svg')
 foreach ($file in @('vehicle-catalog.js','vehicle-reference.js','wheel-catalog.js','interior-images.js','property-locations.js','property-images.js')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot "assets/$file") -Destination (Join-Path $destination "assets/$file")
 }
@@ -43,7 +44,7 @@ $html = [regex]::Replace($html, '(<(?:script|link)\b[^>]*(?:src|href)=")((?!http
 })
 [IO.File]::WriteAllText($entrypoint, $html, (New-Object Text.UTF8Encoding($false)))
 # Cache the exact script/style versions used by this release, including offline navigation.
-$shell = @('./','index.html','favicon.svg','app-icon.svg','manifest.webmanifest','assets/logo-los-santos-customs.png')
+$shell = @('./','index.html','favicon.svg','app-icon.svg','manifest.webmanifest','assets/logo-los-santos-customs.png','assets/garage-v-logo.svg')
 $shell += @([regex]::Matches($html,'<(?:script|link)\b[^>]*(?:src|href)="((?!https?:|//)[^"]+\.(?:js|css)\?v=[a-f0-9]{12})"') | ForEach-Object { $_.Groups[1].Value })
 $workerPath = Join-Path $destination 'sw.js'
 $worker = [IO.File]::ReadAllText($workerPath)

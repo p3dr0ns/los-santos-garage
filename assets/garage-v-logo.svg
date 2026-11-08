@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">Garage V</title><desc id="desc">Letreiro branco com contornos de tinta e prata, acompanhado de um V verde gravado e uma faixa Online.</desc>
+  <defs>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fffef7"/><stop offset="1" stop-color="#d6ded5"/></linearGradient>
+    <linearGradient id="money" x2="1" y2="1"><stop stop-color="#a5dc91"/><stop offset=".5" stop-color="#6fba76"/><stop offset="1" stop-color="#315f40"/></linearGradient>
+    <pattern id="engraving" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(-18)"><path d="M0 0 22 22M-11 11 11 33M11-11 33 11M22 0 0 22" fill="none" stroke="#123b29" stroke-width="1.1" opacity=".65"/></pattern>
+    <path id="letter-g" d="M96 0H25Q0 0 0 25V135Q0 160 25 160H96V70H48V99H64V128H32V32H96Z"/>
+    <path id="letter-a" fill-rule="evenodd" d="M0 160 28 0H73L101 160H67L61 124H38L32 160ZM44 94H56L50 48Z"/>
+    <path id="letter-r" fill-rule="evenodd" d="M0 160V0H66Q98 0 98 32V58Q98 78 78 85L100 160H66L48 96H32V160ZM32 30V66H62Q66 66 66 61V35Q66 30 62 30Z"/>
+    <path id="letter-e" d="M0 0H96V32H32V63H84V96H32V128H96V160H0Z"/>
+    <g id="word"><use href="#letter-g"/><use href="#letter-a" x="121"/><use href="#letter-r" x="242"/><use href="#letter-a" x="363"/><use href="#letter-g" x="484"/><use href="#letter-e" x="605"/></g>
+    <path id="five" d="M635 160H760V180L745 185 790 300 840 185 820 180V160H940V180L925 185 820 400H770L660 185 635 180Z"/>
+  </defs>
+  <g transform="translate(35 35) scale(1.1 1.03)" stroke-linejoin="round"><use href="#word" fill="#0b100d" stroke="#929c93" stroke-width="22"/><use href="#word" fill="url(#paper)" stroke="#090d0b" stroke-width="12"/><use href="#word" fill="none" stroke="#a4afa5" stroke-width="1.7"/></g>
+  <path d="M40 252H575M40 271H475" stroke="#899d8b" stroke-width="2"/>
+  <text x="40" y="315" fill="#dce7dc" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="7">YOUR COLLECTION. YOUR RULES.</text>
+  <use href="#five" fill="#0b100d" stroke="#9ca89d" stroke-width="22" stroke-linejoin="round"/>
+  <use href="#five" fill="url(#money)" stroke="#f5f3ed" stroke-width="12" stroke-linejoin="round"/>
+  <use href="#five" fill="url(#engraving)" stroke="#162e20" stroke-width="2.5"/>
+  <path d="M637 265Q787 205 947 265L935 320Q790 264 651 320Z" fill="#faf9ee" stroke="#0c130e" stroke-width="10"/>
+  <path d="M647 269Q787 215 937 269M658 307Q790 259 927 307" fill="none" stroke="#778a78" stroke-width="2"/>
+  <text x="790" y="279" text-anchor="middle" fill="#122419" font-family="Georgia,serif" font-size="34" font-weight="900" letter-spacing="4">ONLINE</text>
+</svg>

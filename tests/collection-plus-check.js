@@ -27,8 +27,14 @@ async function checkCollectionPlus(check) {
     check("tema desconhecido não é aplicado",!applyWorkshopTheme('invalid') && document.documentElement.dataset.workshopTheme===themeBeforeInvalid);
     const originalThemeSet=Storage.prototype.setItem;
     try {Storage.prototype.setItem=function(){throw new Error('Full');};check("falha ao salvar tema mantém preferência anterior",!applyWorkshopTheme('bennys') && document.documentElement.dataset.workshopTheme===themeBeforeInvalid);}finally{Storage.prototype.setItem=originalThemeSet;}
-    localStorage.setItem(WORKSHOP_THEME_KEY,'invalid');check("preferência desconhecida usa tema padrão",readWorkshopTheme().id==='lsc');
-    localStorage.setItem(WORKSHOP_THEME_KEY,'lsc');applyWorkshopTheme('lsc',false);
+    localStorage.setItem(WORKSHOP_THEME_KEY,'invalid');check("preferência desconhecida usa Garage V",readWorkshopTheme().id==='garage-v');
+    localStorage.setItem(WORKSHOP_THEME_KEY,'lsc');applyWorkshopTheme(readWorkshopTheme().id,false);
+    check("escolha anterior de oficina é preservada",readWorkshopTheme().id==='lsc' && $('.brand-logo').getAttribute('src')==='assets/logo-los-santos-customs.png');
+    localStorage.setItem(WORKSHOP_THEME_KEY,'garage-v');applyWorkshopTheme('garage-v',false);
+    await $('.lsg-banner-logo').decode();
+    $('[data-filter="all"]').click();
+    check("logo Garage V carrega e aparece no tema padrão",$('.lsg-banner-logo').naturalWidth>0 && $('.lsg-banner-logo').getClientRects().length>0 && (innerWidth<=760 || $('.brand-logo').getClientRects().length>0));
+    $('[data-filter="settings"]').click();
     const stalePreview=previewBackupFile({name:'anterior.json',size:10,text:()=>new Promise(resolve=>setTimeout(()=>resolve(JSON.stringify(makeCollectionBackup())),30))});
     $('[data-filter="vehicles"]').click();await stalePreview;
     check("sair das configurações invalida restauração pendente",pendingCollectionBackup===null && $('#restoreBackup').disabled && $('#settingsSection').hidden && !$('.top-actions').hidden);

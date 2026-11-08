@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#17171F">
+  <meta name="theme-color" content="#0e1211">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="app-icon.svg">
-  <title>Los Santos Garage</title>
-  <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg?v=2">
+  <title>Garage V</title>
+  <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&family=Mr+Dafoe&display=swap" rel="stylesheet">
@@ -35,8 +35,8 @@
   </defs></svg>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="#" aria-label="Los Santos Garage">
-        <img class="brand-logo" src="assets/logo-los-santos-customs.png" alt="Los Santos Customs Garage" width="1536" height="1024">
+      <a class="brand" href="#" aria-label="Garage V">
+        <img class="brand-logo" src="assets/garage-v-logo.svg" alt="Garage V" width="960" height="420">
       </a>
       <p class="nav-caption">SEU ESPAÇO</p>
       <nav class="nav" aria-label="Navegação principal">
@@ -61,7 +61,7 @@
     <main class="main-content">
       <header class="topbar">
         <div>
-          <p class="eyebrow page-breadcrumb">LOS SANTOS GARAGE <span>/</span> GTA ONLINE</p>
+          <p class="eyebrow page-breadcrumb">GARAGE V <span>/</span> GTA ONLINE</p>
           <h1 id="pageTitle" tabindex="-1">Visão geral</h1>
           <p class="page-description" id="pageDescription">Sua coleção, organizada do seu jeito.</p>
         </div>
@@ -78,7 +78,7 @@
         <button type="button" class="secondary-button" id="openCompare">Comparar carros</button>
       </div>
 
-      <section id="lsgBrandBanner" class="lsg-brand-banner" aria-label="Los Santos Garage"><div class="lsg-wordmark"><img class="lsg-banner-logo" src="assets/logo-los-santos-customs.png" alt="Los Santos Customs Garage" width="1536" height="1024"></div><div class="lsg-brand-caption"><span>LOS SANTOS · SAN ANDREAS</span><h2>Sua coleção.<br>Cada carro no seu lugar.</h2><small>Garagens, projetos e cultura automotiva.</small></div><span class="lsg-banner-stripe" aria-hidden="true"></span></section>
+      <section id="lsgBrandBanner" class="lsg-brand-banner" aria-label="Garage V"><div class="lsg-wordmark"><img class="lsg-banner-logo" src="assets/garage-v-logo.svg" alt="Garage V" width="960" height="420"></div><div class="lsg-brand-caption"><span>PERSONAL VEHICLE COLLECTION · GTA ONLINE</span><h2>Sua coleção.<br>Suas regras.</h2><small>Todos os seus carros. Uma garagem do seu jeito.</small></div><span class="lsg-banner-stripe" aria-hidden="true"></span></section>
       <section class="stats" aria-label="Resumo">
         <article class="stat-card collection-value-card"><span class="stat-icon green" aria-hidden="true">$</span><div><span class="stat-label">Valor da coleção</span><strong id="collectionValue">GTA$ 0</strong><span id="collectionValueNote">Preços normais · GTA Base</span></div></article>
         <article class="stat-card">
@@ -132,8 +132,8 @@
       <section id="mapSection" class="property-map-section" aria-label="Mapa de propriedades com garagem" hidden></section>
       <section id="settingsSection" class="settings-page" aria-label="Configuração" hidden>
         <section class="settings-card workshop-theme-settings" aria-labelledby="workshopThemeTitle">
-          <p class="eyebrow">A IDENTIDADE DA SUA GARAGEM</p><h2 id="workshopThemeTitle">Tema da oficina</h2>
-          <p class="tool-hint">Escolha qual oficina assina sua garagem. Cada tema tem letreiro, cores e acabamento próprios. A escolha vale para este navegador.</p>
+          <p class="eyebrow">A IDENTIDADE DA SUA GARAGEM</p><h2 id="workshopThemeTitle">Tema da garagem</h2>
+          <p class="tool-hint">Garage V é o tema padrão. Você também pode escolher uma das oficinas, cada uma com letreiro, cores e acabamento próprios. A escolha vale para este navegador.</p>
           <div id="workshopThemeChoices" class="workshop-theme-choices" role="group" aria-label="Escolher tema da oficina"></div>
           <p id="workshopThemeStatus" class="tool-hint" role="status"></p>
         </section>
@@ -196,7 +196,7 @@
     </form>
   </dialog>
 
-  <dialog id="eyefindDialog" class="eyefind-dialog" aria-labelledby="eyefindTitle"><div class="eyefind-browser-bar"><button type="button" id="eyefindBack" aria-label="Voltar no Eyefind">←</button><button type="button" id="eyefindHome" aria-label="Início do Eyefind">⌂</button><output id="eyefindAddress">www.eyefind.info</output><button type="button" data-close="eyefindDialog" aria-label="Fechar Eyefind">×</button></div><header class="eyefind-header"><div><h2 id="eyefindTitle"><span>eye</span><span>find</span><small>.info</small></h2><p>Los Santos Garage · Imóveis</p></div><label><svg class="ui-icon"><use href="#ui-search"/></svg><input id="eyefindSearch" type="search" placeholder="Buscar imóveis e garagens…" aria-label="Buscar imóveis no Eyefind" autocomplete="off"></label></header><div class="eyefind-ribbon">DINHEIRO E SERVIÇOS <span>IMÓVEIS E GARAGENS</span></div><div id="eyefindContent" class="eyefind-content"></div><footer class="eyefind-footer">Escolha uma propriedade para cadastrar na sua coleção. Nenhuma compra é realizada no GTA.</footer></dialog>
+  <dialog id="eyefindDialog" class="eyefind-dialog" aria-labelledby="eyefindTitle"><div class="eyefind-browser-bar"><button type="button" id="eyefindBack" aria-label="Voltar no Eyefind">←</button><button type="button" id="eyefindHome" aria-label="Início do Eyefind">⌂</button><output id="eyefindAddress">www.eyefind.info</output><button type="button" data-close="eyefindDialog" aria-label="Fechar Eyefind">×</button></div><header class="eyefind-header"><div><h2 id="eyefindTitle"><span>eye</span><span>find</span><small>.info</small></h2><p>Garage V · Imóveis</p></div><label><svg class="ui-icon"><use href="#ui-search"/></svg><input id="eyefindSearch" type="search" placeholder="Buscar imóveis e garagens…" aria-label="Buscar imóveis no Eyefind" autocomplete="off"></label></header><div class="eyefind-ribbon">DINHEIRO E SERVIÇOS <span>IMÓVEIS E GARAGENS</span></div><div id="eyefindContent" class="eyefind-content"></div><footer class="eyefind-footer">Escolha uma propriedade para cadastrar na sua coleção. Nenhuma compra é realizada no GTA.</footer></dialog>
   <dialog id="garageDialog" aria-labelledby="garageDialogTitle" aria-describedby="garageDialogIntro">
     <form method="dialog" id="garageForm" class="dialog-form garage-form">
       <input type="hidden" id="garageId">
@@ -256,7 +256,7 @@
     <button type="button" class="toast-close" id="closeToast" aria-label="Fechar notificação">×</button>
   </div>
   <section id="vehicleDetailsDialog" class="vehicle-portfolio" aria-labelledby="detailsName" hidden>
-    <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>LOS SANTOS GARAGE / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
+    <nav class="portfolio-nav"><button type="button" class="secondary-button" id="backToCollection">← Voltar à coleção</button><span>GARAGE V / PORTFÓLIO</span></nav><header class="detail-heading"><div><p class="eyebrow" id="detailsBrand"></p><h1 id="detailsName" tabindex="-1"></h1><p id="detailsSubtitle" class="portfolio-subtitle"></p></div><span class="portfolio-edition">PROJETO PESSOAL</span></header>
     <div class="detail-photo"><div class="car-shape" style="--car-color:#4388ff" aria-hidden="true"></div><img id="detailsPhoto" alt="" hidden><span id="detailsPhotoLabel" class="vehicle-image-status"></span></div>
     <div class="detail-body"><div class="detail-actions"><button type="button" class="secondary-button" id="detailsFavorite">☆ Favoritar</button><button type="button" class="secondary-button" id="detailsEdit">Editar veículo</button></div><h2 class="portfolio-section-title">Ficha do veículo</h2><p id="detailsReferenceNotice" class="reference-missing" hidden></p><dl class="vehicle-specs" id="detailsSpecs"></dl><h2 class="portfolio-section-title">Especificações técnicas</h2><dl class="mechanical-specs" id="detailsMechanical"></dl><section class="vehicle-performance" aria-labelledby="detailsStatsTitle"><h2 id="detailsStatsTitle">Estatísticas do GTA V</h2><div id="detailsStats"></div><div class="performance-overall"><span>Overall</span><strong id="detailsOverall"></strong></div><p>Pontuações de 0 a 100 da Rockstar, conforme publicadas no GTA Base. A pontuação de velocidade não representa km/h. Overall informado pela fonte.</p></section><div class="detail-notes" id="detailsNotes" hidden><h3>Sobre este projeto</h3><p></p></div></div>
   </section>

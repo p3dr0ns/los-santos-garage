@@ -130,7 +130,7 @@ async function checkCollectionTools(check) {
     check('restaurar confirmação válida aplica dados e retorna à coleção',restoreCollectionBackup() && $('#settingsSection').hidden && JSON.parse(localStorage.getItem(STORAGE_KEY)).vehicles.length===backup.data.vehicles.length);
     const exported=[];const createUrl=URL.createObjectURL, revokeUrl=URL.revokeObjectURL, click=HTMLAnchorElement.prototype.click;
     URL.createObjectURL=function(blob){exported.push(blob);return createUrl.call(URL,blob);};HTMLAnchorElement.prototype.click=function(){exported.push(this.download);};
-    try {$('#exportBackup').click();check('exportação cria JSON baixável com a coleção completa',exported[0] instanceof Blob && exported[1].startsWith('los-santos-garage-') && JSON.parse(await exported[0].text()).data.vehicles.length===data.vehicles.length);}finally{URL.createObjectURL=createUrl;URL.revokeObjectURL=revokeUrl;HTMLAnchorElement.prototype.click=click;}
+    try {$('#exportBackup').click();check('exportação cria JSON baixável com a coleção completa',exported[0] instanceof Blob && exported[1].startsWith('garage-v-') && JSON.parse(await exported[0].text()).data.vehicles.length===data.vehicles.length);}finally{URL.createObjectURL=createUrl;URL.revokeObjectURL=revokeUrl;HTMLAnchorElement.prototype.click=click;}
   } finally {
     for(const id of ['wishlistDialog','compareDialog','batchMoveDialog','vehicleDialog']) if($("#"+id).open)$("#"+id).close();
     if(!$('#vehicleDetailsDialog').hidden)closeVehiclePortfolio();

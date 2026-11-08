@@ -1,17 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="background" x2="1" y2="1">
-      <stop stop-color="#35345F"/>
-      <stop offset="1" stop-color="#17171F"/>
-    </linearGradient>
-    <linearGradient id="chrome" x2="0" y2="1">
-      <stop stop-color="#ECEDEB"/>
-      <stop offset=".48" stop-color="#BFC3CE"/>
-      <stop offset=".52" stop-color="#747B91"/>
-      <stop offset="1" stop-color="#ECEDEB"/>
-    </linearGradient>
-  </defs>
-  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#background)" stroke="#59558B" stroke-width="2"/>
-  <path d="M19 18h9l-6 25h11l-2 8H11zm33 1-2 8c-3-2-5-3-8-3-2 0-4 1-4 3 0 4 13 3 13 12 0 8-7 13-15 13-4 0-7-1-10-3l2-8c3 2 6 4 9 4s5-2 5-4c0-4-13-3-13-12 0-8 7-13 15-13 3 0 6 1 8 3Z" fill="#0d0b14" transform="translate(1 2)"/>
-  <path d="M19 18h9l-6 25h11l-2 8H11zm33 1-2 8c-3-2-5-3-8-3-2 0-4 1-4 3 0 4 13 3 13 12 0 8-7 13-15 13-4 0-7-1-10-3l2-8c3 2 6 4 9 4s5-2 5-4c0-4-13-3-13-12 0-8 7-13 15-13 3 0 6 1 8 3Z" fill="url(#chrome)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>Garage V</title><defs><linearGradient id="money" x2="1" y2="1"><stop stop-color="#bbeba1"/><stop offset="1" stop-color="#386d46"/></linearGradient><pattern id="lines" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M0 0 18 18M18 0 0 18" stroke="#204b31" stroke-width="1" fill="none"/></pattern></defs><rect x="8" y="8" width="496" height="496" rx="106" fill="#0e1211" stroke="#667f6c" stroke-width="10"/><path d="M96 0H25Q0 0 0 25V135Q0 160 25 160H96V70H48V99H64V128H32V32H96Z" transform="translate(70 72) scale(1.65)" fill="#f5f3ed" stroke="#0a0f0c" stroke-width="5"/><path id="v" d="M210 156H287V176L276 180 320 306 365 180 351 176V156H431V176L417 183 338 397H303L225 183 210 176Z" fill="url(#money)" stroke="#f5f3ed" stroke-width="11" stroke-linejoin="round"/><use href="#v" fill="url(#lines)" stroke="#f5f3ed" stroke-width="5"/><path d="M216 263Q320 222 431 263L422 307Q320 271 226 307Z" fill="#f5f3ed" stroke="#101b13" stroke-width="8"/><path d="M237 273Q320 246 410 273" fill="none" stroke="#8caa8e" stroke-width="3"/></svg>

@@ -1,4 +1,5 @@
 :root { --wk-bg:#17171f;--wk-panel:#1e1e29;--wk-raised:#29293a;--wk-line:#414155;--wk-accent:#bfc3ce;--wk-strong:#35345f;--wk-muted:#a8acba;--wk-text:#ecedeb;--wk-button:#59558b;--wk-button-text:#ecedeb; }
+:root[data-workshop-theme=garage-v] { --wk-bg:#0e1211;--wk-panel:#171e1a;--wk-raised:#202d25;--wk-line:#35493c;--wk-accent:#8cda91;--wk-strong:#214530;--wk-muted:#b0bdb2;--wk-text:#f5f3ed;--wk-button:#8cda91;--wk-button-text:#112217; }
 :root[data-workshop-theme=bennys] { --wk-bg:#201619;--wk-panel:#2d1e23;--wk-raised:#3b2930;--wk-line:#65424a;--wk-accent:#efbc83;--wk-strong:#a23d4c;--wk-muted:#c9b5b6;--wk-text:#fff1de;--wk-button:#9e3444;--wk-button-text:#fff1de; }
 :root[data-workshop-theme=beekers] { --wk-bg:#131e1b;--wk-panel:#1d2d26;--wk-raised:#273e33;--wk-line:#4a6659;--wk-accent:#e1bd72;--wk-strong:#47765e;--wk-muted:#b2c6b9;--wk-text:#f0f0dc;--wk-button:#355a46;--wk-button-text:#f0f0dc; }
 :root[data-workshop-theme=haos] { --wk-bg:#15191f;--wk-panel:#1d2632;--wk-raised:#293444;--wk-line:#4d5c70;--wk-accent:#ffbd72;--wk-strong:#465d77;--wk-muted:#b6c5d8;--wk-text:#eef4fb;--wk-button:#f3a450;--wk-button-text:#1a202b; }
@@ -20,7 +21,7 @@ html[data-workshop-theme]:not([data-workshop-theme=lsc]) .lsg-brand-caption :is(
 html[data-workshop-theme]:not([data-workshop-theme=lsc]) .lsg-brand-caption small { color:var(--wk-muted); }
 html[data-workshop-theme]:not([data-workshop-theme=lsc]) .lsg-banner-stripe { background:var(--wk-accent);box-shadow:-5px 0 var(--wk-strong); }
 .workshop-mark { display:none; }
-html[data-workshop-theme]:not([data-workshop-theme=lsc]) .workshop-mark,.workshop-theme-preview .workshop-mark { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;width:100%;min-width:0;color:var(--wk-text);padding:26px 14px;border:3px double var(--wk-accent);background:var(--wk-panel);box-shadow:0 7px 0 #0004; }
+html[data-workshop-theme]:not([data-workshop-theme=lsc]) :where(.brand,.lsg-wordmark) .workshop-mark,.workshop-theme-preview .workshop-mark { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;width:100%;min-width:0;color:var(--wk-text);padding:26px 14px;border:3px double var(--wk-accent);background:var(--wk-panel);box-shadow:0 7px 0 #0004; }
 .workshop-mark strong { font:800 clamp(36px,5vw,78px)/1 "Barlow Condensed",sans-serif;letter-spacing:1px; }
 .workshop-mark small { font:600 10px/1.6 Inter,sans-serif;letter-spacing:3px; }
 .workshop-mark .workshop-initial { display:none; }
@@ -38,7 +39,7 @@ html[data-workshop-theme=haos] :is(.brand,.lsg-wordmark) .workshop-mark small:la
 html[data-workshop-theme=haos] .lsg-brand-banner::before { background:linear-gradient(125deg,transparent 56%,#f3a45222 56% 58%,transparent 58% 60%,#f3a45233 60% 62%,transparent 62%);border-radius:0; }
 .workshop-bay-plaque { display:none; }
 html[data-workshop-theme]:not([data-workshop-theme=lsc]) .workshop-bay-plaque { display:block;position:absolute;bottom:17px;left:40px;font:700 9px/1.4 Inter,sans-serif;letter-spacing:3px;color:var(--wk-accent); }
-.workshop-theme-choices { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:20px 0; }
+.workshop-theme-choices { display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin:20px 0; }
 .workshop-theme-choice { min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:13px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer; }
 .workshop-theme-choice[aria-pressed=true] { border-color:var(--silver);box-shadow:0 0 0 2px color-mix(in srgb,var(--silver) 25%,transparent); }
 .workshop-theme-choice:focus-visible { outline:3px solid var(--silver);outline-offset:4px; }
@@ -59,8 +60,19 @@ html[data-workshop-theme]:not([data-workshop-theme=lsc]) .workshop-bay-plaque { 
 .workshop-swatches { display:flex;gap:6px; }
 .workshop-swatches i { width:17px;height:17px;border:1px solid #ffffff40;border-radius:50%; }
 .workshop-choice-state { font-size:11px;font-weight:700;color:var(--silver); }
+.garage-v-preview-logo { width:100%;height:auto;max-height:100%;object-fit:contain; }
+.workshop-theme-choice[data-workshop-choice=garage-v] .workshop-theme-preview { background:#0e1211; }
+.workshop-theme-choice[data-workshop-choice=garage-v] .workshop-mark { border:0!important;background:none!important;box-shadow:none!important;padding:0!important; }
+html:root[data-workshop-theme=garage-v] :is(.brand-logo,.lsg-banner-logo) { display:block; }
+html:root[data-workshop-theme=garage-v] :is(.brand,.lsg-wordmark) .workshop-mark { display:none; }
+html:root[data-workshop-theme=garage-v] .lsg-brand-banner { min-height:300px;background:radial-gradient(ellipse at 8% 40%,#315e3f66,transparent 60%),#101713;border-color:#829987;border-bottom:3px solid #8cda91;border-radius:10px; }
+html:root[data-workshop-theme=garage-v] .lsg-brand-banner::before { border-color:#b6c5b233;background:repeating-linear-gradient(135deg,#b8d8ac05 0 1px,transparent 1px 14px);border-radius:4px; }
+html:root[data-workshop-theme=garage-v] .lsg-brand-caption h2 { color:#f5f3ed;font-size:34px;letter-spacing:-.4px; }
+html:root[data-workshop-theme=garage-v] :is(.stat-icon,.sidebar-card) { color:#c5e4c7;background:#203329;border-color:#4f715a; }
+html:root[data-workshop-theme=garage-v] .sidebar-storage-track>span { background:#8cda91; }
 @media(max-width:1100px) { .workshop-theme-choices { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(min-width:761px) and (max-width:1050px) {
+  html:root[data-workshop-theme=garage-v] .brand-logo { content:url('app-icon.svg');width:42px;height:42px; }
   .brand .workshop-mark-mini { border:0!important;transform:none!important;background:none!important;box-shadow:none;padding:0!important; }
   .brand .workshop-mark-mini :is(strong,small) { display:none; }
   .brand .workshop-initial { display:block;font:800 17px/1.4 "Barlow Condensed",sans-serif;color:var(--wk-accent); }

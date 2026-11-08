@@ -14,7 +14,7 @@ function openVehicleDetails(id, navigate = true) {
   if ($("#vehicleDetailsDialog").hidden) portfolioScroll = window.scrollY;
   $("#vehicleDetailsDialog").hidden = false;
   $(".app-shell").hidden = true;
-  document.title = `${vehicle.name} · Los Santos Garage`;
+  document.title = `${vehicle.name} · Garage V`;
   if (navigate && location.hash !== `#carro/${encodeURIComponent(id)}`) {
     const url = new URL(location.href);
     url.hash = `carro/${encodeURIComponent(id)}`;
@@ -27,7 +27,7 @@ function openVehicleDetails(id, navigate = true) {
 function closeVehiclePortfolio(navigate = true) {
   $("#vehicleDetailsDialog").hidden = true;
   $(".app-shell").hidden = false;
-  document.title = "Los Santos Garage";
+  document.title = "Garage V";
   if (navigate && location.hash.startsWith("#carro/")) {
     const url = new URL(location.href);
     url.hash = "";

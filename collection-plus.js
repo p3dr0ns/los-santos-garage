@@ -201,7 +201,7 @@ async function createGarageImage(garageId) {
   ctx.fillStyle="#17171f";ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle="#ecedeb";ctx.font="bold 46px sans-serif";canvasLine(ctx,garageLabel(garage),40,75,1120);
   ctx.font="22px sans-serif";ctx.fillStyle="#bfc3ce";canvasLine(ctx,`${vehicles.length} veículos · ${(garage.tags||[]).join(" · ") || "Minha coleção GTA Online"}`,40,120,1120);
-  ctx.fillStyle="#aaa2da";ctx.fillText("LOS SANTOS GARAGE",40,165);
+  ctx.fillStyle="#aaa2da";ctx.fillText("GARAGE V",40,165);
   for(let i=0;i<vehicles.length;i++){
     const v=vehicles[i],x=40+(i%4)*285,y=200+Math.floor(i/4)*215;
     ctx.fillStyle="#272734";ctx.fillRect(x,y,265,195);

@@ -5,6 +5,7 @@
   try {
     check('primeiro acesso inicia sem garagens ou veículos', localStorage.getItem(STORAGE_KEY)===null && data.garages.length===0 && data.vehicles.length===0 && !$('.garage-card') && !$('.vehicle-card'));
     check('primeiro acesso mostra coleção vazia e valor zero', !$('#emptyState').hidden && $('#collectionValue').textContent==='GTA$ 0');
+    check('Garage V é o tema padrão sem alterar dados salvos',document.documentElement.dataset.workshopTheme==='garage-v' && localStorage.getItem(WORKSHOP_THEME_KEY)===null && $('.brand-logo').getAttribute('src')==='assets/garage-v-logo.svg');
     localStorage.setItem(STORAGE_KEY, JSON.stringify({garages:[],vehicles:[]}));
     const emptyReload=loadData();
     check('coleção vazia permanece vazia ao reabrir', emptyReload.garages.length===0 && emptyReload.vehicles.length===0);
@@ -96,7 +97,7 @@
     $('.vehicle-card[data-vehicle-id="v1"]').click();
     check("cartão abre portfólio, sem edição", !$('#vehicleDetailsDialog').hidden && !$('#vehicleDialog').open && $('#detailsName').textContent === 'Zentorno');
     check("marca do catálogo", $('#detailsBrand').textContent === 'Pegassi');
-    check("portfólio ocupa página e tem endereço do carro", $('.app-shell').hidden && location.hash === '#carro/v1' && document.title === 'Zentorno · Los Santos Garage');
+    check("portfólio ocupa página e tem endereço do carro", $('.app-shell').hidden && location.hash === '#carro/v1' && document.title === 'Zentorno · Garage V');
     $('#backToCollection').click();
     check("voltar preserva coleção", $('#vehicleDetailsDialog').hidden && !$('.app-shell').hidden && !location.hash && data.vehicles.length === 6);
     openVehicleDetails('v1');
@@ -242,7 +243,7 @@
     openVehicleDialog('value-2'); $('#deleteVehicleButton').click(); $('#confirmDeleteVehicle').click();
     check('excluir carro reduz total imediatamente', $('#collectionValue').textContent==='GTA$ 1.725.000');
     data.vehicles=valueVehicles; data.garages=valueGarages; $('#searchInput').value=''; $('[data-filter="all"]').click(); saveData();
-    check('nome Los Santos Garage e identidade visual presentes', document.title==='Los Santos Garage' && $('.brand').getAttribute('aria-label')==='Los Santos Garage' && !$('#lsgBrandBanner').hidden);
+    check('nome Garage V e identidade visual presentes', document.title==='Garage V' && $('.brand').getAttribute('aria-label')==='Garage V' && !$('#lsgBrandBanner').hidden);
     const themeGarages=data.garages;
     const themeVehicles=JSON.stringify(data.vehicles);
     const exteriorEclipse = PROPERTY_MAP.locations.find(location=>location.name==='Eclipse Towers');

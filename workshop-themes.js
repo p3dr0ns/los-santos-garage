@@ -1,6 +1,7 @@
 // Apply the saved identity before rendering the page. Collection data is separate.
 const WORKSHOP_THEME_KEY = "lsg-workshop-theme-v1";
 const WORKSHOP_THEMES = Object.freeze([
+  {id:"garage-v",name:"Garage V",short:"GV",heading:"GARAGE",tagline:"V · ONLINE",place:"PERSONAL VEHICLE COLLECTION · GTA ONLINE",description:"Tema padrão. Preto tinta, branco papel e verde cédula, com a identidade Garage V.",caption:"Sua coleção.\nSuas regras.",footer:"Todos os seus carros. Uma garagem do seu jeito.",color:"#0e1211",palette:["#0e1211","#f5f3ed","#8cda91"]},
   {id:"lsc",name:"Los Santos Customs",short:"LSC",heading:"Los Santos",tagline:"CUSTOMS",place:"LOS SANTOS · SAN ANDREAS",description:"Cromado, índigo e o letreiro clássico da sua garagem.",caption:"Sua coleção.\nCada carro no seu lugar.",footer:"Garagens, projetos e cultura automotiva.",color:"#17171f",palette:["#35345f","#bfc3ce","#17171f"]},
   {id:"bennys",name:"Benny’s Original Motor Works",short:"B",heading:"Benny’s",tagline:"ORIGINAL MOTOR WORKS",place:"STRAWBERRY · LOS SANTOS",description:"Vermelho vinho, creme e uma oficina de customização cheia de personalidade.",caption:"Cada detalhe.\nUma assinatura sua.",footer:"Sua coleção de lowriders, clássicos e projetos especiais.",color:"#201619",palette:["#a63f4b","#efd8ad","#201619"]},
   {id:"beekers",name:"Beeker’s Garage",short:"BG",heading:"BEEKER’S",tagline:"GARAGE & PARTS",place:"PALETO BAY · BLAINE COUNTY",description:"Verde petróleo, amarelo envelhecido e acabamento de oficina de estrada.",caption:"De portas abertas.\nPronta para a estrada.",footer:"Sua garagem no norte de San Andreas.",color:"#131e1b",palette:["#3e7163","#e1bd72","#131e1b"]},
@@ -13,6 +14,10 @@ function readWorkshopTheme() {
 document.documentElement.dataset.workshopTheme=readWorkshopTheme().id;
 function createWorkshopMark(theme, mini=false) {
   const mark=document.createElement("span");mark.className="workshop-mark";
+  if(theme.id==="garage-v"){
+    const image=document.createElement("img");image.src="assets/garage-v-logo.svg";image.alt="Garage V";image.width=960;image.height=420;image.className="garage-v-preview-logo";
+    mark.append(image);return mark;
+  }
   const upper=document.createElement("small"),title=document.createElement("strong"),lower=document.createElement("small"),initial=document.createElement("span");
   upper.textContent="PERSONAL COLLECTION";title.textContent=theme.heading;lower.textContent=theme.tagline;
   initial.className="workshop-initial";initial.textContent=theme.short;
@@ -27,8 +32,14 @@ function applyWorkshopTheme(id, persist=true) {
   document.documentElement.dataset.workshopTheme=theme.id;
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content",theme.color);
   const brand=document.querySelector(".brand"),wordmark=document.querySelector(".lsg-wordmark"),banner=document.querySelector("#lsgBrandBanner");
-  if(brand){brand.querySelector(".workshop-mark")?.remove();brand.append(createWorkshopMark(theme,true));brand.setAttribute("aria-label",theme.id==="lsc"?"Los Santos Garage":`${theme.name} · Los Santos Garage`);}
+  if(brand){brand.querySelector(".workshop-mark")?.remove();brand.append(createWorkshopMark(theme,true));brand.setAttribute("aria-label",theme.id==="garage-v"?"Garage V":`${theme.name} · Garage V`);}
   if(wordmark){wordmark.querySelector(".workshop-mark")?.remove();wordmark.append(createWorkshopMark(theme));}
+  document.querySelectorAll('.brand-logo,.lsg-banner-logo').forEach(image=>{
+    const lsc=theme.id==="lsc";
+    image.setAttribute('src',lsc?'assets/logo-los-santos-customs.png':'assets/garage-v-logo.svg');
+    image.alt=lsc?'Los Santos Customs Garage':'Garage V';
+    image.width=lsc?1536:960;image.height=lsc?1024:420;
+  });
   if(banner){
     banner.setAttribute("aria-label",`${theme.name} · sua garagem`);
     banner.querySelector(".lsg-brand-caption > span").textContent=theme.place;

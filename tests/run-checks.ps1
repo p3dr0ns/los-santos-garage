@@ -127,7 +127,7 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         Save-DocumentationScreenshot 'configuracoes'
         $settingsScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "settings-$tag.png"), [Convert]::FromBase64String($settingsScreenshot.data))
-        foreach ($themeId in @('lsc','bennys','beekers','haos')) {
+        foreach ($themeId in @('garage-v','lsc','bennys','beekers','haos')) {
             Send-Cdp $socket 'Runtime.evaluate' @{ expression = "applyWorkshopTheme('$themeId',false); document.querySelector('[data-filter=all]').click(); dismissToast(); window.scrollTo(0,0);" } | Out-Null
             Save-DocumentationScreenshot "tema-$themeId"
             $themeScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }

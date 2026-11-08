@@ -1,4 +1,4 @@
-# Mapa e Eyefind do Los Santos Garage
+# Mapa e Eyefind do Garage V
 
 Consulta em 7 de novembro de 2026: [GTA 5 Map / MapGenie](https://gta-5-map.com/).
 O catálogo local possui 141 propriedades referenciadas, das quais 130 têm

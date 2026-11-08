@@ -337,7 +337,7 @@ $("#exportBackup").addEventListener("click",()=>{
   const url=URL.createObjectURL(blob),link=document.createElement("a");
   const today=new Date();
   const date=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
-  link.href=url;link.download=`los-santos-garage-${date}.json`;
+  link.href=url;link.download=`garage-v-${date}.json`;
   document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   showToast("Backup preparado para download.");
 });

@@ -24,7 +24,7 @@ jobs:
         shell: pwsh
         run: ./scripts/prepare-deploy.ps1
       - name: Validar funcionalidades e layout no Chrome
-        shell: pwsh
+        shell: powershell
         run: ./tests/run-checks.ps1 -SiteRoot ./dist
   deploy:
     needs: validate

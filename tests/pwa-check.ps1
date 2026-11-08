@@ -4,8 +4,14 @@ $ErrorActionPreference = 'Stop'
 $sitePath = (Resolve-Path -LiteralPath $SiteRoot).Path
 $runDirectory = Join-Path $env:TEMP ('lsg-pwa-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $runDirectory | Out-Null
-$serverPort = Get-Random -Minimum 48000 -Maximum 52000
-$debugPort = Get-Random -Minimum 52001 -Maximum 56000
+function Get-TestPort {
+    $probe = New-Object Net.Sockets.TcpListener([Net.IPAddress]::Loopback,0)
+    $probe.Start()
+    try { return $probe.LocalEndpoint.Port } finally { $probe.Stop() }
+}
+$serverPort = Get-TestPort
+$debugPort = Get-TestPort
+while ($debugPort -eq $serverPort) { $debugPort = Get-TestPort }
 # A local-only HTTP server exercises service workers and same-origin canvas export.
 $server = Start-Job -ArgumentList $sitePath,$serverPort -ScriptBlock {
     param($root,$port)
@@ -49,7 +55,7 @@ self.addEventListener("fetch", event => { if(event.request.mode === "navigate") 
                 $header = [Text.Encoding]::ASCII.GetBytes("HTTP/1.1 $status`r`nContent-Type: $type`r`nContent-Length: $($body.Length)`r`nConnection: close`r`n`r`n")
                 $stream.Write($header,0,$header.Length); $stream.Write($body,0,$body.Length)
                 $reader.Dispose()
-            } catch {} finally { $client.Dispose() }
+            } catch { Write-Output ("HTTP test server: " + $_.Exception.Message) } finally { $client.Dispose() }
         }
     } finally { $listener.Stop() }
 }
@@ -57,7 +63,12 @@ $socket = New-Object Net.WebSockets.ClientWebSocket
 $process = $null
 try {
     $url = "http://127.0.0.1:$serverPort/los-santos-garage/"
-    for ($attempt=0;$attempt -lt 30;$attempt++) { try { Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 3 | Out-Null; break } catch { Start-Sleep -Milliseconds 150 } }
+    $serverReady = $false
+    for ($attempt=0;$attempt -lt 20;$attempt++) {
+        if ($server.State -eq 'Failed') { throw ("HTTP test server failed: " + ($server.ChildJobs[0].JobStateInfo.Reason | Out-String)) }
+        try { Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 2 | Out-Null; $serverReady = $true; break } catch { Start-Sleep -Milliseconds 150 }
+    }
+    if (!$serverReady) { throw ("HTTP test server did not start: " + (Receive-Job $server -Keep | Out-String)) }
     $arguments = @('--headless=new','--disable-gpu','--no-first-run',"--user-data-dir=$runDirectory/profile", "--remote-debugging-port=$debugPort", 'about:blank')
     $process = Start-Process -FilePath 'C:\Program Files\Google\Chrome\Application\chrome.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru
     for ($attempt=0;$attempt -lt 40;$attempt++) {

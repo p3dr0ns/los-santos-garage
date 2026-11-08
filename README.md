@@ -32,10 +32,11 @@ Cadastros já salvos são preservados nas atualizações.
 
 ## Recursos
 
-- **Configurações:** abra pelo menu lateral ou pela navegação inferior no celular.
+- **Configuração:** abra pelo menu lateral ou pela navegação inferior no celular.
   A página reúne perfis, instalação do aplicativo, imagens offline, backup e recuperação.
-  Os lembretes de backup ficam nessa página; a coleção mantém os atalhos de desejos,
-  comparação e metas. O botão **Desfazer** fica junto aos controles dos veículos.
+  Os lembretes de backup ficam nessa página; os atalhos de desejos, comparação e
+  metas aparecem apenas na aba **Veículos**. O botão **Desfazer** fica junto aos
+  controles dos veículos.
 - **Perfis por personagem/plataforma:** selecione a coleção ativa ou crie e renomeie
   perfis independentes. Os dados existentes ficam em **Minha coleção**, sem migração
   destrutiva. Cada backup JSON contém apenas o perfil ativo.
@@ -60,10 +61,12 @@ Cadastros já salvos são preservados nas atualizações.
 - **Aplicativo e offline:** no site publicado, instale pelo botão oferecido pelo
   navegador ou pelo menu do dispositivo. Após a primeira carga completa, a interface
   funciona sem internet e mantém os cadastros locais. Imagens visitadas são guardadas;
-  em **Configurações → Aplicativo e acesso offline**, baixe também todas as imagens
+  em **Configuração → Aplicativo e acesso offline**, baixe também todas as imagens
   e o mapa para uso offline.
   Fontes externas usam as alternativas locais quando indisponíveis. Atualizações do
-  aplicativo são ativadas depois de fechar as abas da versão anterior.
+  aplicativo são ativadas mesmo com abas antigas abertas. Recarregar a página com
+  internet busca a versão publicada; sem conexão, usa a cópia offline. A atualização
+  não recarrega formulários automaticamente nem altera os cadastros salvos.
 - **Lembrete de backup:** coleções com veículos recebem um lembrete quando não houve
   exportação nos últimos sete dias. Histórico e cache também podem ser apagados pelo
   navegador; exporte o JSON de cada perfil para manter cópias independentes.
@@ -140,7 +143,7 @@ fachada; ao escolher um imóvel, o formulário já recebe o local e a capacidade
 
 ### Planeje a coleção e compare antes de comprar
 
-A barra de ferramentas abre a lista de desejos e a comparação dos modelos.
+Na aba **Veículos**, a barra de ferramentas abre a lista de desejos e a comparação dos modelos.
 Veja também as telas de [lista de desejos](docs/images/desejos.jpg) e
 [transferência em lote](docs/images/transferencia.jpg).
 
@@ -148,7 +151,7 @@ Veja também as telas de [lista de desejos](docs/images/desejos.jpg) e
 
 ### Leve sua coleção para outro navegador
 
-Em **Configurações → Backup e restauração**, baixe o JSON da coleção ou escolha um arquivo
+Em **Configuração → Backup e restauração**, baixe o JSON da coleção ou escolha um arquivo
 para conferir o resumo. A restauração substitui os dados atuais após confirmação.
 
 ![Backup com prévia da coleção antes de restaurar os dados](docs/images/backup.jpg)

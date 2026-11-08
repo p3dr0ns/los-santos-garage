@@ -18,6 +18,12 @@ async function checkCollectionPlus(check) {
     const stalePreview=previewBackupFile({name:'anterior.json',size:10,text:()=>new Promise(resolve=>setTimeout(()=>resolve(JSON.stringify(makeCollectionBackup())),30))});
     $('[data-filter="vehicles"]').click();await stalePreview;
     check("sair das configurações invalida restauração pendente",pendingCollectionBackup===null && $('#restoreBackup').disabled && $('#settingsSection').hidden && !$('.top-actions').hidden);
+    for(const view of ['all','garages','favorites']) {
+      $(`[data-filter="${view}"]`).click();
+      check(`desejos e comparação ficam fora de ${view}`,$('.collection-toolbar').hidden && !$('#openWishlist').getClientRects().length && !$('#openCompare').getClientRects().length);
+    }
+    $('[data-filter="vehicles"]').click();
+    check("aba veículos oferece desejos e comparação",!$('.collection-toolbar').hidden && $('#openWishlist').getClientRects().length>0 && $('#openCompare').getClientRects().length>0);
     $("#searchInput").value="seda";renderVehicles();check("busca ignora acentos",$("#vehicleResultCount").textContent==="1");$("#searchInput").value="";
     $("#vehicleScope").value="unassigned";renderVehicles();check("filtro sem garagem",$$('.vehicle-card').length===2);
     $("#vehicleScope").value="duplicates";renderVehicles();check("filtro de modelos repetidos",$$('.vehicle-card').length===2 && $$('.vehicle-card').every(c=>c.getAttribute('aria-label').includes('Zentorno')));

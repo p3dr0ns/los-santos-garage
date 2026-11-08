@@ -107,7 +107,7 @@ foreach ($viewport in @('1440,1100', '900,1000', '360,900')) {
         $dealerScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "eyefind-properties-$tag.png"), [Convert]::FromBase64String($dealerScreenshot.data))
         Save-DocumentationScreenshot 'eyefind'
-        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#eyefindDialog').close(); data.wishlist=['adder','sentinel5']; document.querySelector('#wishlistModel').value=''; document.querySelector('#openWishlist').click(); dismissToast();" } | Out-Null
+        Send-Cdp $socket 'Runtime.evaluate' @{ expression = "document.querySelector('#eyefindDialog').close(); document.querySelector('[data-filter=vehicles]').click(); data.wishlist=['adder','sentinel5']; document.querySelector('#wishlistModel').value=''; document.querySelector('#openWishlist').click(); dismissToast();" } | Out-Null
         Save-DocumentationScreenshot 'desejos'
         $toolScreenshot = Send-Cdp $socket 'Page.captureScreenshot' @{ format = 'png' }
         [IO.File]::WriteAllBytes((Join-Path $runDirectory "wishlist-$tag.png"), [Convert]::FromBase64String($toolScreenshot.data))

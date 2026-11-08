@@ -43,7 +43,7 @@
         <button class="nav-item" data-filter="garages" aria-label="Garagens"><svg class="ui-icon"><use href="#ui-garage"/></svg><span class="nav-label">Garagens</span><span class="nav-count" id="navGarageCount">0</span></button>
         <button class="nav-item" data-filter="map" aria-label="Mapa de garagens"><svg class="ui-icon"><use href="#ui-map"/></svg><span class="nav-label">Mapa</span></button>
         <button class="nav-item" data-filter="favorites" aria-label="Favoritos"><svg class="ui-icon"><use href="#ui-star"/></svg><span class="nav-label">Favoritos</span><span class="nav-count" id="navFavoriteCount">0</span></button>
-        <button class="nav-item" data-filter="settings" aria-label="Configurações"><svg class="ui-icon"><use href="#ui-settings"/></svg><span class="nav-label">Configurações</span></button>
+        <button class="nav-item" data-filter="settings" aria-label="Configuração"><svg class="ui-icon"><use href="#ui-settings"/></svg><span class="nav-label">Configuração</span></button>
       </nav>
 
       <div class="sidebar-card">
@@ -71,7 +71,7 @@
           <button class="primary-button" id="addVehicleButton"><svg class="ui-icon"><use href="#ui-plus"/></svg> Novo veículo</button>
         </div>
       </header>
-      <div class="collection-toolbar" role="group" aria-label="Ferramentas da coleção">
+      <div class="collection-toolbar" role="group" aria-label="Ferramentas dos veículos" hidden>
         <button type="button" class="secondary-button" id="openWishlist">Lista de desejos <span id="wishlistCount">0</span></button>
         <button type="button" class="secondary-button" id="openCompare">Comparar carros</button>
       </div>
@@ -128,7 +128,7 @@
         </div>
       </section>
       <section id="mapSection" class="property-map-section" aria-label="Mapa de propriedades com garagem" hidden></section>
-      <section id="settingsSection" class="settings-page" aria-label="Configurações" hidden>
+      <section id="settingsSection" class="settings-page" aria-label="Configuração" hidden>
         <div class="settings-grid">
           <section class="settings-card" aria-labelledby="settingsProfilesTitle">
             <p class="eyebrow">SUA COLEÇÃO</p><h2 id="settingsProfilesTitle">Perfis e personagens</h2>

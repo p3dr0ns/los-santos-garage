@@ -213,7 +213,7 @@ function render() {
   $("#vehicleSection").hidden = ["map","settings"].includes(currentFilter) || (currentFilter === "garages" && !selectedGarage);
   $("#mapSection").hidden = currentFilter !== "map";
   $("#settingsSection").hidden = currentFilter !== "settings";
-  $(".collection-toolbar").hidden = ["map","settings"].includes(currentFilter);
+  $(".collection-toolbar").hidden = currentFilter !== "vehicles";
   $(".top-actions").hidden = currentFilter === "settings";
   const pages = {
     all: ["Visão geral", "Sua coleção, organizada do seu jeito."],
@@ -221,7 +221,7 @@ function render() {
     garages: ["Suas garagens", "Todas as propriedades. Cada vaga sob controle."],
     favorites: ["Favoritos", "Os que merecem um lugar especial na coleção."],
     map: ["Mapa de garagens", "Localize imóveis com armazenamento permanente em Los Santos e Blaine County."],
-    settings: ["Configurações", "Gerencie seus perfis, proteja sua coleção e prepare o acesso offline."]
+    settings: ["Configuração", "Gerencie seus perfis, proteja sua coleção e prepare o acesso offline."]
   };
   $("#pageTitle").textContent = pages[currentFilter][0];
   $("#pageDescription").textContent = pages[currentFilter][1];

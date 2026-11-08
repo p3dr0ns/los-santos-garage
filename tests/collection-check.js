@@ -24,6 +24,7 @@ async function checkCollectionTools(check) {
     $('#garageThemeFilter').value='untagged';$('#garageThemeFilter').dispatchEvent(new Event('change'));
     check('filtro sem tema inclui garagens sem tags',$$('.garage-card').length===2);
     $('#garageThemeFilter').value='all';$('#garageThemeFilter').dispatchEvent(new Event('change'));
+    $('[data-filter="vehicles"]').click();
     $('#openWishlist').click();
     check('lista de desejos começa vazia e acessível',$('#wishlistDialog').open && $('#wishlistBudget').textContent==='GTA$ 0' && $('#wishlistCount').textContent==='0');
     $('#wishlistModel').value=toolModelLabel(vehicleModels.find(model=>model.id==='adder'));$('#wishlistForm').requestSubmit();

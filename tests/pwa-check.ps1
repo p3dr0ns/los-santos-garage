@@ -9,6 +9,13 @@ $debugPort = Get-Random -Minimum 52001 -Maximum 56000
 # A local-only HTTP server exercises service workers and same-origin canvas export.
 $server = Start-Job -ArgumentList $sitePath,$serverPort -ScriptBlock {
     param($root,$port)
+    # Reproduce an older installed app that always serves its cached page.
+    $legacyWorker = @'
+const LEGACY_CACHE = "lsg-legacy-test";
+self.addEventListener("install", event => event.waitUntil(caches.open(LEGACY_CACHE).then(cache => cache.put("index.html", new Response('<!doctype html><html><body><h1 id="legacyPage">Versao anterior</h1><input id="legacyDraft"></body></html>', {headers:{"Content-Type":"text/html"}}))).then(() => self.skipWaiting())));
+self.addEventListener("activate", event => event.waitUntil(self.clients.claim()));
+self.addEventListener("fetch", event => { if(event.request.mode === "navigate") event.respondWith(caches.open(LEGACY_CACHE).then(cache => cache.match("index.html"))); });
+'@
     $listener = New-Object Net.Sockets.TcpListener([Net.IPAddress]::Loopback,$port)
     $listener.Start()
     try {
@@ -30,7 +37,11 @@ $server = Start-Job -ArgumentList $sitePath,$serverPort -ScriptBlock {
                 if (!$requestPath) { $requestPath = 'index.html' }
                 $path = [IO.Path]::GetFullPath((Join-Path $root $requestPath))
                 $ok = $path.StartsWith($root + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -and (Test-Path -LiteralPath $path -PathType Leaf)
-                if ($ok) {
+                if ($requestPath -eq '__legacy-sw.js') {
+                    $body = [Text.Encoding]::UTF8.GetBytes($legacyWorker)
+                    $type = 'text/javascript; charset=utf-8'
+                    $status = '200 OK'
+                } elseif ($ok) {
                     $body = [IO.File]::ReadAllBytes($path)
                     $type = switch ([IO.Path]::GetExtension($path)) { '.html' {'text/html; charset=utf-8'} '.js' {'text/javascript; charset=utf-8'} '.css' {'text/css; charset=utf-8'} '.webmanifest' {'application/manifest+json'} '.svg' {'image/svg+xml'} '.png' {'image/png'} '.jpg' {'image/jpeg'} default {'application/octet-stream'} }
                     $status = '200 OK'
@@ -66,6 +77,22 @@ try {
     $check = Send-Cdp $socket 'Runtime.evaluate' @{expression="(async()=>{data={garages:[{id:'http-g',name:'Fotos offline',type:'garage',capacity:10}],vehicles:[{id:'http-v',name:'Zentorno',catalogId:'zentorno',category:'Super',garageId:'http-g'}]};saveData();const image=await createGarageImage('http-g');const pixels=image.canvas.getContext('2d').getImageData(60,220,230,110).data;let photoPixels=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i]!==39||pixels[i+1]!==39||pixels[i+2]!==52)photoPixels++;const cache=await caches.open('lsg-images-v1');await cache.add('assets/map/0-0.png');return image.blob.size>10000 && image.canvas.width===1200 && photoPixels>1000;})()";awaitPromise=$true;returnByValue=$true}
     if (!$check.result.value) { throw ('PNG export with vehicle photos failed: ' + ($check | ConvertTo-Json -Depth 8 -Compress)) }
     Write-Output 'PASS: PNG export with same-origin vehicle photos.'
+    Send-Cdp $socket 'Runtime.evaluate' @{expression="navigator.serviceWorker.register('__legacy-sw.js',{scope:'./',updateViaCache:'none'}).then(()=>true)";awaitPromise=$true;returnByValue=$true} | Out-Null
+    Wait-BrowserCondition $socket "!!navigator.serviceWorker.controller?.scriptURL.endsWith('/__legacy-sw.js')"
+    Send-Cdp $socket 'Page.reload' @{} | Out-Null
+    Wait-BrowserCondition $socket "!!document.querySelector('#legacyPage')"
+    Send-Cdp $socket 'Runtime.evaluate' @{expression="document.querySelector('#legacyDraft').value='rascunho preservado';navigator.serviceWorker.register('sw.js',{scope:'./',updateViaCache:'none'}).then(()=>true)";awaitPromise=$true;returnByValue=$true} | Out-Null
+    Wait-BrowserCondition $socket "!!navigator.serviceWorker.controller?.scriptURL.endsWith('/sw.js')"
+    $draft = Send-Cdp $socket 'Runtime.evaluate' @{expression="document.querySelector('#legacyDraft')?.value==='rascunho preservado'";returnByValue=$true}
+    if (!$draft.result.value) { throw 'Worker migration unexpectedly reloaded an open form.' }
+    Send-Cdp $socket 'Page.reload' @{} | Out-Null
+    Wait-BrowserCondition $socket "!!document.querySelector('[data-filter=settings]') && typeof data !== 'undefined' && data.vehicles[0]?.id==='http-v'"
+    Write-Output 'PASS: an older offline worker is replaced with an open tab, preserving forms and collection data.'
+    # Navigation must prefer the deployed HTML even if a stale cached copy exists.
+    Send-Cdp $socket 'Runtime.evaluate' @{expression="(async()=>{const keys=await caches.keys();const key=keys.find(k=>k.startsWith('lsg-app-'));const cache=await caches.open(key);const stale=new Response('<html><body id=staleShell>Versao antiga</body></html>',{headers:{'Content-Type':'text/html'}});await cache.put('index.html',stale.clone());await cache.put('./',stale);window.pwaReloadMarker='stale';return true;})()";awaitPromise=$true;returnByValue=$true} | Out-Null
+    Send-Cdp $socket 'Page.reload' @{} | Out-Null
+    Wait-BrowserCondition $socket "window.pwaReloadMarker !== 'stale' && !!document.querySelector('[data-filter=settings]') && typeof data !== 'undefined'"
+    Write-Output 'PASS: online navigation replaces stale cached HTML with the published configuration page.'
     Send-Cdp $socket 'Runtime.evaluate' @{expression="window.pwaReloadMarker = 'online';"} | Out-Null
     Send-Cdp $socket 'Page.reload' @{} | Out-Null
     Wait-BrowserCondition $socket "window.pwaReloadMarker !== 'online' && !!document.querySelector('#collectionProfile') && typeof data !== 'undefined' && !!navigator.serviceWorker.controller"

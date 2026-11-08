@@ -224,10 +224,12 @@ $("#nativeShareGarage").addEventListener("click",async()=>{try{await navigator.s
 window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();plus.installPrompt=event;$("#installApp").hidden=false;});
 $("#installApp").addEventListener("click",async()=>{if(plus.installPrompt){await plus.installPrompt.prompt();plus.installPrompt=null;$("#installApp").hidden=true;}});
 if("serviceWorker" in navigator && ["https:","http:"].includes(location.protocol)) {
-  navigator.serviceWorker.register("sw.js").then(registration=>{
+  navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(registration=>{
     const status=()=>{$("#offlineStatus").textContent=registration.active?"Aplicativo disponível offline":"Preparando acesso offline…";};status();
     registration.addEventListener("updatefound",()=>registration.installing?.addEventListener("statechange",status));
     navigator.serviceWorker.addEventListener("controllerchange",status);
+    window.addEventListener("pageshow",()=>registration.update().catch(()=>{}));
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")registration.update().catch(()=>{});});
   }).catch(()=>{$("#offlineStatus").textContent="Acesso offline indisponível neste navegador.";});
 }
 renderEnhancements();

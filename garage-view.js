@@ -4,10 +4,12 @@ const parkingAttr = value => escapeHtml(String(value)).replaceAll('"', "&quot;")
 
 function getGarageSections(garage, slotCount) {
   const nightclub = getGarageType(garage) === "bat_club_property";
+  const office = getGarageType(garage) === "office";
+  const sectionSize = office ? 20 : 10;
   const personalSlots = nightclub ? Math.max(0, garage.capacity - 1) : slotCount;
-  const sections = Array.from({ length: Math.ceil(personalSlots / 10) }, (_, floor) => ({
-    start: floor * 10, end: Math.min(personalSlots, floor * 10 + 10),
-    label: nightclub ? `Piso B${floor + 2}` : `Setor ${floor + 1}`
+  const sections = Array.from({ length: Math.ceil(personalSlots / sectionSize) }, (_, floor) => ({
+    start: floor * sectionSize, end: Math.min(personalSlots, (floor + 1) * sectionSize),
+    label: office ? `Garagem executiva ${floor + 1}` : nightclub ? `Piso B${floor + 2}` : `Setor ${floor + 1}`
   }));
   if (nightclub) {
     sections.push({ start: personalSlots, end: personalSlots + 1, label: "Entrada" });

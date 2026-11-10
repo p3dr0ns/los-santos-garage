@@ -33,7 +33,7 @@ const garageProfiles = {
   agency: { capacities: [20], note: "20 vagas para veículos pessoais." },
   arena_workshop: { capacities: [9, 18, 27], note: "9 vagas comuns por piso; até 27 com os dois pisos extras. Há ainda 1 vaga exclusiva de Cerberus por piso, não contada aqui." },
   bat_club_property: { capacities: [1, 11, 21, 31], note: "Até 3 pisos de 10 carros pessoais (B2, B3 e B4) + 1 vaga separada na entrada. B1: Speedo Custom, Mule Custom e Pounder Custom; B5: Terrorbyte. Esses veículos de serviço não entram no cadastro." },
-  office: { capacities: [20, 40, 60], note: "20 vagas por garagem comprada; até 60 com as três garagens." },
+  office: { capacities: [20, 40, 60], note: "Garagens executivas 1, 2 e 3: 20 vagas em cada uma. Selecione 20, 40 ou 60 vagas conforme a quantidade de garagens compradas." },
   biker_clubhouse: { capacities: [10], note: "10 vagas exclusivas para motocicletas." },
   auto_shop_property: { capacities: [10], note: "10 vagas pessoais; elevadores de clientes não entram na conta." },
   casino: { capacities: [10], note: "10 vagas na garagem da cobertura adquirida. O estacionamento público do cassino é temporário." },

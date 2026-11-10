@@ -231,6 +231,15 @@
     $('#parkingFloor').value='3'; $('#parkingFloor').dispatchEvent(new Event('change',{bubbles:true}));
     check('entrada da boate tem só uma vaga', $$('.parking-bay').length===1 && $('.parking-bay[data-parking-slot="30"]'));
     check('boate sem ampliações tem somente entrada', getGarageSections({type:'bat_club_property',capacity:1},1).map(section=>section.label).join(',')==='Entrada');
+    data.garages.push({id:'office-test',name:'Escritório',type:'office',capacity:60});
+    $('[data-filter="garages"]').click(); $('.garage-card[data-garage-id="office-test"] .garage-open').click();
+    check('escritório mostra três garagens executivas de 20 vagas', [...$('#parkingFloor').options].map(option=>option.textContent.split(' · ')[0]).join(',')==='Garagem executiva 1,Garagem executiva 2,Garagem executiva 3' && $$('.parking-bay').length===20 && $('.parking-bay[data-parking-slot="19"]'));
+    $('#parkingFloor').value='1'; $('#parkingFloor').dispatchEvent(new Event('change',{bubbles:true}));
+    check('segunda garagem executiva contém vagas 21 a 40', $$('.parking-bay').length===20 && $('.parking-bay[data-parking-slot="20"]') && $('.parking-bay[data-parking-slot="39"]'));
+    data.vehicles.push({id:'office-car',name:'Adder',category:'Super',garageId:'office-test',parking:{garageId:'office-test',slot:20}});
+    moveParkedVehicle('office-car',59);
+    check('mover carro para terceira garagem mantém destino visível', $('#parkingFloor').value==='2' && $$('.parking-bay').length===20 && $('.parking-bay[data-parking-slot="59"]').classList.contains('occupied') && data.vehicles.find(vehicle=>vehicle.id==='office-car').parking.slot===59);
+    check('escritório respeita uma ou duas garagens compradas', [20,40].every(capacity=>getGarageSections({type:'office',capacity},capacity).length===capacity/20));
     data.vehicles=parkingVehicles; data.garages=parkingGarages; $('[data-filter="all"]').click(); saveData();
     const valueVehicles = data.vehicles, valueGarages = data.garages;
     data.garages=[{id:'value-a',name:'Garagem A',type:'garage',capacity:10},{id:'value-b',name:'Garagem B',type:'garage',capacity:10}];

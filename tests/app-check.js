@@ -212,8 +212,8 @@
     check('vaga vazia abre cadastro na garagem escolhida', $('#vehicleDialog').open && $('#vehicleGarage').value==='parking-test');
     $('#vehicleName').value='Adder'; $('#vehicleCategory').value='Super'; $('#vehicleForm').requestSubmit();
     const addedVehicle = data.vehicles.at(-1);
+    check('adicionar carro mantém a garagem aberta', !$('#vehicleDialog').open && $('#vehicleDetailsDialog').hidden && !$('.app-shell').hidden && selectedGarage==='parking-test' && !$('#garageRoom').hidden && !location.hash.startsWith('#carro/'));
     check('novo veículo ocupa exatamente a vaga selecionada', addedVehicle.name==='Adder' && addedVehicle.parking.slot===25 && addedVehicle.garageId==='parking-test');
-    $('#backToCollection').click();
     $('.parking-bay[data-parking-slot="25"]').click(); $('[data-parking-action="details"]').click();
     check('abrir ficha a partir da vaga mostra o carro correto', $('#detailsName').textContent==='Adder' && !$('#vehicleDetailsDialog').hidden);
     $('#backToCollection').click();

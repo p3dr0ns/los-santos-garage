@@ -563,7 +563,7 @@ $("#vehicleForm").addEventListener("submit", event => {
   data.vehicles = id ? data.vehicles.map(vehicle => vehicle.id === id ? payload : vehicle) : [...data.vehicles, payload];
   if (!saveData(id ? "Veículo atualizado" : "Veículo adicionado")) { data.vehicles = previous; return; }
   $("#vehicleDialog").close();
-  openVehicleDetails(payload.id);
+  if (id) openVehicleDetails(payload.id);
 });
 
 let pendingDeleteVehicleId = null;

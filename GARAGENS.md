@@ -8,7 +8,7 @@ Consulta: 6 de novembro de 2026. O aplicativo contabiliza armazenamento permanen
 | Fliperama | 10 | Com a garagem comprada |
 | Agência | 20 | Veículos pessoais |
 | Arena | 9, 18 ou 27 comuns | Mais uma vaga exclusiva de Cerberus por piso; essas vagas reservadas não entram no total comum |
-| Clube noturno | 1, 11, 21 ou 31 | Entrada + até três pisos de 10; exclui veículos de entrega e Terrorbyte |
+| Clube noturno | 1, 11, 21 ou 31 | Três pisos de 10 (B2, B3 e B4) e entrada separada com 1 vaga. B1 (Speedo Custom, Mule Custom e Pounder Custom) e B5 (Terrorbyte) não entram no cadastro |
 | Escritório | 20, 40 ou 60 | Até três garagens de 20 |
 | Motoclube | 10 | Motocicletas |
 | Oficina de tuning | 10 | Exclui carros dos clientes |

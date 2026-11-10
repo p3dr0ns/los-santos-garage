@@ -223,6 +223,14 @@
     data.garages.push({id:'zero-test',name:'Bunker',type:'property_bunker',capacity:0});
     $('[data-filter="garages"]').click(); $('.garage-card[data-garage-id="zero-test"] .garage-open').click();
     check('propriedade sem vagas não inventa posições', !$('.parking-bay') && $('#garageRoom').textContent.includes('não tem vagas permanentes'));
+    data.garages.push({id:'nightclub-test',name:'Boate',type:'bat_club_property',capacity:31});
+    $('[data-filter="garages"]').click(); $('.garage-card[data-garage-id="nightclub-test"] .garage-open').click();
+    check('boate mostra três pisos pessoais e entrada separada', [...$('#parkingFloor').options].map(option=>option.textContent.split(' · ')[0]).join(',')==='Piso B2,Piso B3,Piso B4,Entrada' && $$('.parking-bay').length===10 && $('#garageRoom').textContent.includes('B1 (Speedo Custom, Mule Custom e Pounder Custom)'));
+    $('#parkingFloor').value='2'; $('#parkingFloor').dispatchEvent(new Event('change',{bubbles:true}));
+    check('B4 termina na trigésima vaga', $$('.parking-bay').length===10 && $('.parking-bay[data-parking-slot="29"]') && !$('.parking-bay[data-parking-slot="30"]'));
+    $('#parkingFloor').value='3'; $('#parkingFloor').dispatchEvent(new Event('change',{bubbles:true}));
+    check('entrada da boate tem só uma vaga', $$('.parking-bay').length===1 && $('.parking-bay[data-parking-slot="30"]'));
+    check('boate sem ampliações tem somente entrada', getGarageSections({type:'bat_club_property',capacity:1},1).map(section=>section.label).join(',')==='Entrada');
     data.vehicles=parkingVehicles; data.garages=parkingGarages; $('[data-filter="all"]').click(); saveData();
     const valueVehicles = data.vehicles, valueGarages = data.garages;
     data.garages=[{id:'value-a',name:'Garagem A',type:'garage',capacity:10},{id:'value-b',name:'Garagem B',type:'garage',capacity:10}];
